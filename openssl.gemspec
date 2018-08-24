@@ -1,5 +1,5 @@
 Gem::Specification.new do |spec|
-  spec.name          = "openssl"
+  spec.name          = "apenssl"
   spec.version       = "2.1.1"
   spec.authors       = ["Martin Bosslet", "SHIBATA Hiroshi", "Zachary Scott", "Kazuki Yamaguchi"]
   spec.email         = ["ruby-core@ruby-lang.org"]
