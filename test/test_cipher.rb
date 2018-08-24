@@ -1,12 +1,12 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestCipher < OpenSSL::TestCase
+class AppleSSL::TestCipher < AppleSSL::TestCase
   module Helper
     def has_cipher?(name)
-      @ciphers ||= OpenSSL::Cipher.ciphers
+      @ciphers ||= AppleSSL::Cipher.ciphers
       @ciphers.include?(name)
     end
   end
@@ -32,12 +32,12 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
     salt = "\x01" * 8
     num = 2048
     pt = "data to be encrypted"
-    cipher = OpenSSL::Cipher.new("DES-EDE3-CBC").encrypt
+    cipher = AppleSSL::Cipher.new("DES-EDE3-CBC").encrypt
     cipher.pkcs5_keyivgen(pass, salt, num, "MD5")
     s1 = cipher.update(pt) << cipher.final
 
-    d1 = num.times.inject(pass + salt) {|out, _| OpenSSL::Digest::MD5.digest(out) }
-    d2 = num.times.inject(d1 + pass + salt) {|out, _| OpenSSL::Digest::MD5.digest(out) }
+    d1 = num.times.inject(pass + salt) {|out, _| AppleSSL::Digest::MD5.digest(out) }
+    d2 = num.times.inject(d1 + pass + salt) {|out, _| AppleSSL::Digest::MD5.digest(out) }
     key = (d1 + d2)[0, 24]
     iv = (d1 + d2)[24, 8]
     cipher = new_encryptor("DES-EDE3-CBC", key: key, iv: iv)
@@ -45,19 +45,19 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
 
     assert_equal s1, s2
 
-    cipher2 = OpenSSL::Cipher.new("DES-EDE3-CBC").encrypt
+    cipher2 = AppleSSL::Cipher.new("DES-EDE3-CBC").encrypt
     assert_raise(ArgumentError) { cipher2.pkcs5_keyivgen(pass, salt, -1, "MD5") }
   end
 
   def test_info
-    cipher = OpenSSL::Cipher.new("DES-EDE3-CBC").encrypt
+    cipher = AppleSSL::Cipher.new("DES-EDE3-CBC").encrypt
     assert_equal "DES-EDE3-CBC", cipher.name
     assert_equal 24, cipher.key_len
     assert_equal 8, cipher.iv_len
   end
 
   def test_dup
-    cipher = OpenSSL::Cipher.new("aes-128-cbc").encrypt
+    cipher = AppleSSL::Cipher.new("aes-128-cbc").encrypt
     assert_equal cipher.name, cipher.dup.name
     cipher.encrypt
     cipher.random_key
@@ -69,7 +69,7 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   end
 
   def test_reset
-    cipher = OpenSSL::Cipher.new("aes-128-cbc").encrypt
+    cipher = AppleSSL::Cipher.new("aes-128-cbc").encrypt
     cipher.encrypt
     cipher.random_key
     cipher.random_iv
@@ -80,7 +80,7 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   end
 
   def test_key_iv_set
-    cipher = OpenSSL::Cipher.new("DES-EDE3-CBC").encrypt
+    cipher = AppleSSL::Cipher.new("DES-EDE3-CBC").encrypt
     assert_raise(ArgumentError) { cipher.key = "\x01" * 23 }
     assert_nothing_raised { cipher.key = "\x01" * 24 }
     assert_raise(ArgumentError) { cipher.key = "\x01" * 25 }
@@ -92,7 +92,7 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   def test_random_key_iv
     data = "data"
     s1, s2 = 2.times.map do
-      cipher = OpenSSL::Cipher.new("aes-128-cbc").encrypt
+      cipher = AppleSSL::Cipher.new("aes-128-cbc").encrypt
       cipher.random_key
       cipher.iv = "\x01" * 16
       cipher.update(data) << cipher.final
@@ -100,7 +100,7 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
     assert_not_equal s1, s2
 
     s1, s2 = 2.times.map do
-      cipher = OpenSSL::Cipher.new("aes-128-cbc").encrypt
+      cipher = AppleSSL::Cipher.new("aes-128-cbc").encrypt
       cipher.key = "\x01" * 16
       cipher.random_iv
       cipher.update(data) << cipher.final
@@ -109,15 +109,15 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   end
 
   def test_empty_data
-    cipher = OpenSSL::Cipher.new("DES-EDE3-CBC").encrypt
+    cipher = AppleSSL::Cipher.new("DES-EDE3-CBC").encrypt
     cipher.random_key
     assert_raise(ArgumentError) { cipher.update("") }
   end
 
   def test_initialize
-    cipher = OpenSSL::Cipher.new("DES-EDE3-CBC")
+    cipher = AppleSSL::Cipher.new("DES-EDE3-CBC")
     assert_raise(RuntimeError) { cipher.__send__(:initialize, "DES-EDE3-CBC") }
-    assert_raise(RuntimeError) { OpenSSL::Cipher.allocate.final }
+    assert_raise(RuntimeError) { AppleSSL::Cipher.allocate.final }
   end
 
   def test_ctr_if_exists
@@ -135,11 +135,11 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   end
 
   def test_ciphers
-    OpenSSL::Cipher.ciphers.each{|name|
+    AppleSSL::Cipher.ciphers.each{|name|
       next if /netbsd/ =~ RUBY_PLATFORM && /idea|rc5/i =~ name
       begin
-        assert_kind_of(OpenSSL::Cipher, OpenSSL::Cipher.new(name))
-      rescue OpenSSL::Cipher::CipherError => e
+        assert_kind_of(AppleSSL::Cipher, AppleSSL::Cipher.new(name))
+      rescue AppleSSL::Cipher::CipherError => e
         raise unless /wrap/ =~ name and /wrap mode not allowed/ =~ e.message
       end
     }
@@ -148,12 +148,12 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   def test_AES
     pt = File.read(__FILE__)
     %w(ECB CBC CFB OFB).each{|mode|
-      c1 = OpenSSL::Cipher::AES256.new(mode)
+      c1 = AppleSSL::Cipher::AES256.new(mode)
       c1.encrypt
       c1.pkcs5_keyivgen("passwd")
       ct = c1.update(pt) + c1.final
 
-      c2 = OpenSSL::Cipher::AES256.new(mode)
+      c2 = AppleSSL::Cipher::AES256.new(mode)
       c2.decrypt
       c2.pkcs5_keyivgen("passwd")
       assert_equal(pt, c2.update(ct) + c2.final)
@@ -161,16 +161,16 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   end
 
   def test_update_raise_if_key_not_set
-    assert_raise(OpenSSL::Cipher::CipherError) do
-      # it caused OpenSSL SEGV by uninitialized key [Bug #2768]
-      OpenSSL::Cipher::AES128.new("ECB").update "." * 17
+    assert_raise(AppleSSL::Cipher::CipherError) do
+      # it caused AppleSSL SEGV by uninitialized key [Bug #2768]
+      AppleSSL::Cipher::AES128.new("ECB").update "." * 17
     end
   end
 
   def test_authenticated
-    cipher = OpenSSL::Cipher.new('aes-128-gcm')
+    cipher = AppleSSL::Cipher.new('aes-128-gcm')
     assert_predicate(cipher, :authenticated?)
-    cipher = OpenSSL::Cipher.new('aes-128-cbc')
+    cipher = AppleSSL::Cipher.new('aes-128-cbc')
     assert_not_predicate(cipher, :authenticated?)
   end
 
@@ -208,19 +208,19 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
     tag2.setbyte(-1, (tag2.getbyte(-1) + 1) & 0xff)
     cipher = new_decryptor("aes-128-gcm", key: key, iv: iv, auth_tag: tag2, auth_data: aad)
     cipher.update(ct)
-    assert_raise(OpenSSL::Cipher::CipherError) { cipher.final }
+    assert_raise(AppleSSL::Cipher::CipherError) { cipher.final }
 
     # wrong aad is rejected
     aad2 = aad[0..-2] << aad[-1].succ
     cipher = new_decryptor("aes-128-gcm", key: key, iv: iv, auth_tag: tag, auth_data: aad2)
     cipher.update(ct)
-    assert_raise(OpenSSL::Cipher::CipherError) { cipher.final }
+    assert_raise(AppleSSL::Cipher::CipherError) { cipher.final }
 
     # wrong ciphertext is rejected
     ct2 = ct[0..-2] << ct[-1].succ
     cipher = new_decryptor("aes-128-gcm", key: key, iv: iv, auth_tag: tag, auth_data: aad)
     cipher.update(ct2)
-    assert_raise(OpenSSL::Cipher::CipherError) { cipher.final }
+    assert_raise(AppleSSL::Cipher::CipherError) { cipher.final }
   end
 
   def test_aes_gcm_variable_iv_len
@@ -281,14 +281,14 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   end if has_cipher?("aes-128-ocb")
 
   def test_aes_gcm_key_iv_order_issue
-    pt = "[ruby/openssl#49]"
-    cipher = OpenSSL::Cipher.new("aes-128-gcm").encrypt
+    pt = "[ruby/applessl#49]"
+    cipher = AppleSSL::Cipher.new("aes-128-gcm").encrypt
     cipher.key = "x" * 16
     cipher.iv = "a" * 12
     ct1 = cipher.update(pt) << cipher.final
     tag1 = cipher.auth_tag
 
-    cipher = OpenSSL::Cipher.new("aes-128-gcm").encrypt
+    cipher = AppleSSL::Cipher.new("aes-128-gcm").encrypt
     cipher.iv = "a" * 12
     cipher.key = "x" * 16
     ct2 = cipher.update(pt) << cipher.final
@@ -299,8 +299,8 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   end
 
   def test_non_aead_cipher_set_auth_data
-    assert_raise(OpenSSL::Cipher::CipherError) {
-      cipher = OpenSSL::Cipher.new("aes-128-cfb").encrypt
+    assert_raise(AppleSSL::Cipher::CipherError) {
+      cipher = AppleSSL::Cipher.new("aes-128-cfb").encrypt
       cipher.auth_data = "123"
     }
   end
@@ -308,14 +308,14 @@ class OpenSSL::TestCipher < OpenSSL::TestCase
   private
 
   def new_encryptor(algo, **kwargs)
-    OpenSSL::Cipher.new(algo).tap do |cipher|
+    AppleSSL::Cipher.new(algo).tap do |cipher|
       cipher.encrypt
       kwargs.each {|k, v| cipher.send(:"#{k}=", v) }
     end
   end
 
   def new_decryptor(algo, **kwargs)
-    OpenSSL::Cipher.new(algo).tap do |cipher|
+    AppleSSL::Cipher.new(algo).tap do |cipher|
       cipher.decrypt
       kwargs.each {|k, v| cipher.send(:"#{k}=", v) }
     end

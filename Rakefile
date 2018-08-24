@@ -4,7 +4,7 @@ require 'rdoc/task'
 
 begin
   require 'rake/extensiontask'
-  Rake::ExtensionTask.new('openssl')
+  Rake::ExtensionTask.new('applessl')
 rescue LoadError
   warn "rake-compiler not installed. Run 'rake install_dependencies' to " \
     "install testing dependency gems."
@@ -22,7 +22,7 @@ end
 
 task :test => [:compile, :debug]
 task :debug do
-  ruby "-I./lib -ropenssl -ve'puts OpenSSL::OPENSSL_VERSION, OpenSSL::OPENSSL_LIBRARY_VERSION'"
+  ruby "-I./lib -rapplessl -ve'puts AppleSSL::OPENSSL_VERSION, AppleSSL::OPENSSL_LIBRARY_VERSION'"
 end
 
 task :install_dependencies do
@@ -31,7 +31,7 @@ task :install_dependencies do
   end
 
   Gem.configuration.verbose = false
-  gemspec = eval(File.read("openssl.gemspec"))
+  gemspec = eval(File.read("applessl.gemspec"))
   gemspec.development_dependencies.each do |dep|
     print "Installing #{dep.name} (#{dep.requirement}) ... "
     installed = dep.matching_specs
@@ -57,24 +57,24 @@ namespace :sync do
     excludes.each { |name| rsync << " --exclude #{name}" }
 
     paths = [
-      ["ext/openssl/", "ext/openssl/"],
-      ["lib/", "ext/openssl/lib/"],
-      ["sample/", "sample/openssl/"],
-      ["test/fixtures/", "test/openssl/fixtures/"],
-      ["test/utils.rb", "test/openssl/"],
-      ["test/ut_eof.rb", "test/openssl/"],
-      ["test/test_*", "test/openssl/"],
-      ["History.md", "ext/openssl/"],
+      ["ext/applessl/", "ext/applessl/"],
+      ["lib/", "ext/applessl/lib/"],
+      ["sample/", "sample/applessl/"],
+      ["test/fixtures/", "test/applessl/fixtures/"],
+      ["test/utils.rb", "test/applessl/"],
+      ["test/ut_eof.rb", "test/applessl/"],
+      ["test/test_*", "test/applessl/"],
+      ["History.md", "ext/applessl/"],
     ]
     paths.each do |src, dst|
       sh "#{rsync} #{src} #{trunk_path}/#{dst}"
     end
 
-    gemspec_file = File.expand_path("../openssl.gemspec", __FILE__)
+    gemspec_file = File.expand_path("../applessl.gemspec", __FILE__)
     gemspec = eval(File.read(gemspec_file), binding, gemspec_file)
-    File.write("#{trunk_path}/ext/openssl/openssl.gemspec", gemspec.to_ruby)
+    File.write("#{trunk_path}/ext/applessl/applessl.gemspec", gemspec.to_ruby)
 
-    puts "Don't forget to update ext/openssl/depend"
+    puts "Don't forget to update ext/applessl/depend"
   end
 end
 

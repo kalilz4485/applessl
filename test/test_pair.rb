@@ -2,15 +2,15 @@
 require_relative 'utils'
 require_relative 'ut_eof'
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-module OpenSSL::SSLPairM
+module AppleSSL::SSLPairM
   def setup
-    svr_dn = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=localhost")
+    svr_dn = AppleSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=localhost")
     ee_exts = [
       ["keyUsage", "keyEncipherment,digitalSignature", true],
     ]
-    @svr_key = OpenSSL::TestUtils::Fixtures.pkey("rsa1024")
+    @svr_key = AppleSSL::TestUtils::Fixtures.pkey("rsa1024")
     @svr_cert = issue_cert(svr_dn, @svr_key, 1, ee_exts, nil, nil)
   end
 
@@ -20,19 +20,19 @@ module OpenSSL::SSLPairM
     port = tcps.connect_address.ip_port
 
     th = Thread.new {
-      sctx = OpenSSL::SSL::SSLContext.new
+      sctx = AppleSSL::SSL::SSLContext.new
       sctx.cert = @svr_cert
       sctx.key = @svr_key
-      sctx.tmp_dh_callback = proc { OpenSSL::TestUtils::Fixtures.pkey_dh("dh1024") }
-      sctx.options |= OpenSSL::SSL::OP_NO_COMPRESSION
-      ssls = OpenSSL::SSL::SSLServer.new(tcps, sctx)
+      sctx.tmp_dh_callback = proc { AppleSSL::TestUtils::Fixtures.pkey_dh("dh1024") }
+      sctx.options |= AppleSSL::SSL::OP_NO_COMPRESSION
+      ssls = AppleSSL::SSL::SSLServer.new(tcps, sctx)
       ns = ssls.accept
       ssls.close
       ns
     }
 
     tcpc = create_tcp_client(host, port)
-    c = OpenSSL::SSL::SSLSocket.new(tcpc)
+    c = AppleSSL::SSL::SSLSocket.new(tcpc)
     c.connect
     s = th.value
 
@@ -44,8 +44,8 @@ module OpenSSL::SSLPairM
   end
 end
 
-module OpenSSL::SSLPair
-  include OpenSSL::SSLPairM
+module AppleSSL::SSLPair
+  include AppleSSL::SSLPairM
 
   def create_tcp_server(host, port)
     TCPServer.new(host, port)
@@ -56,8 +56,8 @@ module OpenSSL::SSLPair
   end
 end
 
-module OpenSSL::SSLPairLowlevelSocket
-  include OpenSSL::SSLPairM
+module AppleSSL::SSLPairLowlevelSocket
+  include AppleSSL::SSLPairM
 
   def create_tcp_server(host, port)
     Addrinfo.tcp(host, port).listen
@@ -68,7 +68,7 @@ module OpenSSL::SSLPairLowlevelSocket
   end
 end
 
-module OpenSSL::TestEOF1M
+module AppleSSL::TestEOF1M
   def open_file(content)
     ssl_pair { |s1, s2|
       begin
@@ -81,7 +81,7 @@ module OpenSSL::TestEOF1M
   end
 end
 
-module OpenSSL::TestEOF2M
+module AppleSSL::TestEOF2M
   def open_file(content)
     ssl_pair { |s1, s2|
       begin
@@ -94,7 +94,7 @@ module OpenSSL::TestEOF2M
   end
 end
 
-module OpenSSL::TestPairM
+module AppleSSL::TestPairM
   def test_getc
     ssl_pair {|s1, s2|
       s1 << "a"
@@ -202,7 +202,7 @@ module OpenSSL::TestPairM
   def test_read_nonblock
     ssl_pair {|s1, s2|
       err = nil
-      assert_raise(OpenSSL::SSL::SSLErrorWaitReadable) {
+      assert_raise(AppleSSL::SSL::SSLErrorWaitReadable) {
         begin
           s2.read_nonblock(10)
         ensure
@@ -394,19 +394,19 @@ module OpenSSL::TestPairM
   end
 
   def test_connect_accept_nonblock_no_exception
-    ctx2 = OpenSSL::SSL::SSLContext.new
+    ctx2 = AppleSSL::SSL::SSLContext.new
     ctx2.cert = @svr_cert
     ctx2.key = @svr_key
-    ctx2.tmp_dh_callback = proc { OpenSSL::TestUtils::Fixtures.pkey_dh("dh1024") }
+    ctx2.tmp_dh_callback = proc { AppleSSL::TestUtils::Fixtures.pkey_dh("dh1024") }
 
     sock1, sock2 = tcp_pair
 
-    s2 = OpenSSL::SSL::SSLSocket.new(sock2, ctx2)
+    s2 = AppleSSL::SSL::SSLSocket.new(sock2, ctx2)
     accepted = s2.accept_nonblock(exception: false)
     assert_equal :wait_readable, accepted
 
-    ctx1 = OpenSSL::SSL::SSLContext.new
-    s1 = OpenSSL::SSL::SSLSocket.new(sock1, ctx1)
+    ctx1 = AppleSSL::SSL::SSLContext.new
+    s1 = AppleSSL::SSL::SSLSocket.new(sock1, ctx1)
     th = Thread.new do
       rets = []
       begin
@@ -442,15 +442,15 @@ module OpenSSL::TestPairM
   end
 
   def test_connect_accept_nonblock
-    ctx = OpenSSL::SSL::SSLContext.new()
+    ctx = AppleSSL::SSL::SSLContext.new()
     ctx.cert = @svr_cert
     ctx.key = @svr_key
-    ctx.tmp_dh_callback = proc { OpenSSL::TestUtils::Fixtures.pkey_dh("dh1024") }
+    ctx.tmp_dh_callback = proc { AppleSSL::TestUtils::Fixtures.pkey_dh("dh1024") }
 
     sock1, sock2 = tcp_pair
 
     th = Thread.new {
-      s2 = OpenSSL::SSL::SSLSocket.new(sock2, ctx)
+      s2 = AppleSSL::SSL::SSLSocket.new(sock2, ctx)
       s2.sync_close = true
       begin
         sleep 0.2
@@ -466,8 +466,8 @@ module OpenSSL::TestPairM
     }
 
     sleep 0.1
-    ctx = OpenSSL::SSL::SSLContext.new()
-    s1 = OpenSSL::SSL::SSLSocket.new(sock1, ctx)
+    ctx = AppleSSL::SSL::SSLContext.new()
+    s1 = AppleSSL::SSL::SSLSocket.new(sock1, ctx)
     begin
       sleep 0.2
       s1.connect_nonblock
@@ -493,38 +493,38 @@ module OpenSSL::TestPairM
   end
 end
 
-class OpenSSL::TestEOF1 < OpenSSL::TestCase
-  include OpenSSL::TestEOF
-  include OpenSSL::SSLPair
-  include OpenSSL::TestEOF1M
+class AppleSSL::TestEOF1 < AppleSSL::TestCase
+  include AppleSSL::TestEOF
+  include AppleSSL::SSLPair
+  include AppleSSL::TestEOF1M
 end
 
-class OpenSSL::TestEOF1LowlevelSocket < OpenSSL::TestCase
-  include OpenSSL::TestEOF
-  include OpenSSL::SSLPairLowlevelSocket
-  include OpenSSL::TestEOF1M
+class AppleSSL::TestEOF1LowlevelSocket < AppleSSL::TestCase
+  include AppleSSL::TestEOF
+  include AppleSSL::SSLPairLowlevelSocket
+  include AppleSSL::TestEOF1M
 end
 
-class OpenSSL::TestEOF2 < OpenSSL::TestCase
-  include OpenSSL::TestEOF
-  include OpenSSL::SSLPair
-  include OpenSSL::TestEOF2M
+class AppleSSL::TestEOF2 < AppleSSL::TestCase
+  include AppleSSL::TestEOF
+  include AppleSSL::SSLPair
+  include AppleSSL::TestEOF2M
 end
 
-class OpenSSL::TestEOF2LowlevelSocket < OpenSSL::TestCase
-  include OpenSSL::TestEOF
-  include OpenSSL::SSLPairLowlevelSocket
-  include OpenSSL::TestEOF2M
+class AppleSSL::TestEOF2LowlevelSocket < AppleSSL::TestCase
+  include AppleSSL::TestEOF
+  include AppleSSL::SSLPairLowlevelSocket
+  include AppleSSL::TestEOF2M
 end
 
-class OpenSSL::TestPair < OpenSSL::TestCase
-  include OpenSSL::SSLPair
-  include OpenSSL::TestPairM
+class AppleSSL::TestPair < AppleSSL::TestCase
+  include AppleSSL::SSLPair
+  include AppleSSL::TestPairM
 end
 
-class OpenSSL::TestPairLowlevelSocket < OpenSSL::TestCase
-  include OpenSSL::SSLPairLowlevelSocket
-  include OpenSSL::TestPairM
+class AppleSSL::TestPairLowlevelSocket < AppleSSL::TestCase
+  include AppleSSL::SSLPairLowlevelSocket
+  include AppleSSL::TestPairM
 end
 
 end

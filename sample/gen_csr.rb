@@ -1,9 +1,9 @@
 #!/usr/bin/env ruby
 
 require 'optparse'
-require 'openssl'
+require 'applessl'
 
-include OpenSSL
+include AppleSSL
 
 def usage
   myname = File::basename($0)

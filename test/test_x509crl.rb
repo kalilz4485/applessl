@@ -1,18 +1,18 @@
 # frozen_string_literal: false
 require_relative "utils"
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestX509CRL < OpenSSL::TestCase
+class AppleSSL::TestX509CRL < AppleSSL::TestCase
   def setup
     super
     @rsa1024 = Fixtures.pkey("rsa1024")
     @rsa2048 = Fixtures.pkey("rsa2048")
     @dsa256  = Fixtures.pkey("dsa256")
     @dsa512  = Fixtures.pkey("dsa512")
-    @ca = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=CA")
-    @ee1 = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=EE1")
-    @ee2 = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=EE2")
+    @ca = AppleSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=CA")
+    @ee1 = AppleSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=EE1")
+    @ee2 = AppleSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=EE2")
   end
 
   def test_basic
@@ -20,13 +20,13 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
 
     cert = issue_cert(@ca, @rsa2048, 1, [], nil, nil)
     crl = issue_crl([], 1, now, now+1600, [],
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     assert_equal(1, crl.version)
     assert_equal(cert.issuer.to_der, crl.issuer.to_der)
     assert_equal(now, crl.last_update)
     assert_equal(now+1600, crl.next_update)
 
-    crl = OpenSSL::X509::CRL.new(crl.to_der)
+    crl = AppleSSL::X509::CRL.new(crl.to_der)
     assert_equal(1, crl.version)
     assert_equal(cert.issuer.to_der, crl.issuer.to_der)
     assert_equal(now, crl.last_update)
@@ -57,7 +57,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
     ]
     cert = issue_cert(@ca, @rsa2048, 1, [], nil, nil)
     crl = issue_crl(revoke_info, 1, Time.now, Time.now+1600, [],
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     revoked = crl.revoked
     assert_equal(5, revoked.size)
     assert_equal(1, revoked[0].serial)
@@ -98,7 +98,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
 
     revoke_info = (1..1000).collect{|i| [i, now, 0] }
     crl = issue_crl(revoke_info, 1, Time.now, Time.now+1600, [],
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     revoked = crl.revoked
     assert_equal(1000, revoked.size)
     assert_equal(1, revoked[0].serial)
@@ -124,7 +124,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
 
     cert = issue_cert(@ca, @rsa2048, 1, cert_exts, nil, nil)
     crl = issue_crl([], 1, Time.now, Time.now+1600, crl_exts,
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     exts = crl.extensions
     assert_equal(3, exts.size)
     assert_equal("1", exts[0].value)
@@ -132,7 +132,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
     assert_equal(false, exts[0].critical?)
 
     assert_equal("authorityKeyIdentifier", exts[1].oid)
-    keyid = OpenSSL::TestUtils.get_subject_key_id(cert)
+    keyid = AppleSSL::TestUtils.get_subject_key_id(cert)
     assert_match(/^keyid:#{keyid}/, exts[1].value)
     assert_equal(false, exts[1].critical?)
 
@@ -140,7 +140,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
     assert_equal("email:xyzzy@ruby-lang.org", exts[2].value)
     assert_equal(false, exts[2].critical?)
 
-    crl = OpenSSL::X509::CRL.new(crl.to_der)
+    crl = AppleSSL::X509::CRL.new(crl.to_der)
     exts = crl.extensions
     assert_equal(3, exts.size)
     assert_equal("1", exts[0].value)
@@ -148,7 +148,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
     assert_equal(false, exts[0].critical?)
 
     assert_equal("authorityKeyIdentifier", exts[1].oid)
-    keyid = OpenSSL::TestUtils.get_subject_key_id(cert)
+    keyid = AppleSSL::TestUtils.get_subject_key_id(cert)
     assert_match(/^keyid:#{keyid}/, exts[1].value)
     assert_equal(false, exts[1].critical?)
 
@@ -160,17 +160,17 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
   def test_crlnumber
     cert = issue_cert(@ca, @rsa2048, 1, [], nil, nil)
     crl = issue_crl([], 1, Time.now, Time.now+1600, [],
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     assert_match(1.to_s, crl.extensions[0].value)
     assert_match(/X509v3 CRL Number:\s+#{1}/m, crl.to_text)
 
     crl = issue_crl([], 2**32, Time.now, Time.now+1600, [],
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     assert_match((2**32).to_s, crl.extensions[0].value)
     assert_match(/X509v3 CRL Number:\s+#{2**32}/m, crl.to_text)
 
     crl = issue_crl([], 2**100, Time.now, Time.now+1600, [],
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     assert_match(/X509v3 CRL Number:\s+#{2**100}/m, crl.to_text)
     assert_match((2**100).to_s, crl.extensions[0].value)
   end
@@ -178,7 +178,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
   def test_sign_and_verify
     cert = issue_cert(@ca, @rsa2048, 1, [], nil, nil)
     crl = issue_crl([], 1, Time.now, Time.now+1600, [],
-                    cert, @rsa2048, OpenSSL::Digest::SHA1.new)
+                    cert, @rsa2048, AppleSSL::Digest::SHA1.new)
     assert_equal(false, crl.verify(@rsa1024))
     assert_equal(true,  crl.verify(@rsa2048))
     assert_equal(false, crl_error_returns_false { crl.verify(@dsa256) })
@@ -188,7 +188,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
 
     cert = issue_cert(@ca, @dsa512, 1, [], nil, nil)
     crl = issue_crl([], 1, Time.now, Time.now+1600, [],
-                    cert, @dsa512, OpenSSL::Digest::SHA1.new)
+                    cert, @dsa512, AppleSSL::Digest::SHA1.new)
     assert_equal(false, crl_error_returns_false { crl.verify(@rsa1024) })
     assert_equal(false, crl_error_returns_false { crl.verify(@rsa2048) })
     assert_equal(false, crl.verify(@dsa256))
@@ -206,15 +206,15 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
     #                           }  OPTIONAL,
 
     now = Time.utc(2000, 1, 1)
-    rev1 = OpenSSL::X509::Revoked.new
+    rev1 = AppleSSL::X509::Revoked.new
     rev1.serial = 123
     rev1.time = now
-    ext = OpenSSL::X509::Extension.new("CRLReason", OpenSSL::ASN1::Enumerated(1))
+    ext = AppleSSL::X509::Extension.new("CRLReason", AppleSSL::ASN1::Enumerated(1))
     rev1.extensions = [ext]
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Integer(123),
-      OpenSSL::ASN1::UTCTime(now),
-      OpenSSL::ASN1::Sequence([ext.to_der])
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Integer(123),
+      AppleSSL::ASN1::UTCTime(now),
+      AppleSSL::ASN1::Sequence([ext.to_der])
     ])
 
     assert_equal asn1.to_der, rev1.to_der
@@ -225,17 +225,17 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
 
     cacert = issue_cert(@ca, @rsa1024, 1, [], nil, nil)
     crl1 = issue_crl([], 1, now, now + 3600, [], cacert, @rsa1024, "sha256")
-    rev1 = OpenSSL::X509::Revoked.new.tap { |rev|
+    rev1 = AppleSSL::X509::Revoked.new.tap { |rev|
       rev.serial = 1
       rev.time = now
     }
     crl1.add_revoked(rev1)
-    crl2 = OpenSSL::X509::CRL.new(crl1.to_der)
+    crl2 = AppleSSL::X509::CRL.new(crl1.to_der)
 
     # CRL
     assert_equal false, crl1 == 12345
     assert_equal true, crl1 == crl2
-    rev2 = OpenSSL::X509::Revoked.new.tap { |rev|
+    rev2 = AppleSSL::X509::Revoked.new.tap { |rev|
       rev.serial = 2
       rev.time = now
     }
@@ -253,7 +253,7 @@ class OpenSSL::TestX509CRL < OpenSSL::TestCase
 
   def crl_error_returns_false
     yield
-  rescue OpenSSL::X509::CRLError
+  rescue AppleSSL::X509::CRLError
     false
   end
 end

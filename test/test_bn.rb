@@ -3,42 +3,42 @@
 require_relative 'utils'
 require "prime"
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestBN < OpenSSL::TestCase
+class AppleSSL::TestBN < AppleSSL::TestCase
   def setup
     super
-    @e1 = OpenSSL::BN.new(999.to_s(16), 16) # OpenSSL::BN.new(str, 16) must be most stable
-    @e2 = OpenSSL::BN.new("-" + 999.to_s(16), 16)
-    @e3 = OpenSSL::BN.new((2**107-1).to_s(16), 16)
-    @e4 = OpenSSL::BN.new("-" + (2**107-1).to_s(16), 16)
+    @e1 = AppleSSL::BN.new(999.to_s(16), 16) # AppleSSL::BN.new(str, 16) must be most stable
+    @e2 = AppleSSL::BN.new("-" + 999.to_s(16), 16)
+    @e3 = AppleSSL::BN.new((2**107-1).to_s(16), 16)
+    @e4 = AppleSSL::BN.new("-" + (2**107-1).to_s(16), 16)
   end
 
   def test_new
-    assert_equal(@e1, OpenSSL::BN.new("999"))
-    assert_equal(@e1, OpenSSL::BN.new("999", 10))
-    assert_equal(@e1, OpenSSL::BN.new("\x03\xE7", 2))
-    assert_equal(@e1, OpenSSL::BN.new("\x00\x00\x00\x02\x03\xE7", 0))
-    assert_equal(@e2, OpenSSL::BN.new("-999"))
-    assert_equal(@e2, OpenSSL::BN.new("-999", 10))
-    assert_equal(@e2, OpenSSL::BN.new("\x00\x00\x00\x02\x83\xE7", 0))
-    assert_equal(@e3, OpenSSL::BN.new((2**107-1).to_s))
-    assert_equal(@e3, OpenSSL::BN.new((2**107-1).to_s, 10))
-    assert_equal(@e3, OpenSSL::BN.new("\a\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF", 2))
-    assert_equal(@e3, OpenSSL::BN.new("\x00\x00\x00\x0E\a\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF", 0))
-    assert_equal(@e4, OpenSSL::BN.new("-" + (2**107-1).to_s))
-    assert_equal(@e4, OpenSSL::BN.new("-" + (2**107-1).to_s, 10))
-    assert_equal(@e4, OpenSSL::BN.new("\x00\x00\x00\x0E\x87\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF", 0))
+    assert_equal(@e1, AppleSSL::BN.new("999"))
+    assert_equal(@e1, AppleSSL::BN.new("999", 10))
+    assert_equal(@e1, AppleSSL::BN.new("\x03\xE7", 2))
+    assert_equal(@e1, AppleSSL::BN.new("\x00\x00\x00\x02\x03\xE7", 0))
+    assert_equal(@e2, AppleSSL::BN.new("-999"))
+    assert_equal(@e2, AppleSSL::BN.new("-999", 10))
+    assert_equal(@e2, AppleSSL::BN.new("\x00\x00\x00\x02\x83\xE7", 0))
+    assert_equal(@e3, AppleSSL::BN.new((2**107-1).to_s))
+    assert_equal(@e3, AppleSSL::BN.new((2**107-1).to_s, 10))
+    assert_equal(@e3, AppleSSL::BN.new("\a\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF", 2))
+    assert_equal(@e3, AppleSSL::BN.new("\x00\x00\x00\x0E\a\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF", 0))
+    assert_equal(@e4, AppleSSL::BN.new("-" + (2**107-1).to_s))
+    assert_equal(@e4, AppleSSL::BN.new("-" + (2**107-1).to_s, 10))
+    assert_equal(@e4, AppleSSL::BN.new("\x00\x00\x00\x0E\x87\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF\xFF", 0))
 
-    e1copy = OpenSSL::BN.new(@e1)
+    e1copy = AppleSSL::BN.new(@e1)
     assert_equal(@e1, e1copy)
     e1copy.clear_bit!(0) #=> 998
     assert_not_equal(@e1, e1copy)
 
-    assert_equal(@e1, OpenSSL::BN.new(999))
-    assert_equal(@e2, OpenSSL::BN.new(-999))
-    assert_equal(@e3, OpenSSL::BN.new(2**107-1))
-    assert_equal(@e4, OpenSSL::BN.new(-(2**107-1)))
+    assert_equal(@e1, AppleSSL::BN.new(999))
+    assert_equal(@e2, AppleSSL::BN.new(-999))
+    assert_equal(@e3, AppleSSL::BN.new(2**107-1))
+    assert_equal(@e4, AppleSSL::BN.new(-(2**107-1)))
 
     assert_equal(@e1, 999.to_bn)
     assert_equal(@e2, -999.to_bn)
@@ -119,7 +119,7 @@ class OpenSSL::TestBN < OpenSSL::TestCase
     assert_equal(-2, 1.to_bn * -2)
     assert_equal([0, 1], 1.to_bn / 2)
     assert_equal([2, 0], 2.to_bn / 1)
-    assert_raise(OpenSSL::BNError) { 1.to_bn / 0 }
+    assert_raise(AppleSSL::BNError) { 1.to_bn / 0 }
   end
 
   def test_unary_plus_minus
@@ -152,7 +152,7 @@ class OpenSSL::TestBN < OpenSSL::TestCase
 
   def test_mod_inverse
     assert_equal(2, 3.to_bn.mod_inverse(5))
-    assert_raise(OpenSSL::BNError) { 3.to_bn.mod_inverse(6) }
+    assert_raise(AppleSSL::BNError) { 3.to_bn.mod_inverse(6) }
   end
 
   def test_mod_add
@@ -211,30 +211,30 @@ class OpenSSL::TestBN < OpenSSL::TestCase
 
   def test_random
     10.times {
-      r1 = OpenSSL::BN.rand(8)
+      r1 = AppleSSL::BN.rand(8)
       assert_include(128..255, r1)
-      r2 = OpenSSL::BN.rand(8, -1)
+      r2 = AppleSSL::BN.rand(8, -1)
       assert_include(0..255, r2)
-      r3 = OpenSSL::BN.rand(8, 1)
+      r3 = AppleSSL::BN.rand(8, 1)
       assert_include(192..255, r3)
-      r4 = OpenSSL::BN.rand(8, 1, true)
+      r4 = AppleSSL::BN.rand(8, 1, true)
       assert_include(192..255, r4)
       assert_equal(true, r4.odd?)
 
-      r5 = OpenSSL::BN.rand_range(256)
+      r5 = AppleSSL::BN.rand_range(256)
       assert_include(0..255, r5)
     }
   end
 
   def test_prime
-    p1 = OpenSSL::BN.generate_prime(32)
+    p1 = AppleSSL::BN.generate_prime(32)
     assert_include(0...2**32, p1)
     assert_equal(true, Prime.prime?(p1.to_i))
-    p2 = OpenSSL::BN.generate_prime(32, true)
+    p2 = AppleSSL::BN.generate_prime(32, true)
     assert_equal(true, Prime.prime?((p2.to_i - 1) / 2))
-    p3 = OpenSSL::BN.generate_prime(32, false, 4)
+    p3 = AppleSSL::BN.generate_prime(32, false, 4)
     assert_equal(1, p3 % 4)
-    p4 = OpenSSL::BN.generate_prime(32, false, 4, 3)
+    p4 = AppleSSL::BN.generate_prime(32, false, 4, 3)
     assert_equal(3, p4 % 4)
 
     assert_equal(true, p1.prime?)

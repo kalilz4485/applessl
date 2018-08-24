@@ -1,11 +1,11 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL) && defined?(OpenSSL::PKey::EC)
+if defined?(AppleSSL) && defined?(AppleSSL::PKey::EC)
 
-class OpenSSL::TestEC < OpenSSL::PKeyTestCase
+class AppleSSL::TestEC < AppleSSL::PKeyTestCase
   def test_ec_key
-    builtin_curves = OpenSSL::PKey::EC.builtin_curves
+    builtin_curves = AppleSSL::PKey::EC.builtin_curves
     assert_not_empty builtin_curves
 
     builtin_curves.each do |curve_name, comment|
@@ -13,7 +13,7 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
       # FIPS-selftest failure on some environment, so skip for now.
       next if ["Oakley", "X25519"].any? { |n| curve_name.start_with?(n) }
 
-      key = OpenSSL::PKey::EC.new(curve_name)
+      key = AppleSSL::PKey::EC.new(curve_name)
       key.generate_key!
 
       assert_predicate key, :private?
@@ -21,43 +21,43 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
       assert_nothing_raised { key.check_key }
     end
 
-    key1 = OpenSSL::PKey::EC.new("prime256v1").generate_key!
+    key1 = AppleSSL::PKey::EC.new("prime256v1").generate_key!
 
-    key2 = OpenSSL::PKey::EC.new
+    key2 = AppleSSL::PKey::EC.new
     key2.group = key1.group
     key2.private_key = key1.private_key
     key2.public_key = key1.public_key
     assert_equal key1.to_der, key2.to_der
 
-    key3 = OpenSSL::PKey::EC.new(key1)
+    key3 = AppleSSL::PKey::EC.new(key1)
     assert_equal key1.to_der, key3.to_der
 
-    key4 = OpenSSL::PKey::EC.new(key1.to_der)
+    key4 = AppleSSL::PKey::EC.new(key1.to_der)
     assert_equal key1.to_der, key4.to_der
 
     key5 = key1.dup
     assert_equal key1.to_der, key5.to_der
-    key_tmp = OpenSSL::PKey::EC.new("prime256v1").generate_key!
+    key_tmp = AppleSSL::PKey::EC.new("prime256v1").generate_key!
     key5.private_key = key_tmp.private_key
     key5.public_key = key_tmp.public_key
     assert_not_equal key1.to_der, key5.to_der
   end
 
   def test_generate
-    assert_raise(OpenSSL::PKey::ECError) { OpenSSL::PKey::EC.generate("non-existent") }
-    g = OpenSSL::PKey::EC::Group.new("prime256v1")
-    ec = OpenSSL::PKey::EC.generate(g)
+    assert_raise(AppleSSL::PKey::ECError) { AppleSSL::PKey::EC.generate("non-existent") }
+    g = AppleSSL::PKey::EC::Group.new("prime256v1")
+    ec = AppleSSL::PKey::EC.generate(g)
     assert_equal(true, ec.private?)
-    ec = OpenSSL::PKey::EC.generate("prime256v1")
+    ec = AppleSSL::PKey::EC.generate("prime256v1")
     assert_equal(true, ec.private?)
   end
 
   def test_check_key
-    key = OpenSSL::PKey::EC.new("prime256v1").generate_key!
+    key = AppleSSL::PKey::EC.new("prime256v1").generate_key!
     assert_equal(true, key.check_key)
     assert_equal(true, key.private?)
     assert_equal(true, key.public?)
-    key2 = OpenSSL::PKey::EC.new(key.group)
+    key2 = AppleSSL::PKey::EC.new(key.group)
     assert_equal(false, key2.private?)
     assert_equal(false, key2.public?)
     key2.public_key = key.public_key
@@ -68,7 +68,7 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
     assert_equal(true, key2.public?)
     assert_equal(true, key2.check_key)
     key2.private_key += 1
-    assert_raise(OpenSSL::PKey::ECError) { key2.check_key }
+    assert_raise(AppleSSL::PKey::ECError) { key2.check_key }
   end
 
   def test_sign_verify
@@ -89,24 +89,24 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
   def test_dsa_sign_verify
     data1 = "foo"
     data2 = "bar"
-    key = OpenSSL::PKey::EC.new("prime256v1").generate_key!
+    key = AppleSSL::PKey::EC.new("prime256v1").generate_key!
     sig = key.dsa_sign_asn1(data1)
     assert_equal true, key.dsa_verify_asn1(data1, sig)
     assert_equal false, key.dsa_verify_asn1(data2, sig)
   end
 
   def test_dsa_sign_asn1_FIPS186_3
-    key = OpenSSL::PKey::EC.new("prime256v1").generate_key!
+    key = AppleSSL::PKey::EC.new("prime256v1").generate_key!
     size = key.group.order.num_bits / 8 + 1
     dgst = (1..size).to_a.pack('C*')
     sig = key.dsa_sign_asn1(dgst)
-    # dgst is auto-truncated according to FIPS186-3 after openssl-0.9.8m
+    # dgst is auto-truncated according to FIPS186-3 after applessl-0.9.8m
     assert(key.dsa_verify_asn1(dgst + "garbage", sig))
   end
 
   def test_dh_compute_key
-    key_a = OpenSSL::PKey::EC.new("prime256v1").generate_key!
-    key_b = OpenSSL::PKey::EC.new(key_a.group).generate_key!
+    key_a = AppleSSL::PKey::EC.new("prime256v1").generate_key!
+    key_b = AppleSSL::PKey::EC.new(key_a.group).generate_key!
 
     pub_a = key_a.public_key
     pub_b = key_b.public_key
@@ -117,14 +117,14 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
 
   def test_ECPrivateKey
     p256 = Fixtures.pkey("p256")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Integer(1),
-      OpenSSL::ASN1::OctetString(p256.private_key.to_s(2)),
-      OpenSSL::ASN1::ObjectId("prime256v1", 0, :EXPLICIT),
-      OpenSSL::ASN1::BitString(p256.public_key.to_octet_string(:uncompressed),
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Integer(1),
+      AppleSSL::ASN1::OctetString(p256.private_key.to_s(2)),
+      AppleSSL::ASN1::ObjectId("prime256v1", 0, :EXPLICIT),
+      AppleSSL::ASN1::BitString(p256.public_key.to_octet_string(:uncompressed),
                                1, :EXPLICIT)
     ])
-    key = OpenSSL::PKey::EC.new(asn1.to_der)
+    key = AppleSSL::PKey::EC.new(asn1.to_der)
     assert_predicate key, :private?
     assert_same_ec p256, key
 
@@ -135,7 +135,7 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
     CeBUl+MahZtn9fO1JKdF4qJmS39dXnpENg==
     -----END EC PRIVATE KEY-----
     EOF
-    key = OpenSSL::PKey::EC.new(pem)
+    key = AppleSSL::PKey::EC.new(pem)
     assert_same_ec p256, key
 
     assert_equal asn1.to_der, p256.to_der
@@ -155,31 +155,31 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
     0/dGSU5SzFG+iT9iFXCwCvv+bxyegkBOyALFje1NAsM=
     -----END EC PRIVATE KEY-----
     EOF
-    key = OpenSSL::PKey::EC.new(pem, "abcdef")
+    key = AppleSSL::PKey::EC.new(pem, "abcdef")
     assert_same_ec p256, key
-    key = OpenSSL::PKey::EC.new(pem) { "abcdef" }
+    key = AppleSSL::PKey::EC.new(pem) { "abcdef" }
     assert_same_ec p256, key
 
-    cipher = OpenSSL::Cipher.new("aes-128-cbc")
+    cipher = AppleSSL::Cipher.new("aes-128-cbc")
     exported = p256.to_pem(cipher, "abcdef\0\1")
-    assert_same_ec p256, OpenSSL::PKey::EC.new(exported, "abcdef\0\1")
-    assert_raise(OpenSSL::PKey::ECError) {
-      OpenSSL::PKey::EC.new(exported, "abcdef")
+    assert_same_ec p256, AppleSSL::PKey::EC.new(exported, "abcdef\0\1")
+    assert_raise(AppleSSL::PKey::ECError) {
+      AppleSSL::PKey::EC.new(exported, "abcdef")
     }
   end
 
   def test_PUBKEY
     p256 = Fixtures.pkey("p256")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Sequence([
-        OpenSSL::ASN1::ObjectId("id-ecPublicKey"),
-        OpenSSL::ASN1::ObjectId("prime256v1")
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Sequence([
+        AppleSSL::ASN1::ObjectId("id-ecPublicKey"),
+        AppleSSL::ASN1::ObjectId("prime256v1")
       ]),
-      OpenSSL::ASN1::BitString(
+      AppleSSL::ASN1::BitString(
         p256.public_key.to_octet_string(:uncompressed)
       )
     ])
-    key = OpenSSL::PKey::EC.new(asn1.to_der)
+    key = AppleSSL::PKey::EC.new(asn1.to_der)
     assert_not_predicate key, :private?
     assert_same_ec dup_public(p256), key
 
@@ -189,7 +189,7 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
     SZ/ArK41eGy5wAzU/0G51XttCeBUl+MahZtn9fO1JKdF4qJmS39dXnpENg==
     -----END PUBLIC KEY-----
     EOF
-    key = OpenSSL::PKey::EC.new(pem)
+    key = AppleSSL::PKey::EC.new(pem)
     assert_same_ec dup_public(p256), key
 
     assert_equal asn1.to_der, dup_public(p256).to_der
@@ -197,23 +197,23 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
   end
 
   def test_ec_group
-    group1 = OpenSSL::PKey::EC::Group.new("prime256v1")
-    key1 = OpenSSL::PKey::EC.new(group1)
+    group1 = AppleSSL::PKey::EC::Group.new("prime256v1")
+    key1 = AppleSSL::PKey::EC.new(group1)
     assert_equal group1, key1.group
 
-    group2 = OpenSSL::PKey::EC::Group.new(group1)
+    group2 = AppleSSL::PKey::EC::Group.new(group1)
     assert_equal group1.to_der, group2.to_der
     assert_equal group1, group2
-    group2.asn1_flag ^=OpenSSL::PKey::EC::NAMED_CURVE
+    group2.asn1_flag ^=AppleSSL::PKey::EC::NAMED_CURVE
     assert_not_equal group1.to_der, group2.to_der
     assert_equal group1, group2
 
     group3 = group1.dup
     assert_equal group1.to_der, group3.to_der
 
-    assert group1.asn1_flag & OpenSSL::PKey::EC::NAMED_CURVE # our default
+    assert group1.asn1_flag & AppleSSL::PKey::EC::NAMED_CURVE # our default
     der = group1.to_der
-    group4 = OpenSSL::PKey::EC::Group.new(der)
+    group4 = AppleSSL::PKey::EC::Group.new(der)
     group1.point_conversion_form = group4.point_conversion_form = :uncompressed
     assert_equal :uncompressed, group1.point_conversion_form
     assert_equal :uncompressed, group4.point_conversion_form
@@ -228,17 +228,17 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
   end
 
   def test_ec_point
-    group = OpenSSL::PKey::EC::Group.new("prime256v1")
-    key = OpenSSL::PKey::EC.new(group).generate_key!
+    group = AppleSSL::PKey::EC::Group.new("prime256v1")
+    key = AppleSSL::PKey::EC.new(group).generate_key!
     point = key.public_key
 
-    point2 = OpenSSL::PKey::EC::Point.new(group, point.to_bn)
+    point2 = AppleSSL::PKey::EC::Point.new(group, point.to_bn)
     assert_equal point, point2
     assert_equal point.to_bn, point2.to_bn
     assert_equal point.to_octet_string(:uncompressed),
       point2.to_octet_string(:uncompressed)
 
-    point3 = OpenSSL::PKey::EC::Point.new(group,
+    point3 = AppleSSL::PKey::EC::Point.new(group,
                                           point.to_octet_string(:uncompressed))
     assert_equal point, point3
     assert_equal point.to_bn, point3.to_bn
@@ -253,13 +253,13 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
       point3.to_octet_string(:uncompressed)
 
     begin
-      group = OpenSSL::PKey::EC::Group.new(:GFp, 17, 2, 2)
+      group = AppleSSL::PKey::EC::Group.new(:GFp, 17, 2, 2)
       group.point_conversion_form = :uncompressed
-      generator = OpenSSL::PKey::EC::Point.new(group, B(%w{ 04 05 01 }))
+      generator = AppleSSL::PKey::EC::Point.new(group, B(%w{ 04 05 01 }))
       group.set_generator(generator, 19, 1)
-      point = OpenSSL::PKey::EC::Point.new(group, B(%w{ 04 06 03 }))
-    rescue OpenSSL::PKey::EC::Group::Error
-      pend "Patched OpenSSL rejected curve" if /unsupported field/ =~ $!.message
+      point = AppleSSL::PKey::EC::Point.new(group, B(%w{ 04 06 03 }))
+    rescue AppleSSL::PKey::EC::Group::Error
+      pend "Patched AppleSSL rejected curve" if /unsupported field/ =~ $!.message
       raise
     end
 
@@ -269,7 +269,7 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
     assert_equal 0x070603.to_bn, point.to_bn(:hybrid)
 
     group2 = group.dup; group2.point_conversion_form = :compressed
-    point2 = OpenSSL::PKey::EC::Point.new(group2, B(%w{ 04 06 03 }))
+    point2 = AppleSSL::PKey::EC::Point.new(group2, B(%w{ 04 06 03 }))
     assert_equal 0x0306.to_bn, point2.to_bn
 
     assert_equal B(%w{ 04 06 03 }), point.to_octet_string(:uncompressed)
@@ -293,13 +293,13 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
     begin
       # y^2 = x^3 + 2x + 2 over F_17
       # generator is (5, 1)
-      group = OpenSSL::PKey::EC::Group.new(:GFp, 17, 2, 2)
+      group = AppleSSL::PKey::EC::Group.new(:GFp, 17, 2, 2)
       group.point_conversion_form = :uncompressed
-      gen = OpenSSL::PKey::EC::Point.new(group, B(%w{ 04 05 01 }))
+      gen = AppleSSL::PKey::EC::Point.new(group, B(%w{ 04 05 01 }))
       group.set_generator(gen, 19, 1)
 
       # 3 * (6, 3) = (16, 13)
-      point_a = OpenSSL::PKey::EC::Point.new(group, B(%w{ 04 06 03 }))
+      point_a = AppleSSL::PKey::EC::Point.new(group, B(%w{ 04 06 03 }))
       result_a1 = point_a.mul(3)
       assert_equal B(%w{ 04 10 0D }), result_a1.to_octet_string(:uncompressed)
       # 3 * (6, 3) + 3 * (5, 1) = (7, 6)
@@ -314,8 +314,8 @@ class OpenSSL::TestEC < OpenSSL::PKeyTestCase
       # 3 * point_a + 5 * point_a.group.generator = 3 * (6, 3) + 5 * (5, 1) = (13, 10)
       result_b1 = point_a.mul([3], [], 5)
       assert_equal B(%w{ 04 0D 0A }), result_b1.to_octet_string(:uncompressed)
-    rescue OpenSSL::PKey::EC::Group::Error
-      # CentOS patches OpenSSL to reject curves defined over Fp where p < 256 bits
+    rescue AppleSSL::PKey::EC::Group::Error
+      # CentOS patches AppleSSL to reject curves defined over Fp where p < 256 bits
       raise if $!.message !~ /unsupported field/
     end
 

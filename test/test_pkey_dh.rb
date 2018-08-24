@@ -1,30 +1,30 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL) && defined?(OpenSSL::PKey::DH)
+if defined?(AppleSSL) && defined?(AppleSSL::PKey::DH)
 
-class OpenSSL::TestPKeyDH < OpenSSL::PKeyTestCase
+class AppleSSL::TestPKeyDH < AppleSSL::PKeyTestCase
   NEW_KEYLEN = 256
 
   def test_new
-    dh = OpenSSL::PKey::DH.new(NEW_KEYLEN)
+    dh = AppleSSL::PKey::DH.new(NEW_KEYLEN)
     assert_key(dh)
   end
 
   def test_new_break
-    assert_nil(OpenSSL::PKey::DH.new(NEW_KEYLEN) { break })
+    assert_nil(AppleSSL::PKey::DH.new(NEW_KEYLEN) { break })
     assert_raise(RuntimeError) do
-      OpenSSL::PKey::DH.new(NEW_KEYLEN) { raise }
+      AppleSSL::PKey::DH.new(NEW_KEYLEN) { raise }
     end
   end
 
   def test_DHparams
     dh1024 = Fixtures.pkey_dh("dh1024")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Integer(dh1024.p),
-      OpenSSL::ASN1::Integer(dh1024.g)
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Integer(dh1024.p),
+      AppleSSL::ASN1::Integer(dh1024.g)
     ])
-    key = OpenSSL::PKey::DH.new(asn1.to_der)
+    key = AppleSSL::PKey::DH.new(asn1.to_der)
     assert_same_dh dup_public(dh1024), key
 
     pem = <<~EOF
@@ -34,7 +34,7 @@ class OpenSSL::TestPKeyDH < OpenSSL::PKeyTestCase
     AQjjxMXhwULlmuR/K+WwlaZPiLIBYalLAZQ7ZbOPeVkJ8ePao0eLAgEC
     -----END DH PARAMETERS-----
     EOF
-    key = OpenSSL::PKey::DH.new(pem)
+    key = AppleSSL::PKey::DH.new(pem)
     assert_same_dh dup_public(dh1024), key
 
     assert_equal asn1.to_der, dh1024.to_der
@@ -65,7 +65,7 @@ class OpenSSL::TestPKeyDH < OpenSSL::PKeyTestCase
   end
 
   def test_dup
-    dh = OpenSSL::PKey::DH.new(NEW_KEYLEN)
+    dh = AppleSSL::PKey::DH.new(NEW_KEYLEN)
     dh2 = dh.dup
     assert_equal dh.to_der, dh2.to_der # params
     assert_equal_params dh, dh2 # keys

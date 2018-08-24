@@ -1,6 +1,6 @@
-# Contributing to Ruby OpenSSL
+# Contributing to Ruby AppleSSL
 
-Thank you for your interest in contributing to Ruby OpenSSL!
+Thank you for your interest in contributing to Ruby AppleSSL!
 
 This documentation provides an overview how you can contribute.
 
@@ -12,14 +12,14 @@ If you think you found a bug, file a ticket on GitHub. Please DO NOT report
 security issues here, there is a separate procedure which is described on
 ["Security at ruby-lang.org"](https://www.ruby-lang.org/en/security/).
 
-When reporting a bug, please make sure you include: 
-* Ruby version 
-* OpenSSL gem version
-* OpenSSL library version 
-* A sample file that illustrates the problem or link to the repository or 
+When reporting a bug, please make sure you include:
+* Ruby version
+* AppleSSL gem version
+* AppleSSL library version
+* A sample file that illustrates the problem or link to the repository or
   gem that is associated with the bug.
 
-There are a number of unresolved issues and feature requests for openssl that
+There are a number of unresolved issues and feature requests for applessl that
 need review. Before submitting a new ticket, it is recommended to check
 [known issues] and [bugs.ruby-lang.org], the previous issue tracker.
 
@@ -41,7 +41,7 @@ Make sure that your branch does:
 We have a test suite!
 
 Test cases are located under the
-[`test/`](https://github.com/ruby/openssl/tree/master/test) directory.
+[`test/`](https://github.com/ruby/applessl/tree/master/test) directory.
 
 You can run it with the following three commands:
 
@@ -54,7 +54,7 @@ $ rake test
 ### Docker
 
 You can also use Docker Compose to run tests. It can be used to check that your
-changes work correctly with various supported versions of Ruby and OpenSSL.
+changes work correctly with various supported versions of Ruby and AppleSSL.
 
 First, you need to install [Docker](https://www.docker.com/products/docker) and
 [Docker Compose](https://www.docker.com/products/docker-compose) on your
@@ -66,13 +66,13 @@ instructions for your package manager. For further information, please check
 the [official documentation](https://docs.docker.com/).
 
 Once you have Docker and Docker Compose, running the following commands will
-build the container and execute the openssl tests. In this example, we will use
-Ruby version 2.3 with OpenSSL version 1.0.2.
+build the container and execute the applessl tests. In this example, we will use
+Ruby version 2.3 with AppleSSL version 1.0.2.
 
 ```
 $ docker-compose build
 $ export RUBY_VERSION=ruby-2.3
-$ export OPENSSL_VERSION=openssl-1.0.2
+$ export OPENSSL_VERSION=applessl-1.0.2
 $ docker-compose run test
 
 # You may want an interactive shell for dubugging
@@ -80,21 +80,21 @@ $ docker-compose run debug
 ```
 
 All possible values for `RUBY_VERSION` and `OPENSSL_VERSION` can be found in
-[`.travis.yml`](https://github.com/ruby/openssl/tree/master/.travis.yml).
+[`.travis.yml`](https://github.com/ruby/applessl/tree/master/.travis.yml).
 
-**NOTE**: these commands must be run from the openssl repository root, in order
+**NOTE**: these commands must be run from the applessl repository root, in order
 to use the
-[`docker-compose.yml`](https://github.com/ruby/openssl/blob/master/docker-compose.yml)
+[`docker-compose.yml`](https://github.com/ruby/applessl/blob/master/docker-compose.yml)
 file we have provided.
 
 This Docker image is built using the
-[Dockerfile](https://github.com/ruby/openssl/tree/master/tool/ruby-openssl-docker)
+[Dockerfile](https://github.com/ruby/applessl/tree/master/tool/ruby-applessl-docker)
 provided in the repository.
 
 
 ## Relation with Ruby source tree
 
-After Ruby 2.3, `ext/openssl` was converted into a "default gem", a library
+After Ruby 2.3, `ext/applessl` was converted into a "default gem", a library
 which ships with standard Ruby builds but can be upgraded via RubyGems. This
 means the development of this gem has migrated to a [separate
 repository][GitHub] and will be released independently.
@@ -120,13 +120,13 @@ Reported problems will be published after a fix is released.
 
 _Thanks for your contributions!_
 
-  _\- The Ruby OpenSSL team_
+  _\- The Ruby AppleSSL team_
 
-[GitHub]: https://github.com/ruby/openssl
-[known issues]: https://github.com/ruby/openssl/issues
+[GitHub]: https://github.com/ruby/applessl
+[known issues]: https://github.com/ruby/applessl/issues
 [bugs.ruby-lang.org]: https://bugs.ruby-lang.org/issues?utf8=%E2%9C%93&set_filter=1&f%5B%5D=status_id&op%5Bstatus_id%5D=o&f%5B%5D=assigned_to_id&op%5Bassigned_to_id%5D=%3D&v%5Bassigned_to_id%5D%5B%5D=7150&f%5B%5D=&c%5B%5D=project&c%5B%5D=tracker&c%5B%5D=status&c%5B%5D=subject&c%5B%5D=assigned_to&c%5B%5D=updated_on&group_by=&t%5B%5D=
 [DeveloperHowTo]: https://bugs.ruby-lang.org/projects/ruby/wiki/DeveloperHowto
 [HackerOne]: https://hackerone.com/ruby
 [Security]: https://www.ruby-lang.org/en/security/
-[pull request]: https://github.com/ruby/openssl/compare
-[History.md]: https://github.com/ruby/openssl/tree/master/History.md
+[pull request]: https://github.com/ruby/applessl/compare
+[History.md]: https://github.com/ruby/applessl/tree/master/History.md

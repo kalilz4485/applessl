@@ -34,18 +34,18 @@ echo "#### Step 1. Sync '$BRANCH_EXTRACT' with 'ruby/trunk'"
 	echo "## Remove unrelated commits"
 	git filter-branch -f --prune-empty --index-filter '
 		git rm --cached -qr --ignore-unmatch . &&
-		git reset -q $GIT_COMMIT -- ext/openssl test/openssl sample/openssl &&
-		git rm --cached -q --ignore-unmatch ext/openssl/depend ext/openssl/openssl.gemspec
+		git reset -q $GIT_COMMIT -- ext/applessl test/applessl sample/applessl &&
+		git rm --cached -q --ignore-unmatch ext/applessl/depend ext/applessl/applessl.gemspec
 	' -- $filter_range ||:
 
 	echo "## Adjust path"
 	git filter-branch -f --prune-empty --index-filter '
 		git ls-files --stage | \
-		    sed "s:\ttest/openssl:\ttest:" | \
-		    sed "s:\text/openssl/lib:\tlib:" | \
-		    sed "s:\text/openssl/sample:\tsample/openssl:" | \
-		    sed "s:\tsample/openssl:\tsample:" | \
-		    sed "s:\text/openssl/History.md:\tHistory.md:" | \
+		    sed "s:\ttest/applessl:\ttest:" | \
+		    sed "s:\text/applessl/lib:\tlib:" | \
+		    sed "s:\text/applessl/sample:\tsample/applessl:" | \
+		    sed "s:\tsample/applessl:\tsample:" | \
+		    sed "s:\text/applessl/History.md:\tHistory.md:" | \
 		    GIT_INDEX_FILE=$GIT_INDEX_FILE.new git update-index --index-info &&
 		mv "$GIT_INDEX_FILE.new" "$GIT_INDEX_FILE"
 		:

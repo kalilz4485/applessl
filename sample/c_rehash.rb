@@ -1,6 +1,6 @@
 #!/usr/bin/env ruby
 
-require 'openssl'
+require 'applessl'
 require 'digest/md5'
 
 class CHashDir
@@ -51,13 +51,13 @@ class CHashDir
   def load_pem_file(filepath)
     str = File.read(filepath)
     begin
-      OpenSSL::X509::Certificate.new(str)
+      AppleSSL::X509::Certificate.new(str)
     rescue
       begin
-        OpenSSL::X509::CRL.new(str)
+        AppleSSL::X509::CRL.new(str)
       rescue
         begin
-          OpenSSL::X509::Request.new(str)
+          AppleSSL::X509::Request.new(str)
         rescue
           nil
         end
@@ -77,9 +77,9 @@ private
       Dir.glob('*.pem') do |pemfile|
         cert = load_pem_file(pemfile)
         case cert
-        when OpenSSL::X509::Certificate
+        when AppleSSL::X509::Certificate
           link_hash_cert(pemfile, cert)
-        when OpenSSL::X509::CRL
+        when AppleSSL::X509::CRL
           link_hash_crl(pemfile, cert)
         else
           STDERR.puts("WARNING: #{pemfile} does not contain a certificate or CRL: skipping") unless @silent

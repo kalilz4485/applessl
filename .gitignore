@@ -5,6 +5,6 @@
 *.bundle
 *.so
 *.o
-ext/openssl/mkmf.log
-ext/openssl/Makefile
-ext/openssl/extconf.h
+ext/applessl/mkmf.log
+ext/applessl/Makefile
+ext/applessl/extconf.h

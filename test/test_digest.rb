@@ -1,13 +1,13 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestDigest < OpenSSL::TestCase
+class AppleSSL::TestDigest < AppleSSL::TestCase
   def setup
     super
-    @d1 = OpenSSL::Digest.new("MD5")
-    @d2 = OpenSSL::Digest::MD5.new
+    @d1 = AppleSSL::Digest.new("MD5")
+    @d2 = AppleSSL::Digest::MD5.new
   end
 
   def test_digest
@@ -21,8 +21,8 @@ class OpenSSL::TestDigest < OpenSSL::TestCase
     @d1 << data
     assert_equal(bin, @d1.digest)
     assert_equal(hex, @d1.hexdigest)
-    assert_equal(bin, OpenSSL::Digest::MD5.digest(data))
-    assert_equal(hex, OpenSSL::Digest::MD5.hexdigest(data))
+    assert_equal(bin, AppleSSL::Digest::MD5.digest(data))
+    assert_equal(hex, AppleSSL::Digest::MD5.hexdigest(data))
   end
 
   def test_eql
@@ -55,19 +55,19 @@ class OpenSSL::TestDigest < OpenSSL::TestCase
 
   def test_digest_constants
     algs = %w(MD4 MD5 RIPEMD160 SHA1 SHA224 SHA256 SHA384 SHA512)
-    if !libressl? && !openssl?(1, 1, 0)
+    if !libressl? && !applessl?(1, 1, 0)
       algs += %w(DSS1 SHA)
     end
     algs.each do |alg|
-      assert_not_nil(OpenSSL::Digest.new(alg))
-      klass = OpenSSL::Digest.const_get(alg)
+      assert_not_nil(AppleSSL::Digest.new(alg))
+      klass = AppleSSL::Digest.const_get(alg)
       assert_not_nil(klass.new)
     end
   end
 
   def test_digest_by_oid_and_name
-    check_digest(OpenSSL::ASN1::ObjectId.new("MD5"))
-    check_digest(OpenSSL::ASN1::ObjectId.new("SHA1"))
+    check_digest(AppleSSL::ASN1::ObjectId.new("MD5"))
+    check_digest(AppleSSL::ASN1::ObjectId.new("SHA1"))
   end
 
   def encode16(str)
@@ -80,40 +80,40 @@ class OpenSSL::TestDigest < OpenSSL::TestCase
     sha384_a = "54a59b9f22b0b80880d8427e548b7c23abd873486e1f035dce9cd697e85175033caa88e6d57bc35efae0b5afd3145f31"
     sha512_a = "1f40fc92da241694750979ee6cf582f2d5d7d28e18335de05abc54d0560e0f5302860c652bf08d560252aa5e74210546f369fbbbce8c12cfc7957b2652fe9a75"
 
-    assert_equal(sha224_a, OpenSSL::Digest::SHA224.hexdigest("a"))
-    assert_equal(sha256_a, OpenSSL::Digest::SHA256.hexdigest("a"))
-    assert_equal(sha384_a, OpenSSL::Digest::SHA384.hexdigest("a"))
-    assert_equal(sha512_a, OpenSSL::Digest::SHA512.hexdigest("a"))
+    assert_equal(sha224_a, AppleSSL::Digest::SHA224.hexdigest("a"))
+    assert_equal(sha256_a, AppleSSL::Digest::SHA256.hexdigest("a"))
+    assert_equal(sha384_a, AppleSSL::Digest::SHA384.hexdigest("a"))
+    assert_equal(sha512_a, AppleSSL::Digest::SHA512.hexdigest("a"))
 
-    assert_equal(sha224_a, encode16(OpenSSL::Digest::SHA224.digest("a")))
-    assert_equal(sha256_a, encode16(OpenSSL::Digest::SHA256.digest("a")))
-    assert_equal(sha384_a, encode16(OpenSSL::Digest::SHA384.digest("a")))
-    assert_equal(sha512_a, encode16(OpenSSL::Digest::SHA512.digest("a")))
+    assert_equal(sha224_a, encode16(AppleSSL::Digest::SHA224.digest("a")))
+    assert_equal(sha256_a, encode16(AppleSSL::Digest::SHA256.digest("a")))
+    assert_equal(sha384_a, encode16(AppleSSL::Digest::SHA384.digest("a")))
+    assert_equal(sha512_a, encode16(AppleSSL::Digest::SHA512.digest("a")))
   end
 
   def test_digest_by_oid_and_name_sha2
-    check_digest(OpenSSL::ASN1::ObjectId.new("SHA224"))
-    check_digest(OpenSSL::ASN1::ObjectId.new("SHA256"))
-    check_digest(OpenSSL::ASN1::ObjectId.new("SHA384"))
-    check_digest(OpenSSL::ASN1::ObjectId.new("SHA512"))
+    check_digest(AppleSSL::ASN1::ObjectId.new("SHA224"))
+    check_digest(AppleSSL::ASN1::ObjectId.new("SHA256"))
+    check_digest(AppleSSL::ASN1::ObjectId.new("SHA384"))
+    check_digest(AppleSSL::ASN1::ObjectId.new("SHA512"))
   end
 
-  def test_openssl_digest
-    assert_equal OpenSSL::Digest::MD5, OpenSSL::Digest("MD5")
+  def test_applessl_digest
+    assert_equal AppleSSL::Digest::MD5, AppleSSL::Digest("MD5")
 
     assert_raise NameError do
-      OpenSSL::Digest("no such digest")
+      AppleSSL::Digest("no such digest")
     end
   end
 
   private
 
   def check_digest(oid)
-    d = OpenSSL::Digest.new(oid.sn)
+    d = AppleSSL::Digest.new(oid.sn)
     assert_not_nil(d)
-    d = OpenSSL::Digest.new(oid.ln)
+    d = AppleSSL::Digest.new(oid.ln)
     assert_not_nil(d)
-    d = OpenSSL::Digest.new(oid.oid)
+    d = AppleSSL::Digest.new(oid.oid)
     assert_not_nil(d)
   end
 end

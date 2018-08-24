@@ -1,22 +1,22 @@
 # frozen_string_literal: false
 require_relative "utils"
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
+class AppleSSL::TestPKeyRSA < AppleSSL::PKeyTestCase
   def test_padding
-    key = OpenSSL::PKey::RSA.new(512, 3)
+    key = AppleSSL::PKey::RSA.new(512, 3)
 
     # Need right size for raw mode
     plain0 = "x" * (512/8)
-    cipher = key.private_encrypt(plain0, OpenSSL::PKey::RSA::NO_PADDING)
-    plain1 = key.public_decrypt(cipher, OpenSSL::PKey::RSA::NO_PADDING)
+    cipher = key.private_encrypt(plain0, AppleSSL::PKey::RSA::NO_PADDING)
+    plain1 = key.public_decrypt(cipher, AppleSSL::PKey::RSA::NO_PADDING)
     assert_equal(plain0, plain1)
 
     # Need smaller size for pkcs1 mode
     plain0 = "x" * (512/8 - 11)
-    cipher1 = key.private_encrypt(plain0, OpenSSL::PKey::RSA::PKCS1_PADDING)
-    plain1 = key.public_decrypt(cipher1, OpenSSL::PKey::RSA::PKCS1_PADDING)
+    cipher1 = key.private_encrypt(plain0, AppleSSL::PKey::RSA::PKCS1_PADDING)
+    plain1 = key.public_decrypt(cipher1, AppleSSL::PKey::RSA::PKCS1_PADDING)
     assert_equal(plain0, plain1)
 
     cipherdef = key.private_encrypt(plain0) # PKCS1_PADDING is default
@@ -27,50 +27,50 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
     # Failure cases
     assert_raise(ArgumentError){ key.private_encrypt() }
     assert_raise(ArgumentError){ key.private_encrypt("hi", 1, nil) }
-    assert_raise(OpenSSL::PKey::RSAError){ key.private_encrypt(plain0, 666) }
+    assert_raise(AppleSSL::PKey::RSAError){ key.private_encrypt(plain0, 666) }
   end
 
   def test_private
-    key = OpenSSL::PKey::RSA.new(512, 3)
+    key = AppleSSL::PKey::RSA.new(512, 3)
     assert(key.private?)
-    key2 = OpenSSL::PKey::RSA.new(key.to_der)
+    key2 = AppleSSL::PKey::RSA.new(key.to_der)
     assert(key2.private?)
     key3 = key.public_key
     assert(!key3.private?)
-    key4 = OpenSSL::PKey::RSA.new(key3.to_der)
+    key4 = AppleSSL::PKey::RSA.new(key3.to_der)
     assert(!key4.private?)
   end
 
   def test_new
-    key = OpenSSL::PKey::RSA.new 512
+    key = AppleSSL::PKey::RSA.new 512
     pem  = key.public_key.to_pem
-    OpenSSL::PKey::RSA.new pem
-    assert_equal([], OpenSSL.errors)
+    AppleSSL::PKey::RSA.new pem
+    assert_equal([], AppleSSL.errors)
   end
 
   def test_new_exponent_default
-    assert_equal(65537, OpenSSL::PKey::RSA.new(512).e)
+    assert_equal(65537, AppleSSL::PKey::RSA.new(512).e)
   end
 
   def test_new_with_exponent
     1.upto(30) do |idx|
       e = (2 ** idx) + 1
-      key = OpenSSL::PKey::RSA.new(512, e)
+      key = AppleSSL::PKey::RSA.new(512, e)
       assert_equal(e, key.e)
     end
   end
 
   def test_generate
-    key = OpenSSL::PKey::RSA.generate(512, 17)
+    key = AppleSSL::PKey::RSA.generate(512, 17)
     assert_equal 512, key.n.num_bits
     assert_equal 17, key.e
     assert_not_nil key.d
   end
 
   def test_new_break
-    assert_nil(OpenSSL::PKey::RSA.new(1024) { break })
+    assert_nil(AppleSSL::PKey::RSA.new(1024) { break })
     assert_raise(RuntimeError) do
-      OpenSSL::PKey::RSA.new(1024) { raise }
+      AppleSSL::PKey::RSA.new(1024) { raise }
     end
   end
 
@@ -92,8 +92,8 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
 
   def test_digest_state_irrelevant_sign
     key = Fixtures.pkey("rsa1024")
-    digest1 = OpenSSL::Digest::SHA1.new
-    digest2 = OpenSSL::Digest::SHA1.new
+    digest1 = AppleSSL::Digest::SHA1.new
+    digest2 = AppleSSL::Digest::SHA1.new
     data = 'Sign me!'
     digest1 << 'Change state of digest1'
     sig1 = key.sign(digest1, data)
@@ -103,8 +103,8 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
 
   def test_digest_state_irrelevant_verify
     key = Fixtures.pkey("rsa1024")
-    digest1 = OpenSSL::Digest::SHA1.new
-    digest2 = OpenSSL::Digest::SHA1.new
+    digest1 = AppleSSL::Digest::SHA1.new
+    digest2 = AppleSSL::Digest::SHA1.new
     data = 'Sign me!'
     sig = key.sign(digest1, data)
     digest1.reset
@@ -114,8 +114,8 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
   end
 
   def test_verify_empty_rsa
-    rsa = OpenSSL::PKey::RSA.new
-    assert_raise(OpenSSL::PKey::PKeyError, "[Bug #12783]") {
+    rsa = AppleSSL::PKey::RSA.new
+    assert_raise(AppleSSL::PKey::PKeyError, "[Bug #12783]") {
       rsa.verify("SHA1", "a", "b")
     }
   end
@@ -148,25 +148,25 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
     assert_equal true,
       key.verify_pss("SHA256", signature, data, salt_length: :auto, mgf1_hash: "SHA1")
 
-    assert_raise(OpenSSL::PKey::RSAError) {
+    assert_raise(AppleSSL::PKey::RSAError) {
       key.sign_pss("SHA256", data, salt_length: 95, mgf1_hash: "SHA1")
     }
   end
 
   def test_RSAPrivateKey
     rsa1024 = Fixtures.pkey("rsa1024")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Integer(0),
-      OpenSSL::ASN1::Integer(rsa1024.n),
-      OpenSSL::ASN1::Integer(rsa1024.e),
-      OpenSSL::ASN1::Integer(rsa1024.d),
-      OpenSSL::ASN1::Integer(rsa1024.p),
-      OpenSSL::ASN1::Integer(rsa1024.q),
-      OpenSSL::ASN1::Integer(rsa1024.dmp1),
-      OpenSSL::ASN1::Integer(rsa1024.dmq1),
-      OpenSSL::ASN1::Integer(rsa1024.iqmp)
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Integer(0),
+      AppleSSL::ASN1::Integer(rsa1024.n),
+      AppleSSL::ASN1::Integer(rsa1024.e),
+      AppleSSL::ASN1::Integer(rsa1024.d),
+      AppleSSL::ASN1::Integer(rsa1024.p),
+      AppleSSL::ASN1::Integer(rsa1024.q),
+      AppleSSL::ASN1::Integer(rsa1024.dmp1),
+      AppleSSL::ASN1::Integer(rsa1024.dmq1),
+      AppleSSL::ASN1::Integer(rsa1024.iqmp)
     ])
-    key = OpenSSL::PKey::RSA.new(asn1.to_der)
+    key = AppleSSL::PKey::RSA.new(asn1.to_der)
     assert_predicate key, :private?
     assert_same_rsa rsa1024, key
 
@@ -187,7 +187,7 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
     dPMQD5JX6g5HKnHFg2mZtoXQrWmJSn7p8GJK8yNTopEErA==
     -----END RSA PRIVATE KEY-----
     EOF
-    key = OpenSSL::PKey::RSA.new(pem)
+    key = AppleSSL::PKey::RSA.new(pem)
     assert_same_rsa rsa1024, key
 
     assert_equal asn1.to_der, rsa1024.to_der
@@ -217,26 +217,26 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
     OlWNYDkPiZioeFkA3/fTMvG4moB2Pp9Q4GU5fJ6k43Ccu1up8dX/LumZb4ecg5/x
     -----END RSA PRIVATE KEY-----
     EOF
-    key = OpenSSL::PKey::RSA.new(pem, "abcdef")
+    key = AppleSSL::PKey::RSA.new(pem, "abcdef")
     assert_same_rsa rsa1024, key
-    key = OpenSSL::PKey::RSA.new(pem) { "abcdef" }
+    key = AppleSSL::PKey::RSA.new(pem) { "abcdef" }
     assert_same_rsa rsa1024, key
 
-    cipher = OpenSSL::Cipher.new("aes-128-cbc")
+    cipher = AppleSSL::Cipher.new("aes-128-cbc")
     exported = rsa1024.to_pem(cipher, "abcdef\0\1")
-    assert_same_rsa rsa1024, OpenSSL::PKey::RSA.new(exported, "abcdef\0\1")
-    assert_raise(OpenSSL::PKey::RSAError) {
-      OpenSSL::PKey::RSA.new(exported, "abcdef")
+    assert_same_rsa rsa1024, AppleSSL::PKey::RSA.new(exported, "abcdef\0\1")
+    assert_raise(AppleSSL::PKey::RSAError) {
+      AppleSSL::PKey::RSA.new(exported, "abcdef")
     }
   end
 
   def test_RSAPublicKey
     rsa1024 = Fixtures.pkey("rsa1024")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Integer(rsa1024.n),
-      OpenSSL::ASN1::Integer(rsa1024.e)
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Integer(rsa1024.n),
+      AppleSSL::ASN1::Integer(rsa1024.e)
     ])
-    key = OpenSSL::PKey::RSA.new(asn1.to_der)
+    key = AppleSSL::PKey::RSA.new(asn1.to_der)
     assert_not_predicate key, :private?
     assert_same_rsa dup_public(rsa1024), key
 
@@ -247,25 +247,25 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
     /xkP2mKGjAokPIwOI3oCthSZlzO9bj3voxTf6XngTqUX8l8URTmHAgMBAAE=
     -----END RSA PUBLIC KEY-----
     EOF
-    key = OpenSSL::PKey::RSA.new(pem)
+    key = AppleSSL::PKey::RSA.new(pem)
     assert_same_rsa dup_public(rsa1024), key
   end
 
   def test_PUBKEY
     rsa1024 = Fixtures.pkey("rsa1024")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Sequence([
-        OpenSSL::ASN1::ObjectId("rsaEncryption"),
-        OpenSSL::ASN1::Null(nil)
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Sequence([
+        AppleSSL::ASN1::ObjectId("rsaEncryption"),
+        AppleSSL::ASN1::Null(nil)
       ]),
-      OpenSSL::ASN1::BitString(
-        OpenSSL::ASN1::Sequence([
-          OpenSSL::ASN1::Integer(rsa1024.n),
-          OpenSSL::ASN1::Integer(rsa1024.e)
+      AppleSSL::ASN1::BitString(
+        AppleSSL::ASN1::Sequence([
+          AppleSSL::ASN1::Integer(rsa1024.n),
+          AppleSSL::ASN1::Integer(rsa1024.e)
         ]).to_der
       )
     ])
-    key = OpenSSL::PKey::RSA.new(asn1.to_der)
+    key = AppleSSL::PKey::RSA.new(asn1.to_der)
     assert_not_predicate key, :private?
     assert_same_rsa dup_public(rsa1024), key
 
@@ -277,7 +277,7 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
     3+l54E6lF/JfFEU5hwIDAQAB
     -----END PUBLIC KEY-----
     EOF
-    key = OpenSSL::PKey::RSA.new(pem)
+    key = AppleSSL::PKey::RSA.new(pem)
     assert_same_rsa dup_public(rsa1024), key
 
     assert_equal asn1.to_der, dup_public(rsa1024).to_der
@@ -288,10 +288,10 @@ class OpenSSL::TestPKeyRSA < OpenSSL::PKeyTestCase
     key = Fixtures.pkey("rsa1024")
     pem3c = key.to_pem("aes-128-cbc", "key")
     assert_match (/ENCRYPTED/), pem3c
-    assert_equal key.to_der, OpenSSL::PKey.read(pem3c, "key").to_der
-    assert_equal key.to_der, OpenSSL::PKey.read(pem3c) { "key" }.to_der
-    assert_raise(OpenSSL::PKey::PKeyError) {
-      OpenSSL::PKey.read(pem3c) { nil }
+    assert_equal key.to_der, AppleSSL::PKey.read(pem3c, "key").to_der
+    assert_equal key.to_der, AppleSSL::PKey.read(pem3c) { "key" }.to_der
+    assert_raise(AppleSSL::PKey::PKeyError) {
+      AppleSSL::PKey.read(pem3c) { nil }
     }
   end
 
