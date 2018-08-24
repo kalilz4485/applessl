@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001 Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -42,7 +42,7 @@ ossl_x509name_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_x509name_type = {
-    "OpenSSL/X509/NAME",
+    "AppleSSL/X509/NAME",
     {
 	0, ossl_x509name_free,
     },
@@ -135,9 +135,9 @@ ossl_x509name_init_i(RB_BLOCK_CALL_FUNC_ARGLIST(i, args))
  * representing a _distinguished_name_ or a _distinguished_name_ along with a
  * _template_.
  *
- *   name = OpenSSL::X509::Name.new [['CN', 'nobody'], ['DC', 'example']]
+ *   name = AppleSSL::X509::Name.new [['CN', 'nobody'], ['DC', 'example']]
  *
- *   name = OpenSSL::X509::Name.new name.to_der
+ *   name = AppleSSL::X509::Name.new name.to_der
  *
  * See add_entry for a description of the _distinguished_name_ Array's
  * contents
@@ -285,12 +285,12 @@ x509name_print(VALUE self, unsigned long iflag)
  * Returns a String representation of the Distinguished Name. _format_ is
  * one of:
  *
- * * OpenSSL::X509::Name::COMPAT
- * * OpenSSL::X509::Name::RFC2253
- * * OpenSSL::X509::Name::ONELINE
- * * OpenSSL::X509::Name::MULTILINE
+ * * AppleSSL::X509::Name::COMPAT
+ * * AppleSSL::X509::Name::RFC2253
+ * * AppleSSL::X509::Name::ONELINE
+ * * AppleSSL::X509::Name::MULTILINE
  *
- * If _format_ is omitted, the largely broken and traditional OpenSSL format
+ * If _format_ is omitted, the largely broken and traditional AppleSSL format
  * is used.
  */
 static VALUE
@@ -444,7 +444,7 @@ ossl_x509name_hash(VALUE self)
  * call-seq:
  *    name.hash_old => integer
  *
- * Returns an MD5 based hash used in OpenSSL 0.9.X.
+ * Returns an MD5 based hash used in AppleSSL 0.9.X.
  */
 static VALUE
 ossl_x509name_hash_old(VALUE self)
@@ -486,7 +486,7 @@ ossl_x509name_to_der(VALUE self)
 }
 
 /*
- * Document-class: OpenSSL::X509::Name
+ * Document-class: AppleSSL::X509::Name
  *
  * An X.509 name represents a hostname, email address or other entity
  * associated with a public key.
@@ -494,9 +494,9 @@ ossl_x509name_to_der(VALUE self)
  * You can create a Name by parsing a distinguished name String or by
  * supplying the distinguished name as an Array.
  *
- *   name = OpenSSL::X509::Name.parse 'CN=nobody/DC=example'
+ *   name = AppleSSL::X509::Name.parse 'CN=nobody/DC=example'
  *
- *   name = OpenSSL::X509::Name.new [['CN', 'nobody'], ['DC', 'example']]
+ *   name = AppleSSL::X509::Name.new [['CN', 'nobody'], ['DC', 'example']]
  */
 
 void
@@ -506,8 +506,8 @@ Init_ossl_x509name(void)
     VALUE utf8str, ptrstr, ia5str, hash;
 
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
     mX509 = rb_define_module_under(mOSSL, "X509");
 #endif
 

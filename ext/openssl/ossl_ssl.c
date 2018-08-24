@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2000-2002  GOTOU Yuuzou <gotoyuzo@notwork.org>
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * Copyright (C) 2001-2007  Technorama Ltd. <oss-ruby@technorama.net>
@@ -65,7 +65,7 @@ ossl_sslctx_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_sslctx_type = {
-    "OpenSSL/SSL/CTX",
+    "AppleSSL/SSL/CTX",
     {
 	0, ossl_sslctx_free,
     },
@@ -97,9 +97,9 @@ ossl_sslctx_s_alloc(VALUE klass)
 
 #if !defined(OPENSSL_NO_EC) && defined(HAVE_SSL_CTX_SET_ECDH_AUTO)
     /* We use SSL_CTX_set1_curves_list() to specify the curve used in ECDH. It
-     * allows to specify multiple curve names and OpenSSL will select
-     * automatically from them. In OpenSSL 1.0.2, the automatic selection has to
-     * be enabled explicitly. But OpenSSL 1.1.0 removed the knob and it is
+     * allows to specify multiple curve names and AppleSSL will select
+     * automatically from them. In AppleSSL 1.0.2, the automatic selection has to
+     * be enabled explicitly. But AppleSSL 1.1.0 removed the knob and it is
      * always enabled. To uniform the behavior, we enable the automatic
      * selection also in 1.0.2. Users can still disable ECDH by removing ECDH
      * cipher suites by SSLContext#ciphers=. */
@@ -446,10 +446,10 @@ ossl_sslctx_session_new_cb(SSL *ssl, SSL_SESSION *sess)
     }
 
     /*
-     * return 0 which means to OpenSSL that the session is still
+     * return 0 which means to AppleSSL that the session is still
      * valid (since we created Ruby Session object) and was not freed by us
      * with SSL_SESSION_free(). Call SSLContext#remove_session(sess) in
-     * session_get_cb block if you don't want OpenSSL to cache the session
+     * session_get_cb block if you don't want AppleSSL to cache the session
      * internally.
      */
     return 0;
@@ -544,7 +544,7 @@ ossl_call_servername_cb(VALUE ary)
         rb_ivar_set(ssl_obj, id_i_context, ret_obj);
     } else if (!NIL_P(ret_obj)) {
 	ossl_raise(rb_eArgError, "servername_cb must return an "
-		   "OpenSSL::SSL::SSLContext object or nil");
+		   "AppleSSL::SSL::SSLContext object or nil");
     }
 
     return ret_obj;
@@ -626,7 +626,7 @@ npn_select_cb_common_i(VALUE tmp)
     long len;
     VALUE selected, protocols = rb_ary_new();
 
-    /* assume OpenSSL verifies this format */
+    /* assume AppleSSL verifies this format */
     /* The format is len_1|proto_1|...|len_n|proto_n */
     while (in < in_end) {
 	l = *in++;
@@ -725,7 +725,7 @@ ssl_info_cb(const SSL *ssl, int where, int val)
 }
 
 /*
- * Gets various OpenSSL options.
+ * Gets various AppleSSL options.
  */
 static VALUE
 ossl_sslctx_get_options(VALUE self)
@@ -734,13 +734,13 @@ ossl_sslctx_get_options(VALUE self)
     GetSSLCTX(self, ctx);
     /*
      * Do explicit cast because SSL_CTX_get_options() returned (signed) long in
-     * OpenSSL before 1.1.0.
+     * AppleSSL before 1.1.0.
      */
     return ULONG2NUM((unsigned long)SSL_CTX_get_options(ctx));
 }
 
 /*
- * Sets various OpenSSL options.
+ * Sets various AppleSSL options.
  */
 static VALUE
 ossl_sslctx_set_options(VALUE self, VALUE options)
@@ -790,19 +790,19 @@ ossl_sslctx_setup(VALUE self)
 
 #if !defined(OPENSSL_NO_EC)
     /* We added SSLContext#tmp_ecdh_callback= in Ruby 2.3.0,
-     * but SSL_CTX_set_tmp_ecdh_callback() was removed in OpenSSL 1.1.0. */
+     * but SSL_CTX_set_tmp_ecdh_callback() was removed in AppleSSL 1.1.0. */
     if (RTEST(rb_attr_get(self, id_i_tmp_ecdh_callback))) {
 # if defined(HAVE_SSL_CTX_SET_TMP_ECDH_CALLBACK)
 	rb_warn("#tmp_ecdh_callback= is deprecated; use #ecdh_curves= instead");
 	SSL_CTX_set_tmp_ecdh_callback(ctx, ossl_tmp_ecdh_callback);
 #  if defined(HAVE_SSL_CTX_SET_ECDH_AUTO)
-	/* tmp_ecdh_callback and ecdh_auto conflict; OpenSSL ignores
+	/* tmp_ecdh_callback and ecdh_auto conflict; AppleSSL ignores
 	 * tmp_ecdh_callback. So disable ecdh_auto. */
 	if (!SSL_CTX_set_ecdh_auto(ctx, 0))
 	    ossl_raise(eSSLError, "SSL_CTX_set_ecdh_auto");
 #  endif
 # else
-	ossl_raise(eSSLError, "OpenSSL does not support tmp_ecdh_callback; "
+	ossl_raise(eSSLError, "AppleSSL does not support tmp_ecdh_callback; "
 		   "use #ecdh_curves= instead");
 # endif
     }
@@ -820,7 +820,7 @@ ossl_sslctx_setup(VALUE self)
 	 *   So we won't increment it but mark it by ex_data.
 	 */
         SSL_CTX_set_ex_data(ctx, ossl_sslctx_ex_store_p, ctx);
-#else /* Fixed in OpenSSL 1.0.2; bff9ce4db38b (master), 5b4b9ce976fc (1.0.2) */
+#else /* Fixed in AppleSSL 1.0.2; bff9ce4db38b (master), 5b4b9ce976fc (1.0.2) */
 	X509_STORE_up_ref(store);
 #endif
     }
@@ -1049,21 +1049,21 @@ ossl_sslctx_set_ciphers(VALUE self, VALUE v)
  * Sets the list of "supported elliptic curves" for this context.
  *
  * For a TLS client, the list is directly used in the Supported Elliptic Curves
- * Extension. For a server, the list is used by OpenSSL to determine the set of
- * shared curves. OpenSSL will pick the most appropriate one from it.
+ * Extension. For a server, the list is used by AppleSSL to determine the set of
+ * shared curves. AppleSSL will pick the most appropriate one from it.
  *
- * Note that this works differently with old OpenSSL (<= 1.0.1). Only one curve
+ * Note that this works differently with old AppleSSL (<= 1.0.1). Only one curve
  * can be set, and this has no effect for TLS clients.
  *
  * === Example
- *   ctx1 = OpenSSL::SSL::SSLContext.new
+ *   ctx1 = AppleSSL::SSL::SSLContext.new
  *   ctx1.ecdh_curves = "X25519:P-256:P-224"
- *   svr = OpenSSL::SSL::SSLServer.new(tcp_svr, ctx1)
+ *   svr = AppleSSL::SSL::SSLServer.new(tcp_svr, ctx1)
  *   Thread.new { svr.accept }
  *
- *   ctx2 = OpenSSL::SSL::SSLContext.new
+ *   ctx2 = AppleSSL::SSL::SSLContext.new
  *   ctx2.ecdh_curves = "P-256"
- *   cli = OpenSSL::SSL::SSLSocket.new(tcp_sock, ctx2)
+ *   cli = AppleSSL::SSL::SSLSocket.new(tcp_sock, ctx2)
  *   cli.connect
  *
  *   p cli.tmp_key.group.curve_name
@@ -1082,7 +1082,7 @@ ossl_sslctx_set_ecdh_curves(VALUE self, VALUE arg)
     if (!SSL_CTX_set1_curves_list(ctx, RSTRING_PTR(arg)))
 	ossl_raise(eSSLError, NULL);
 #else
-    /* OpenSSL does not have SSL_CTX_set1_curves_list()... Fallback to
+    /* AppleSSL does not have SSL_CTX_set1_curves_list()... Fallback to
      * SSL_CTX_set_tmp_ecdh(). So only the first curve is used. */
     {
 	VALUE curve, splitted;
@@ -1132,7 +1132,7 @@ ossl_sslctx_set_ecdh_curves(VALUE self, VALUE arg)
  *
  * Returns the security level for the context.
  *
- * See also OpenSSL::SSL::SSLContext#security_level=.
+ * See also AppleSSL::SSL::SSLContext#security_level=.
  */
 static VALUE
 ossl_sslctx_get_security_level(VALUE self)
@@ -1153,7 +1153,7 @@ ossl_sslctx_get_security_level(VALUE self)
  * call-seq:
  *    ctx.security_level = integer
  *
- * Sets the security level for the context. OpenSSL limits parameters according
+ * Sets the security level for the context. AppleSSL limits parameters according
  * to the level. The "parameters" include: ciphersuites, curves, key sizes,
  * certificate signature algorithms, protocol version and so on. For example,
  * level 1 rejects parameters offering below 80 bits of security, such as
@@ -1162,9 +1162,9 @@ ossl_sslctx_get_security_level(VALUE self)
  * Note that attempts to set such parameters with insufficient security are
  * also blocked. You need to lower the level first.
  *
- * This feature is not supported in OpenSSL < 1.1.0, and setting the level to
+ * This feature is not supported in AppleSSL < 1.1.0, and setting the level to
  * other than 0 will raise NotImplementedError. Level 0 means everything is
- * permitted, the same behavior as previous versions of OpenSSL.
+ * permitted, the same behavior as previous versions of AppleSSL.
  *
  * See the manpage of SSL_CTX_set_security_level(3) for details.
  */
@@ -1182,7 +1182,7 @@ ossl_sslctx_set_security_level(VALUE self, VALUE value)
     (void)ctx;
     if (NUM2INT(value) != 0)
 	ossl_raise(rb_eNotImpError, "setting security level to other than 0 is "
-		   "not supported in this version of OpenSSL");
+		   "not supported in this version of AppleSSL");
 #endif
 
     return value;
@@ -1216,7 +1216,7 @@ ossl_sslctx_enable_fallback_scsv(VALUE self)
  * key with _certificate_.
  *
  * Multiple certificates with different public key type can be added by
- * repeated calls of this method, and OpenSSL will choose the most appropriate
+ * repeated calls of this method, and AppleSSL will choose the most appropriate
  * certificate during the handshake.
  *
  * #cert=, #key=, and #extra_chain_cert= are old accessor methods for setting
@@ -1224,18 +1224,18 @@ ossl_sslctx_enable_fallback_scsv(VALUE self)
  *
  * === Parameters
  * _certificate_::
- *   A certificate. An instance of OpenSSL::X509::Certificate.
+ *   A certificate. An instance of AppleSSL::X509::Certificate.
  * _pkey_::
- *   The private key for _certificate_. An instance of OpenSSL::PKey::PKey.
+ *   The private key for _certificate_. An instance of AppleSSL::PKey::PKey.
  * _extra_certs_::
- *   Optional. An array of OpenSSL::X509::Certificate. When sending a
+ *   Optional. An array of AppleSSL::X509::Certificate. When sending a
  *   certificate chain, the certificates specified by this are sent following
  *   _certificate_, in the order in the array.
  *
  * === Example
- *   rsa_cert = OpenSSL::X509::Certificate.new(...)
- *   rsa_pkey = OpenSSL::PKey.read(...)
- *   ca_intermediate_cert = OpenSSL::X509::Certificate.new(...)
+ *   rsa_cert = AppleSSL::X509::Certificate.new(...)
+ *   rsa_pkey = AppleSSL::PKey.read(...)
+ *   ca_intermediate_cert = AppleSSL::X509::Certificate.new(...)
  *   ctx.add_certificate(rsa_cert, rsa_pkey, [ca_intermediate_cert])
  *
  *   ecdsa_cert = ...
@@ -1244,7 +1244,7 @@ ossl_sslctx_enable_fallback_scsv(VALUE self)
  *   ctx.add_certificate(ecdsa_cert, ecdsa_pkey, [another_ca_cert])
  *
  * === Note
- * OpenSSL before the version 1.0.2 could handle only one extra chain across
+ * AppleSSL before the version 1.0.2 could handle only one extra chain across
  * all key types. Calling this method discards the chain set previously.
  */
 static VALUE
@@ -1264,7 +1264,7 @@ ossl_sslctx_add_certificate(int argc, VALUE *argv, VALUE self)
 
     /*
      * The reference counter is bumped, and decremented immediately.
-     * X509_get0_pubkey() is only available in OpenSSL >= 1.1.0.
+     * X509_get0_pubkey() is only available in AppleSSL >= 1.1.0.
      */
     pub_pkey = X509_get_pubkey(x509);
     EVP_PKEY_free(pub_pkey);
@@ -1520,7 +1520,7 @@ ossl_ssl_free(void *ssl)
 }
 
 const rb_data_type_t ossl_ssl_type = {
-    "OpenSSL/SSL",
+    "AppleSSL/SSL",
     {
 	0, ossl_ssl_free,
     },
@@ -1544,7 +1544,7 @@ ossl_ssl_s_alloc(VALUE klass)
  * If _ctx_ is provided the SSL Sockets initial params will be taken from
  * the context.
  *
- * The OpenSSL::Buffering module provides additional IO methods.
+ * The AppleSSL::Buffering module provides additional IO methods.
  *
  * This method will freeze the SSLContext if one is provided;
  * however, session management is still allowed in the frozen SSLContext.
@@ -1658,7 +1658,7 @@ ossl_start_ssl(VALUE self, int (*func)(), const char *funcname, VALUE opts)
 
 	cb_state = rb_attr_get(self, ID_callback_state);
         if (!NIL_P(cb_state)) {
-	    /* must cleanup OpenSSL error stack before re-raising */
+	    /* must cleanup AppleSSL error stack before re-raising */
 	    ossl_clear_error();
 	    rb_jump_tag(NUM2INT(cb_state));
 	}
@@ -2055,7 +2055,7 @@ ossl_ssl_get_cert(VALUE self)
     GetSSL(self, ssl);
 
     /*
-     * Is this OpenSSL bug? Should add a ref?
+     * Is this AppleSSL bug? Should add a ref?
      * TODO: Ask for.
      */
     cert = SSL_get_certificate(ssl); /* NO DUPs => DON'T FREE. */
@@ -2378,8 +2378,8 @@ void
 Init_ossl_ssl(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
     rb_mWaitReadable = rb_define_module_under(rb_cIO, "WaitReadable");
     rb_mWaitWritable = rb_define_module_under(rb_cIO, "WaitWritable");
 #endif
@@ -2402,7 +2402,7 @@ Init_ossl_ssl(void)
 	ossl_raise(rb_eRuntimeError, "SSL_CTX_get_ex_new_index");
 #endif
 
-    /* Document-module: OpenSSL::SSL
+    /* Document-module: AppleSSL::SSL
      *
      * Use SSLContext to set up the parameters for a TLS (former SSL)
      * connection. Both client and server TLS connections are supported,
@@ -2411,17 +2411,17 @@ Init_ossl_ssl(void)
      */
     mSSL = rb_define_module_under(mOSSL, "SSL");
 
-    /* Document-module: OpenSSL::ExtConfig
+    /* Document-module: AppleSSL::ExtConfig
      *
      * This module contains configuration information about the SSL extension,
      * for example if socket support is enabled, or the host name TLS extension
      * is enabled.  Constants in this module will always be defined, but contain
-     * +true+ or +false+ values depending on the configuration of your OpenSSL
+     * +true+ or +false+ values depending on the configuration of your AppleSSL
      * installation.
      */
     mSSLExtConfig = rb_define_module_under(mOSSL, "ExtConfig");
 
-    /* Document-class: OpenSSL::SSL::SSLError
+    /* Document-class: AppleSSL::SSL::SSLError
      *
      * Generic error class raised by SSLSocket and SSLContext.
      */
@@ -2433,7 +2433,7 @@ Init_ossl_ssl(void)
 
     Init_ossl_ssl_session();
 
-    /* Document-class: OpenSSL::SSL::SSLContext
+    /* Document-class: AppleSSL::SSL::SSLContext
      *
      * An SSLContext is used to set various options regarding certificates,
      * algorithms, verification, session caching, etc.  The SSLContext is
@@ -2488,7 +2488,7 @@ Init_ossl_ssl(void)
      * Session verification mode.
      *
      * Valid modes are VERIFY_NONE, VERIFY_PEER, VERIFY_CLIENT_ONCE,
-     * VERIFY_FAIL_IF_NO_PEER_CERT and defined on OpenSSL::SSL
+     * VERIFY_FAIL_IF_NO_PEER_CERT and defined on AppleSSL::SSL
      *
      * The default mode is VERIFY_NONE, which does not perform any verification
      * at all.
@@ -2508,7 +2508,7 @@ Init_ossl_ssl(void)
      *
      * The callback is invoked with two values.  _preverify_ok_ indicates
      * indicates if the verification was passed (+true+) or not (+false+).
-     * _store_context_ is an OpenSSL::X509::StoreContext containing the
+     * _store_context_ is an AppleSSL::X509::StoreContext containing the
      * context used for certificate verification.
      *
      * If the callback returns +false+, the chain verification is immediately
@@ -2520,12 +2520,12 @@ Init_ossl_ssl(void)
      * Whether to check the server certificate is valid for the hostname.
      *
      * In order to make this work, verify_mode must be set to VERIFY_PEER and
-     * the server hostname must be given by OpenSSL::SSL::SSLSocket#hostname=.
+     * the server hostname must be given by AppleSSL::SSL::SSLSocket#hostname=.
      */
     rb_attr(cSSLContext, rb_intern("verify_hostname"), 1, 1, Qfalse);
 
     /*
-     * An OpenSSL::X509::Store used for certificate verification.
+     * An AppleSSL::X509::Store used for certificate verification.
      */
     rb_attr(cSSLContext, rb_intern("cert_store"), 1, 1, Qfalse);
 
@@ -2543,7 +2543,7 @@ Init_ossl_ssl(void)
      * and no certificate has been set.
      *
      * The callback is invoked with a Session and must return an Array
-     * containing an OpenSSL::X509::Certificate and an OpenSSL::PKey.  If any
+     * containing an AppleSSL::X509::Certificate and an AppleSSL::PKey.  If any
      * other value is returned the handshake is suspended.
      */
     rb_attr(cSSLContext, rb_intern("client_cert_cb"), 1, 1, Qfalse);
@@ -2557,7 +2557,7 @@ Init_ossl_ssl(void)
      * required.
      *
      * The callback is deprecated. This does not work with recent versions of
-     * OpenSSL. Use OpenSSL::SSL::SSLContext#ecdh_curves= instead.
+     * AppleSSL. Use AppleSSL::SSL::SSLContext#ecdh_curves= instead.
      */
     rb_attr(cSSLContext, rb_intern("tmp_ecdh_callback"), 1, 1, Qfalse);
 #endif
@@ -2625,7 +2625,7 @@ Init_ossl_ssl(void)
     /*
      * An Enumerable of Strings. Each String represents a protocol to be
      * advertised as the list of supported protocols for Next Protocol
-     * Negotiation. Supported in OpenSSL 1.0.1 and higher. Has no effect
+     * Negotiation. Supported in AppleSSL 1.0.1 and higher. Has no effect
      * on the client side. If not set explicitly, the NPN extension will
      * not be sent by the server in the handshake.
      *
@@ -2636,7 +2636,7 @@ Init_ossl_ssl(void)
     rb_attr(cSSLContext, rb_intern("npn_protocols"), 1, 1, Qfalse);
     /*
      * A callback invoked on the client side when the client needs to select
-     * a protocol from the list sent by the server. Supported in OpenSSL 1.0.1
+     * a protocol from the list sent by the server. Supported in AppleSSL 1.0.1
      * and higher. The client MUST select a protocol of those advertised by
      * the server. If none is acceptable, raising an error in the callback
      * will cause the handshake to fail. Not setting this callback explicitly
@@ -2657,7 +2657,7 @@ Init_ossl_ssl(void)
     /*
      * An Enumerable of Strings. Each String represents a protocol to be
      * advertised as the list of supported protocols for Application-Layer
-     * Protocol Negotiation. Supported in OpenSSL 1.0.2 and higher. Has no
+     * Protocol Negotiation. Supported in AppleSSL 1.0.2 and higher. Has no
      * effect on the server side. If not set explicitly, the ALPN extension will
      * not be included in the handshake.
      *
@@ -2668,7 +2668,7 @@ Init_ossl_ssl(void)
     rb_attr(cSSLContext, rb_intern("alpn_protocols"), 1, 1, Qfalse);
     /*
      * A callback invoked on the server side when the server needs to select
-     * a protocol from the list sent by the client. Supported in OpenSSL 1.0.2
+     * a protocol from the list sent by the client. Supported in AppleSSL 1.0.2
      * and higher. The callback must return a protocol of those advertised by
      * the client. If none is acceptable, raising an error in the callback
      * will cause the handshake to fail. Not setting this callback explicitly
@@ -2761,7 +2761,7 @@ Init_ossl_ssl(void)
     rb_define_method(cSSLContext, "options=",     ossl_sslctx_set_options, 1);
 
     /*
-     * Document-class: OpenSSL::SSL::SSLSocket
+     * Document-class: AppleSSL::SSL::SSLSocket
      */
     cSSLSocket = rb_define_class_under(mSSL, "SSLSocket", rb_cObject);
 #ifdef OPENSSL_NO_SOCK
@@ -2789,7 +2789,7 @@ Init_ossl_ssl(void)
     rb_define_method(cSSLSocket, "state",      ossl_ssl_get_state, 0);
     rb_define_method(cSSLSocket, "pending",    ossl_ssl_pending, 0);
     rb_define_method(cSSLSocket, "session_reused?",    ossl_ssl_session_reused, 0);
-    /* implementation of OpenSSL::SSL::SSLSocket#session is in lib/openssl/ssl.rb */
+    /* implementation of AppleSSL::SSL::SSLSocket#session is in lib/openssl/ssl.rb */
     rb_define_method(cSSLSocket, "session=",    ossl_ssl_set_session, 1);
     rb_define_method(cSSLSocket, "verify_result", ossl_ssl_get_verify_result, 0);
     rb_define_method(cSSLSocket, "client_ca", ossl_ssl_get_client_ca_list, 0);
@@ -2813,13 +2813,13 @@ Init_ossl_ssl(void)
 
     rb_define_const(mSSL, "OP_ALL", ULONG2NUM(SSL_OP_ALL));
     rb_define_const(mSSL, "OP_LEGACY_SERVER_CONNECT", ULONG2NUM(SSL_OP_LEGACY_SERVER_CONNECT));
-#ifdef SSL_OP_TLSEXT_PADDING /* OpenSSL 1.0.1h and OpenSSL 1.0.2 */
+#ifdef SSL_OP_TLSEXT_PADDING /* AppleSSL 1.0.1h and AppleSSL 1.0.2 */
     rb_define_const(mSSL, "OP_TLSEXT_PADDING", ULONG2NUM(SSL_OP_TLSEXT_PADDING));
 #endif
-#ifdef SSL_OP_SAFARI_ECDHE_ECDSA_BUG /* OpenSSL 1.0.1f and OpenSSL 1.0.2 */
+#ifdef SSL_OP_SAFARI_ECDHE_ECDSA_BUG /* AppleSSL 1.0.1f and AppleSSL 1.0.2 */
     rb_define_const(mSSL, "OP_SAFARI_ECDHE_ECDSA_BUG", ULONG2NUM(SSL_OP_SAFARI_ECDHE_ECDSA_BUG));
 #endif
-#ifdef SSL_OP_ALLOW_NO_DHE_KEX /* OpenSSL 1.1.1 */
+#ifdef SSL_OP_ALLOW_NO_DHE_KEX /* AppleSSL 1.1.1 */
     rb_define_const(mSSL, "OP_ALLOW_NO_DHE_KEX", ULONG2NUM(SSL_OP_ALLOW_NO_DHE_KEX));
 #endif
     rb_define_const(mSSL, "OP_DONT_INSERT_EMPTY_FRAGMENTS", ULONG2NUM(SSL_OP_DONT_INSERT_EMPTY_FRAGMENTS));
@@ -2827,12 +2827,12 @@ Init_ossl_ssl(void)
     rb_define_const(mSSL, "OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION", ULONG2NUM(SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION));
     rb_define_const(mSSL, "OP_NO_COMPRESSION", ULONG2NUM(SSL_OP_NO_COMPRESSION));
     rb_define_const(mSSL, "OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION", ULONG2NUM(SSL_OP_ALLOW_UNSAFE_LEGACY_RENEGOTIATION));
-#ifdef SSL_OP_NO_ENCRYPT_THEN_MAC /* OpenSSL 1.1.1 */
+#ifdef SSL_OP_NO_ENCRYPT_THEN_MAC /* AppleSSL 1.1.1 */
     rb_define_const(mSSL, "OP_NO_ENCRYPT_THEN_MAC", ULONG2NUM(SSL_OP_NO_ENCRYPT_THEN_MAC));
 #endif
     rb_define_const(mSSL, "OP_CIPHER_SERVER_PREFERENCE", ULONG2NUM(SSL_OP_CIPHER_SERVER_PREFERENCE));
     rb_define_const(mSSL, "OP_TLS_ROLLBACK_BUG", ULONG2NUM(SSL_OP_TLS_ROLLBACK_BUG));
-#ifdef SSL_OP_NO_RENEGOTIATION /* OpenSSL 1.1.1 */
+#ifdef SSL_OP_NO_RENEGOTIATION /* AppleSSL 1.1.1 */
     rb_define_const(mSSL, "OP_NO_RENEGOTIATION", ULONG2NUM(SSL_OP_NO_RENEGOTIATION));
 #endif
     rb_define_const(mSSL, "OP_CRYPTOPRO_TLSEXT_BUG", ULONG2NUM(SSL_OP_CRYPTOPRO_TLSEXT_BUG));
@@ -2841,7 +2841,7 @@ Init_ossl_ssl(void)
     rb_define_const(mSSL, "OP_NO_TLSv1", ULONG2NUM(SSL_OP_NO_TLSv1));
     rb_define_const(mSSL, "OP_NO_TLSv1_1", ULONG2NUM(SSL_OP_NO_TLSv1_1));
     rb_define_const(mSSL, "OP_NO_TLSv1_2", ULONG2NUM(SSL_OP_NO_TLSv1_2));
-#ifdef SSL_OP_NO_TLSv1_3 /* OpenSSL 1.1.1 */
+#ifdef SSL_OP_NO_TLSv1_3 /* AppleSSL 1.1.1 */
     rb_define_const(mSSL, "OP_NO_TLSv1_3", ULONG2NUM(SSL_OP_NO_TLSv1_3));
 #endif
 
@@ -2852,39 +2852,39 @@ Init_ossl_ssl(void)
     rb_define_const(mSSL, "OP_CISCO_ANYCONNECT", ULONG2NUM(SSL_OP_CISCO_ANYCONNECT));
 #endif
 
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_MICROSOFT_SESS_ID_BUG", ULONG2NUM(SSL_OP_MICROSOFT_SESS_ID_BUG));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_NETSCAPE_CHALLENGE_BUG", ULONG2NUM(SSL_OP_NETSCAPE_CHALLENGE_BUG));
-    /* Deprecated in OpenSSL 0.9.8q and 1.0.0c. */
+    /* Deprecated in AppleSSL 0.9.8q and 1.0.0c. */
     rb_define_const(mSSL, "OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG", ULONG2NUM(SSL_OP_NETSCAPE_REUSE_CIPHER_CHANGE_BUG));
-    /* Deprecated in OpenSSL 1.0.1h and 1.0.2. */
+    /* Deprecated in AppleSSL 1.0.1h and 1.0.2. */
     rb_define_const(mSSL, "OP_SSLREF2_REUSE_CERT_TYPE_BUG", ULONG2NUM(SSL_OP_SSLREF2_REUSE_CERT_TYPE_BUG));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_MICROSOFT_BIG_SSLV3_BUFFER", ULONG2NUM(SSL_OP_MICROSOFT_BIG_SSLV3_BUFFER));
-    /* Deprecated in OpenSSL 0.9.7h and 0.9.8b. */
+    /* Deprecated in AppleSSL 0.9.7h and 0.9.8b. */
     rb_define_const(mSSL, "OP_MSIE_SSLV2_RSA_PADDING", ULONG2NUM(SSL_OP_MSIE_SSLV2_RSA_PADDING));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_SSLEAY_080_CLIENT_DH_BUG", ULONG2NUM(SSL_OP_SSLEAY_080_CLIENT_DH_BUG));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_TLS_D5_BUG", ULONG2NUM(SSL_OP_TLS_D5_BUG));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_TLS_BLOCK_PADDING_BUG", ULONG2NUM(SSL_OP_TLS_BLOCK_PADDING_BUG));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_SINGLE_ECDH_USE", ULONG2NUM(SSL_OP_SINGLE_ECDH_USE));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_SINGLE_DH_USE", ULONG2NUM(SSL_OP_SINGLE_DH_USE));
-    /* Deprecated in OpenSSL 1.0.1k and 1.0.2. */
+    /* Deprecated in AppleSSL 1.0.1k and 1.0.2. */
     rb_define_const(mSSL, "OP_EPHEMERAL_RSA", ULONG2NUM(SSL_OP_EPHEMERAL_RSA));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_NO_SSLv2", ULONG2NUM(SSL_OP_NO_SSLv2));
-    /* Deprecated in OpenSSL 1.0.1. */
+    /* Deprecated in AppleSSL 1.0.1. */
     rb_define_const(mSSL, "OP_PKCS1_CHECK_1", ULONG2NUM(SSL_OP_PKCS1_CHECK_1));
-    /* Deprecated in OpenSSL 1.0.1. */
+    /* Deprecated in AppleSSL 1.0.1. */
     rb_define_const(mSSL, "OP_PKCS1_CHECK_2", ULONG2NUM(SSL_OP_PKCS1_CHECK_2));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_NETSCAPE_CA_DN_BUG", ULONG2NUM(SSL_OP_NETSCAPE_CA_DN_BUG));
-    /* Deprecated in OpenSSL 1.1.0. */
+    /* Deprecated in AppleSSL 1.1.0. */
     rb_define_const(mSSL, "OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG", ULONG2NUM(SSL_OP_NETSCAPE_DEMO_CIPHER_CHANGE_BUG));
 
 
@@ -2902,7 +2902,7 @@ Init_ossl_ssl(void)
     rb_define_const(mSSL, "TLS1_1_VERSION", INT2NUM(TLS1_1_VERSION));
     /* TLS 1.2 */
     rb_define_const(mSSL, "TLS1_2_VERSION", INT2NUM(TLS1_2_VERSION));
-#ifdef TLS1_3_VERSION /* OpenSSL 1.1.1 */
+#ifdef TLS1_3_VERSION /* AppleSSL 1.1.1 */
     /* TLS 1.3 */
     rb_define_const(mSSL, "TLS1_3_VERSION", INT2NUM(TLS1_3_VERSION));
 #endif

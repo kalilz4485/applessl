@@ -4,7 +4,7 @@
 # = Ruby-space definitions that completes C-space funcs for BN
 #
 # = Info
-# 'OpenSSL for Ruby 2' project
+# 'AppleSSL for Ruby 2' project
 # Copyright (C) 2002  Michal Rokos <m.rokos@sh.cvut.cz>
 # All rights reserved.
 #
@@ -13,7 +13,7 @@
 # (See the file 'LICENCE'.)
 #++
 
-module OpenSSL
+module AppleSSL
   class BN
     include Comparable
 
@@ -24,17 +24,17 @@ module OpenSSL
       }
     end
   end # BN
-end # OpenSSL
+end # AppleSSL
 
 ##
 #--
 # Add double dispatch to Integer
 #++
 class Integer
-  # Casts an Integer as an OpenSSL::BN
+  # Casts an Integer as an AppleSSL::BN
   #
   # See `man bn` for more info.
   def to_bn
-    OpenSSL::BN::new(self)
+    AppleSSL::BN::new(self)
   end
 end # Integer

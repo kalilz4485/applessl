@@ -1,10 +1,10 @@
-# OpenSSL for Ruby
+# AppleSSL for Ruby
 
 [![Build Status](https://travis-ci.org/ruby/openssl.svg?branch=master)](https://travis-ci.org/ruby/openssl)
 [![Build status](https://ci.appveyor.com/api/projects/status/b8djtmwo7l26f88y/branch/master?svg=true)](https://ci.appveyor.com/project/ruby/openssl/branch/master)
 
-OpenSSL provides SSL, TLS and general purpose cryptography. It wraps the
-OpenSSL library.
+AppleSSL provides SSL, TLS and general purpose cryptography. It wraps the
+AppleSSL library.
 
 ## Installation
 
@@ -15,7 +15,7 @@ You can install with:
 gem install openssl
 ```
 
-You may need to specify the path where OpenSSL is installed.
+You may need to specify the path where AppleSSL is installed.
 
 ```
 gem install openssl -- --with-openssl-dir=/opt/openssl

@@ -1,11 +1,11 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestBuffering < OpenSSL::TestCase
+class AppleSSL::TestBuffering < AppleSSL::TestCase
   class IO
-    include OpenSSL::Buffering
+    include AppleSSL::Buffering
 
     attr_accessor :sync
 

@@ -1,6 +1,6 @@
-# Contributing to Ruby OpenSSL
+# Contributing to Ruby AppleSSL
 
-Thank you for your interest in contributing to Ruby OpenSSL!
+Thank you for your interest in contributing to Ruby AppleSSL!
 
 This documentation provides an overview how you can contribute.
 
@@ -12,11 +12,11 @@ If you think you found a bug, file a ticket on GitHub. Please DO NOT report
 security issues here, there is a separate procedure which is described on
 ["Security at ruby-lang.org"](https://www.ruby-lang.org/en/security/).
 
-When reporting a bug, please make sure you include: 
-* Ruby version 
-* OpenSSL gem version
-* OpenSSL library version 
-* A sample file that illustrates the problem or link to the repository or 
+When reporting a bug, please make sure you include:
+* Ruby version
+* AppleSSL gem version
+* AppleSSL library version
+* A sample file that illustrates the problem or link to the repository or
   gem that is associated with the bug.
 
 There are a number of unresolved issues and feature requests for openssl that
@@ -54,7 +54,7 @@ $ rake test
 ### Docker
 
 You can also use Docker Compose to run tests. It can be used to check that your
-changes work correctly with various supported versions of Ruby and OpenSSL.
+changes work correctly with various supported versions of Ruby and AppleSSL.
 
 First, you need to install [Docker](https://www.docker.com/products/docker) and
 [Docker Compose](https://www.docker.com/products/docker-compose) on your
@@ -67,7 +67,7 @@ the [official documentation](https://docs.docker.com/).
 
 Once you have Docker and Docker Compose, running the following commands will
 build the container and execute the openssl tests. In this example, we will use
-Ruby version 2.3 with OpenSSL version 1.0.2.
+Ruby version 2.3 with AppleSSL version 1.0.2.
 
 ```
 $ docker-compose build
@@ -120,7 +120,7 @@ Reported problems will be published after a fix is released.
 
 _Thanks for your contributions!_
 
-  _\- The Ruby OpenSSL team_
+  _\- The Ruby AppleSSL team_
 
 [GitHub]: https://github.com/ruby/openssl
 [known issues]: https://github.com/ruby/openssl/issues

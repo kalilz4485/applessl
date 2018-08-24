@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -31,7 +31,7 @@ ossl_digest_free(void *ctx)
 }
 
 static const rb_data_type_t ossl_digest_type = {
-    "OpenSSL/Digest",
+    "AppleSSL/Digest",
     {
 	0, ossl_digest_free,
     },
@@ -108,11 +108,11 @@ VALUE ossl_digest_update(VALUE, VALUE);
  * If _data_ (a String) is given, it is used as the initial input to the
  * Digest instance, i.e.
  *
- *   digest = OpenSSL::Digest.new('sha256', 'digestdata')
+ *   digest = AppleSSL::Digest.new('sha256', 'digestdata')
  *
  * is equivalent to
  *
- *   digest = OpenSSL::Digest.new('sha256')
+ *   digest = AppleSSL::Digest.new('sha256')
  *   digest.update('digestdata')
  */
 static VALUE
@@ -192,7 +192,7 @@ ossl_digest_reset(VALUE self)
  * be passed individually to the Digest instance.
  *
  * === Example
- *   digest = OpenSSL::Digest::SHA256.new
+ *   digest = AppleSSL::Digest::SHA256.new
  *   digest.update('First input')
  *   digest << 'Second input' # equivalent to digest.update('Second input')
  *   result = digest.digest
@@ -248,7 +248,7 @@ ossl_digest_finish(int argc, VALUE *argv, VALUE self)
  * Returns the sn of this Digest algorithm.
  *
  * === Example
- *   digest = OpenSSL::Digest::SHA512.new
+ *   digest = AppleSSL::Digest::SHA512.new
  *   puts digest.name # => SHA512
  *
  */
@@ -270,7 +270,7 @@ ossl_digest_name(VALUE self)
  * final message digest result.
  *
  * === Example
- *   digest = OpenSSL::Digest::SHA1.new
+ *   digest = AppleSSL::Digest::SHA1.new
  *   puts digest.digest_length # => 20
  *
  */
@@ -294,7 +294,7 @@ ossl_digest_size(VALUE self)
  * consecutively.
  *
  * === Example
- *   digest = OpenSSL::Digest::SHA1.new
+ *   digest = AppleSSL::Digest::SHA1.new
  *   puts digest.block_length # => 64
  */
 static VALUE
@@ -316,13 +316,13 @@ Init_ossl_digest(void)
     rb_require("digest");
 
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
 #endif
 
-    /* Document-class: OpenSSL::Digest
+    /* Document-class: AppleSSL::Digest
      *
-     * OpenSSL::Digest allows you to compute message digests (sometimes
+     * AppleSSL::Digest allows you to compute message digests (sometimes
      * interchangeably called "hashes") of arbitrary data that are
      * cryptographically secure, i.e. a Digest implements a secure one-way
      * function.
@@ -358,7 +358,7 @@ Init_ossl_digest(void)
      * For each of these algorithms, there is a sub-class of Digest that
      * can be instantiated as simply as e.g.
      *
-     *   digest = OpenSSL::Digest::SHA1.new
+     *   digest = AppleSSL::Digest::SHA1.new
      *
      * === Mapping between Digest class and sn/ln
      *
@@ -408,7 +408,7 @@ Init_ossl_digest(void)
      * === Hashing a file
      *
      *   data = File.read('document')
-     *   sha256 = OpenSSL::Digest::SHA256.new
+     *   sha256 = AppleSSL::Digest::SHA256.new
      *   digest = sha256.digest(data)
      *
      * === Hashing several pieces of data at once
@@ -416,7 +416,7 @@ Init_ossl_digest(void)
      *   data1 = File.read('file1')
      *   data2 = File.read('file2')
      *   data3 = File.read('file3')
-     *   sha256 = OpenSSL::Digest::SHA256.new
+     *   sha256 = AppleSSL::Digest::SHA256.new
      *   sha256 << data1
      *   sha256 << data2
      *   sha256 << data3
@@ -425,7 +425,7 @@ Init_ossl_digest(void)
      * === Reuse a Digest instance
      *
      *   data1 = File.read('file1')
-     *   sha256 = OpenSSL::Digest::SHA256.new
+     *   sha256 = AppleSSL::Digest::SHA256.new
      *   digest1 = sha256.digest(data1)
      *
      *   data2 = File.read('file2')
@@ -434,7 +434,7 @@ Init_ossl_digest(void)
      *
      */
     cDigest = rb_define_class_under(mOSSL, "Digest", rb_path2class("Digest::Class"));
-    /* Document-class: OpenSSL::Digest::DigestError
+    /* Document-class: AppleSSL::Digest::DigestError
      *
      * Generic Exception class that is raised if an error occurs during a
      * Digest operation.

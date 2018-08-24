@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -40,7 +40,7 @@ ossl_hmac_free(void *ctx)
 }
 
 static const rb_data_type_t ossl_hmac_type = {
-    "OpenSSL/HMAC",
+    "AppleSSL/HMAC",
     {
 	0, ossl_hmac_free,
     },
@@ -67,7 +67,7 @@ ossl_hmac_alloc(VALUE klass)
  *  call-seq:
  *     HMAC.new(key, digest) -> hmac
  *
- * Returns an instance of OpenSSL::HMAC set with the key and digest
+ * Returns an instance of AppleSSL::HMAC set with the key and digest
  * algorithm to be used. The instance represents the initial state of
  * the message authentication code before any data has been processed.
  * To process data with it, use the instance method #update with your
@@ -76,11 +76,11 @@ ossl_hmac_alloc(VALUE klass)
  * === Example
  *
  *	key = 'key'
- * 	digest = OpenSSL::Digest.new('sha1')
- * 	instance = OpenSSL::HMAC.new(key, digest)
+ * 	digest = AppleSSL::Digest.new('sha1')
+ * 	instance = AppleSSL::HMAC.new(key, digest)
  * 	#=> f42bb0eeb018ebbd4597ae7213711ec60760843f
  * 	instance.class
- * 	#=> OpenSSL::HMAC
+ * 	#=> AppleSSL::HMAC
  *
  * === A note about comparisons
  *
@@ -88,7 +88,7 @@ ossl_hmac_alloc(VALUE klass)
  * same value. Use #to_s or #hexdigest to return the authentication code that
  * the instance represents. For example:
  *
- *	other_instance = OpenSSL::HMAC.new('key', OpenSSL::Digest.new('sha1'))
+ *	other_instance = AppleSSL::HMAC.new('key', AppleSSL::Digest.new('sha1'))
  *  	#=> f42bb0eeb018ebbd4597ae7213711ec60760843f
  *  	instance
  *  	#=> f42bb0eeb018ebbd4597ae7213711ec60760843f
@@ -182,7 +182,7 @@ hmac_final(HMAC_CTX *ctx, unsigned char *buf, unsigned int *buf_len)
  * Returns the authentication code an instance represents as a binary string.
  *
  * === Example
- *  instance = OpenSSL::HMAC.new('key', OpenSSL::Digest.new('sha1'))
+ *  instance = AppleSSL::HMAC.new('key', AppleSSL::Digest.new('sha1'))
  *  #=> f42bb0eeb018ebbd4597ae7213711ec60760843f
  *  instance.digest
  *  #=> "\xF4+\xB0\xEE\xB0\x18\xEB\xBDE\x97\xAEr\x13q\x1E\xC6\a`\x84?"
@@ -236,7 +236,7 @@ ossl_hmac_hexdigest(VALUE self)
  * === Example
  *
  *	data = "The quick brown fox jumps over the lazy dog"
- * 	instance = OpenSSL::HMAC.new('key', OpenSSL::Digest.new('sha1'))
+ * 	instance = AppleSSL::HMAC.new('key', AppleSSL::Digest.new('sha1'))
  * 	#=> f42bb0eeb018ebbd4597ae7213711ec60760843f
  *
  * 	instance.update(data)
@@ -262,14 +262,14 @@ ossl_hmac_reset(VALUE self)
  *
  * Returns the authentication code as a binary string. The _digest_ parameter
  * specifies the digest algorithm to use. This may be a String representing
- * the algorithm name or an instance of OpenSSL::Digest.
+ * the algorithm name or an instance of AppleSSL::Digest.
  *
  * === Example
  *
  *	key = 'key'
  * 	data = 'The quick brown fox jumps over the lazy dog'
  *
- * 	hmac = OpenSSL::HMAC.digest('sha1', key, data)
+ * 	hmac = AppleSSL::HMAC.digest('sha1', key, data)
  * 	#=> "\xDE|\x9B\x85\xB8\xB7\x8A\xA6\xBC\x8Az6\xF7\n\x90p\x1C\x9D\xB4\xD9"
  *
  */
@@ -294,14 +294,14 @@ ossl_hmac_s_digest(VALUE klass, VALUE digest, VALUE key, VALUE data)
  *
  * Returns the authentication code as a hex-encoded string. The _digest_
  * parameter specifies the digest algorithm to use. This may be a String
- * representing the algorithm name or an instance of OpenSSL::Digest.
+ * representing the algorithm name or an instance of AppleSSL::Digest.
  *
  * === Example
  *
  *	key = 'key'
  * 	data = 'The quick brown fox jumps over the lazy dog'
  *
- * 	hmac = OpenSSL::HMAC.hexdigest('sha1', key, data)
+ * 	hmac = AppleSSL::HMAC.hexdigest('sha1', key, data)
  * 	#=> "de7c9b85b8b78aa6bc8a7a36f70a90701c9db4d9"
  *
  */
@@ -333,25 +333,25 @@ void
 Init_ossl_hmac(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
 #endif
 
     /*
-     * Document-class: OpenSSL::HMAC
+     * Document-class: AppleSSL::HMAC
      *
-     * OpenSSL::HMAC allows computing Hash-based Message Authentication Code
+     * AppleSSL::HMAC allows computing Hash-based Message Authentication Code
      * (HMAC). It is a type of message authentication code (MAC) involving a
      * hash function in combination with a key. HMAC can be used to verify the
      * integrity of a message as well as the authenticity.
      *
-     * OpenSSL::HMAC has a similar interface to OpenSSL::Digest.
+     * AppleSSL::HMAC has a similar interface to AppleSSL::Digest.
      *
      * === HMAC-SHA256 using one-shot interface
      *
      *   key = "key"
      *   data = "message-to-be-authenticated"
-     *   mac = OpenSSL::HMAC.hexdigest("SHA256", key, data)
+     *   mac = AppleSSL::HMAC.hexdigest("SHA256", key, data)
      *   #=> "cddb0db23f469c8bf072b21fd837149bd6ace9ab771cceef14c9e517cc93282e"
      *
      * === HMAC-SHA256 using incremental interface
@@ -359,8 +359,8 @@ Init_ossl_hmac(void)
      *   data1 = File.read("file1")
      *   data2 = File.read("file2")
      *   key = "key"
-     *   digest = OpenSSL::Digest::SHA256.new
-     *   hmac = OpenSSL::HMAC.new(key, digest)
+     *   digest = AppleSSL::Digest::SHA256.new
+     *   hmac = AppleSSL::HMAC.new(key, digest)
      *   hmac << data1
      *   hmac << data2
      *   mac = hmac.digest
@@ -386,10 +386,10 @@ Init_ossl_hmac(void)
 }
 
 #else /* NO_HMAC */
-#  warning >>> OpenSSL is compiled without HMAC support <<<
+#  warning >>> AppleSSL is compiled without HMAC support <<<
 void
 Init_ossl_hmac(void)
 {
-    rb_warning("HMAC is not available: OpenSSL is compiled without HMAC.");
+    rb_warning("HMAC is not available: AppleSSL is compiled without HMAC.");
 }
 #endif /* NO_HMAC */

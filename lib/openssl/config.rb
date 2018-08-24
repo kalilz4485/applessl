@@ -13,14 +13,14 @@
 
 require 'stringio'
 
-module OpenSSL
+module AppleSSL
   ##
-  # = OpenSSL::Config
+  # = AppleSSL::Config
   #
   # Configuration for the openssl library.
   #
   # Many system's installation of openssl library will depend on your system
-  # configuration. See the value of OpenSSL::Config::DEFAULT_CONFIG_FILE for
+  # configuration. See the value of AppleSSL::Config::DEFAULT_CONFIG_FILE for
   # the location of the file for your host.
   #
   # See also http://www.openssl.org/docs/apps/config.html
@@ -31,7 +31,7 @@ module OpenSSL
 
       ##
       # Parses a given _string_ as a blob that contains configuration for
-      # OpenSSL.
+      # AppleSSL.
       #
       # If the source of the IO is a file, then consider using #parse_config.
       def parse(string)
@@ -233,9 +233,9 @@ module OpenSSL
     end
 
     ##
-    # Creates an instance of OpenSSL's configuration class.
+    # Creates an instance of AppleSSL's configuration class.
     #
-    # This can be used in contexts like OpenSSL::X509::ExtensionFactory.config=
+    # This can be used in contexts like AppleSSL::X509::ExtensionFactory.config=
     #
     # If the optional _filename_ parameter is provided, then it is read in and
     # parsed via #parse_config.
@@ -260,8 +260,8 @@ module OpenSSL
     #
     # Given the following configurating file being loaded:
     #
-    #   config = OpenSSL::Config.load('foo.cnf')
-    #     #=> #<OpenSSL::Config sections=["default"]>
+    #   config = AppleSSL::Config.load('foo.cnf')
+    #     #=> #<AppleSSL::Config sections=["default"]>
     #   puts config.to_s
     #     #=> [ default ]
     #     #   foo=bar
@@ -302,8 +302,8 @@ module OpenSSL
     #
     # Given the following configurating file being loaded:
     #
-    #   config = OpenSSL::Config.load('foo.cnf')
-    #     #=> #<OpenSSL::Config sections=["default"]>
+    #   config = AppleSSL::Config.load('foo.cnf')
+    #     #=> #<AppleSSL::Config sections=["default"]>
     #   puts config.to_s
     #     #=> [ default ]
     #     #   foo=bar
@@ -327,8 +327,8 @@ module OpenSSL
     #
     # Given the following configurating file being loaded:
     #
-    #   config = OpenSSL::Config.load('foo.cnf')
-    #     #=> #<OpenSSL::Config sections=["default"]>
+    #   config = AppleSSL::Config.load('foo.cnf')
+    #     #=> #<AppleSSL::Config sections=["default"]>
     #   puts config.to_s
     #     #=> [ default ]
     #     #   foo=bar
@@ -356,8 +356,8 @@ module OpenSSL
     #
     # Given the following configuration being created:
     #
-    #   config = OpenSSL::Config.new
-    #     #=> #<OpenSSL::Config sections=[]>
+    #   config = AppleSSL::Config.new
+    #     #=> #<AppleSSL::Config sections=[]>
     #   config['default'] = {"foo"=>"bar","baz"=>"buz"}
     #     #=> {"foo"=>"bar", "baz"=>"buz"}
     #   puts config.to_s
@@ -394,8 +394,8 @@ module OpenSSL
     #
     # Given the following configuration being created:
     #
-    #   config = OpenSSL::Config.new
-    #     #=> #<OpenSSL::Config sections=[]>
+    #   config = AppleSSL::Config.new
+    #     #=> #<AppleSSL::Config sections=[]>
     #   config['default'] = {"foo"=>"bar","baz"=>"buz"}
     #     #=> {"foo"=>"bar", "baz"=>"buz"}
     #   puts config.to_s
@@ -408,8 +408,8 @@ module OpenSSL
     #
     #   serialized_config = config.to_s
     #   # much later...
-    #   new_config = OpenSSL::Config.parse(serialized_config)
-    #     #=> #<OpenSSL::Config sections=["default"]>
+    #   new_config = AppleSSL::Config.parse(serialized_config)
+    #     #=> #<AppleSSL::Config sections=["default"]>
     #   puts new_config
     #     #=> [ default ]
     #         foo=bar
@@ -464,7 +464,7 @@ module OpenSSL
     end
 
     def check_modify
-      raise TypeError.new("Insecure: can't modify OpenSSL config") if frozen?
+      raise TypeError.new("Insecure: can't modify AppleSSL config") if frozen?
     end
 
     def get_key_string(section, key)

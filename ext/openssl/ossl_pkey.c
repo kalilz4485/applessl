@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -85,7 +85,7 @@ ossl_evp_pkey_free(void *ptr)
  * Public
  */
 const rb_data_type_t ossl_evp_pkey_type = {
-    "OpenSSL/EVP_PKEY",
+    "AppleSSL/EVP_PKEY",
     {
 	0, ossl_evp_pkey_free,
     },
@@ -142,8 +142,8 @@ ossl_pkey_new(EVP_PKEY *pkey)
 
 /*
  *  call-seq:
- *     OpenSSL::PKey.read(string [, pwd ]) -> PKey
- *     OpenSSL::PKey.read(io [, pwd ]) -> PKey
+ *     AppleSSL::PKey.read(string [, pwd ]) -> PKey
+ *     AppleSSL::PKey.read(io [, pwd ]) -> PKey
  *
  * Reads a DER or PEM encoded string from _string_ or _io_ and returns an
  * instance of the appropriate PKey class.
@@ -194,7 +194,7 @@ ossl_pkey_check_public_key(const EVP_PKEY *pkey)
     if (EVP_PKEY_missing_parameters(pkey))
 	ossl_raise(ePKeyError, "parameters missing");
 
-    /* OpenSSL < 1.1.0 takes non-const pointer */
+    /* AppleSSL < 1.1.0 takes non-const pointer */
     ptr = EVP_PKEY_get0((EVP_PKEY *)pkey);
     switch (EVP_PKEY_base_id(pkey)) {
       case EVP_PKEY_RSA:
@@ -288,7 +288,7 @@ static VALUE
 ossl_pkey_initialize(VALUE self)
 {
     if (rb_obj_is_instance_of(self, cPKey)) {
-	ossl_raise(rb_eTypeError, "OpenSSL::PKey::PKey can't be instantiated directly");
+	ossl_raise(rb_eTypeError, "AppleSSL::PKey::PKey can't be instantiated directly");
     }
     return self;
 }
@@ -297,7 +297,7 @@ ossl_pkey_initialize(VALUE self)
  *  call-seq:
  *      pkey.sign(digest, data) -> String
  *
- * To sign the String _data_, _digest_, an instance of OpenSSL::Digest, must
+ * To sign the String _data_, _digest_, an instance of AppleSSL::Digest, must
  * be provided. The return value is again a String containing the signature.
  * A PKeyError is raised should errors occur.
  * Any previous state of the Digest instance is irrelevant to the signature
@@ -306,8 +306,8 @@ ossl_pkey_initialize(VALUE self)
  *
  * == Example
  *   data = 'Sign me!'
- *   digest = OpenSSL::Digest::SHA256.new
- *   pkey = OpenSSL::PKey::RSA.new(2048)
+ *   digest = AppleSSL::Digest::SHA256.new
+ *   pkey = AppleSSL::PKey::RSA.new(2048)
  *   signature = pkey.sign(digest, data)
  */
 static VALUE
@@ -350,7 +350,7 @@ ossl_pkey_sign(VALUE self, VALUE digest, VALUE data)
  *      pkey.verify(digest, signature, data) -> String
  *
  * To verify the String _signature_, _digest_, an instance of
- * OpenSSL::Digest, must be provided to re-compute the message digest of the
+ * AppleSSL::Digest, must be provided to re-compute the message digest of the
  * original _data_, also a String. The return value is +true+ if the
  * signature is valid, +false+ otherwise. A PKeyError is raised should errors
  * occur.
@@ -360,8 +360,8 @@ ossl_pkey_sign(VALUE self, VALUE digest, VALUE data)
  *
  * == Example
  *   data = 'Sign me!'
- *   digest = OpenSSL::Digest::SHA256.new
- *   pkey = OpenSSL::PKey::RSA.new(2048)
+ *   digest = AppleSSL::Digest::SHA256.new
+ *   pkey = AppleSSL::PKey::RSA.new(2048)
  *   signature = pkey.sign(digest, data)
  *   pub_key = pkey.public_key
  *   puts pub_key.verify(digest, signature, data) # => true
@@ -413,11 +413,11 @@ Init_ossl_pkey(void)
 {
 #undef rb_intern
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
 #endif
 
-    /* Document-module: OpenSSL::PKey
+    /* Document-module: AppleSSL::PKey
      *
      * == Asymmetric Public Key Algorithms
      *
@@ -429,14 +429,14 @@ Init_ossl_pkey(void)
      * Messages encrypted with a public key can only be decrypted by
      * recipients that are in possession of the associated private key.
      * Since public key algorithms are considerably slower than symmetric
-     * key algorithms (cf. OpenSSL::Cipher) they are often used to establish
+     * key algorithms (cf. AppleSSL::Cipher) they are often used to establish
      * a symmetric key shared between two parties that are in possession of
      * each other's public key.
      *
      * Asymmetric algorithms offer a lot of nice features that are used in a
      * lot of different areas. A very common application is the creation and
      * validation of digital signatures. To sign a document, the signatory
-     * generally uses a message digest algorithm (cf. OpenSSL::Digest) to
+     * generally uses a message digest algorithm (cf. AppleSSL::Digest) to
      * compute a digest of the document that is then encrypted (i.e. signed)
      * using the private key. Anyone in possession of the public key may then
      * verify the signature by computing the message digest of the original
@@ -447,16 +447,16 @@ Init_ossl_pkey(void)
      *
      * The PKey module offers support for three popular public/private key
      * algorithms:
-     * * RSA (OpenSSL::PKey::RSA)
-     * * DSA (OpenSSL::PKey::DSA)
-     * * Elliptic Curve Cryptography (OpenSSL::PKey::EC)
+     * * RSA (AppleSSL::PKey::RSA)
+     * * DSA (AppleSSL::PKey::DSA)
+     * * Elliptic Curve Cryptography (AppleSSL::PKey::EC)
      * Each of these implementations is in fact a sub-class of the abstract
      * PKey class which offers the interface for supporting digital signatures
      * in the form of PKey#sign and PKey#verify.
      *
      * == Diffie-Hellman Key Exchange
      *
-     * Finally PKey also features OpenSSL::PKey::DH, an implementation of
+     * Finally PKey also features AppleSSL::PKey::DH, an implementation of
      * the Diffie-Hellman key exchange protocol based on discrete logarithms
      * in finite fields, the same basis that DSA is built on.
      * The Diffie-Hellman protocol can be used to exchange (symmetric) keys
@@ -464,26 +464,26 @@ Init_ossl_pkey(void)
      * between the participating parties. As the security of DH demands
      * relatively long "public keys" (i.e. the part that is overtly
      * transmitted between participants) DH tends to be quite slow. If
-     * security or speed is your primary concern, OpenSSL::PKey::EC offers
+     * security or speed is your primary concern, AppleSSL::PKey::EC offers
      * another implementation of the Diffie-Hellman protocol.
      *
      */
     mPKey = rb_define_module_under(mOSSL, "PKey");
 
-    /* Document-class: OpenSSL::PKey::PKeyError
+    /* Document-class: AppleSSL::PKey::PKeyError
      *
      *Raised when errors occur during PKey#sign or PKey#verify.
      */
     ePKeyError = rb_define_class_under(mPKey, "PKeyError", eOSSLError);
 
-    /* Document-class: OpenSSL::PKey::PKey
+    /* Document-class: AppleSSL::PKey::PKey
      *
      * An abstract class that bundles signature creation (PKey#sign) and
      * validation (PKey#verify) that is common to all implementations except
-     * OpenSSL::PKey::DH
-     * * OpenSSL::PKey::RSA
-     * * OpenSSL::PKey::DSA
-     * * OpenSSL::PKey::EC
+     * AppleSSL::PKey::DH
+     * * AppleSSL::PKey::RSA
+     * * AppleSSL::PKey::DSA
+     * * AppleSSL::PKey::EC
      */
     cPKey = rb_define_class_under(mPKey, "PKey", rb_cObject);
 

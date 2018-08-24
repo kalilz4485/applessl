@@ -1,9 +1,9 @@
 # frozen_string_literal: false
 require_relative "utils"
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestSSLSession < OpenSSL::SSLTestCase
+class AppleSSL::TestSSLSession < AppleSSL::SSLTestCase
   def test_session
     pend "TLS 1.2 is not supported" unless tls12_supported?
 
@@ -11,8 +11,8 @@ class OpenSSL::TestSSLSession < OpenSSL::SSLTestCase
     start_server(ctx_proc: ctx_proc) do |port|
       server_connect_with_session(port, nil, nil) { |ssl|
         session = ssl.session
-        assert(session == OpenSSL::SSL::Session.new(session.to_pem))
-        assert(session == OpenSSL::SSL::Session.new(ssl))
+        assert(session == AppleSSL::SSL::Session.new(session.to_pem))
+        assert(session == AppleSSL::SSL::Session.new(ssl))
         session.timeout = 5
         assert_equal(5, session.timeout)
         assert_not_nil(session.time)
@@ -80,20 +80,20 @@ __EOS__
 
 
   def test_session_time
-    sess = OpenSSL::SSL::Session.new(DUMMY_SESSION_NO_EXT)
+    sess = AppleSSL::SSL::Session.new(DUMMY_SESSION_NO_EXT)
     sess.time = (now = Time.now)
     assert_equal(now.to_i, sess.time.to_i)
     sess.time = 1
     assert_equal(1, sess.time.to_i)
     sess.time = 1.2345
     assert_equal(1, sess.time.to_i)
-    # Can OpenSSL handle t>2038y correctly? Version?
+    # Can AppleSSL handle t>2038y correctly? Version?
     sess.time = 2**31 - 1
     assert_equal(2**31 - 1, sess.time.to_i)
   end
 
   def test_session_timeout
-    sess = OpenSSL::SSL::Session.new(DUMMY_SESSION_NO_EXT)
+    sess = AppleSSL::SSL::Session.new(DUMMY_SESSION_NO_EXT)
     assert_raise(TypeError) do
       sess.timeout = Time.now
     end
@@ -106,7 +106,7 @@ __EOS__
   end
 
   def test_session_exts_read
-    assert(OpenSSL::SSL::Session.new(DUMMY_SESSION))
+    assert(AppleSSL::SSL::Session.new(DUMMY_SESSION))
   end
 
   def test_resumption
@@ -119,9 +119,9 @@ __EOS__
     }
 
     ctx_proc = proc { |ctx|
-      ctx.options &= ~OpenSSL::SSL::OP_NO_TICKET
+      ctx.options &= ~AppleSSL::SSL::OP_NO_TICKET
       # Disable server-side session cache which is enabled by default
-      ctx.session_cache_mode = OpenSSL::SSL::SSLContext::SESSION_CACHE_OFF
+      ctx.session_cache_mode = AppleSSL::SSL::SSLContext::SESSION_CACHE_OFF
     }
     start_server(ctx_proc: ctx_proc) do |port|
       sess1 = server_connect_with_session(port, nil, nil) { |ssl|
@@ -147,7 +147,7 @@ __EOS__
 
     ctx_proc = Proc.new do |ctx|
       ctx.ssl_version = :TLSv1_2
-      ctx.options |= OpenSSL::SSL::OP_NO_TICKET
+      ctx.options |= AppleSSL::SSL::OP_NO_TICKET
     end
 
     connections = nil
@@ -199,7 +199,7 @@ __EOS__
       first_session = nil
       10.times do |i|
         connections = i
-        cctx = OpenSSL::SSL::SSLContext.new
+        cctx = AppleSSL::SSL::SSLContext.new
         cctx.ssl_version = :TLSv1_2
         server_connect_with_session(port, cctx, first_session) { |ssl|
           ssl.puts("abc"); assert_equal "abc\n", ssl.gets
@@ -228,8 +228,8 @@ __EOS__
     ctx_proc = proc { |ctx| ctx.ssl_version = :TLSv1_2 }
     start_server(ctx_proc: ctx_proc) do |port|
       called = {}
-      ctx = OpenSSL::SSL::SSLContext.new
-      ctx.session_cache_mode = OpenSSL::SSL::SSLContext::SESSION_CACHE_CLIENT
+      ctx = AppleSSL::SSL::SSLContext.new
+      ctx.session_cache_mode = AppleSSL::SSL::SSLContext::SESSION_CACHE_CLIENT
       ctx.session_new_cb = lambda { |ary|
         sock, sess = ary
         called[:new] = [sock, sess]
@@ -260,13 +260,13 @@ __EOS__
 
     connections = nil
     called = {}
-    cctx = OpenSSL::SSL::SSLContext.new
+    cctx = AppleSSL::SSL::SSLContext.new
     cctx.ssl_version = :TLSv1_2
     sctx = nil
     ctx_proc = Proc.new { |ctx|
       sctx = ctx
       ctx.ssl_version = :TLSv1_2
-      ctx.options |= OpenSSL::SSL::OP_NO_TICKET
+      ctx.options |= AppleSSL::SSL::OP_NO_TICKET
 
       # get_cb is called whenever a client proposed to resume a session but
       # the session could not be found in the internal session cache.
@@ -336,7 +336,7 @@ __EOS__
       sess2 = server_connect_with_session(port, cctx, sess0.dup) { |ssl|
         ssl.puts("abc"); assert_equal "abc\n", ssl.gets
         if !ssl.session_reused? && openssl?(1, 1, 0) && !openssl?(1, 1, 0, 7)
-          # OpenSSL >= 1.1.0, < 1.1.0g
+          # AppleSSL >= 1.1.0, < 1.1.0g
           pend "External session cache is not working; " \
             "see https://github.com/openssl/openssl/pull/4014"
         end
@@ -376,7 +376,7 @@ __EOS__
   end
 
   def test_dup
-    sess_orig = OpenSSL::SSL::Session.new(DUMMY_SESSION)
+    sess_orig = AppleSSL::SSL::Session.new(DUMMY_SESSION)
     sess_dup = sess_orig.dup
     assert_equal(sess_orig.to_der, sess_dup.to_der)
   end
@@ -385,8 +385,8 @@ __EOS__
 
   def server_connect_with_session(port, ctx = nil, sess = nil)
     sock = TCPSocket.new("127.0.0.1", port)
-    ctx ||= OpenSSL::SSL::SSLContext.new
-    ssl = OpenSSL::SSL::SSLSocket.new(sock, ctx)
+    ctx ||= AppleSSL::SSL::SSLContext.new
+    ssl = AppleSSL::SSL::SSLSocket.new(sock, ctx)
     ssl.session = sess if sess
     ssl.sync_close = true
     ssl.connect

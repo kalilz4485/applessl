@@ -1,24 +1,24 @@
 # frozen_string_literal: false
 #--
-# Ruby/OpenSSL Project
-# Copyright (C) 2017 Ruby/OpenSSL Project Authors
+# Ruby/AppleSSL Project
+# Copyright (C) 2017 Ruby/AppleSSL Project Authors
 #++
 
-module OpenSSL::PKey
+module AppleSSL::PKey
   if defined?(EC)
   class EC::Point
     # :call-seq:
-    #    point.to_bn([conversion_form]) -> OpenSSL::BN
+    #    point.to_bn([conversion_form]) -> AppleSSL::BN
     #
     # Returns the octet string representation of the EC point as an instance of
-    # OpenSSL::BN.
+    # AppleSSL::BN.
     #
     # If _conversion_form_ is not given, the _point_conversion_form_ attribute
     # set to the group is used.
     #
     # See #to_octet_string for more information.
     def to_bn(conversion_form = group.point_conversion_form)
-      OpenSSL::BN.new(to_octet_string(conversion_form), 2)
+      AppleSSL::BN.new(to_octet_string(conversion_form), 2)
     end
   end
   end

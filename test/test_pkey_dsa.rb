@@ -1,44 +1,44 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL) && defined?(OpenSSL::PKey::DSA)
+if defined?(AppleSSL) && defined?(AppleSSL::PKey::DSA)
 
-class OpenSSL::TestPKeyDSA < OpenSSL::PKeyTestCase
+class AppleSSL::TestPKeyDSA < AppleSSL::PKeyTestCase
   def test_private
-    key = OpenSSL::PKey::DSA.new(256)
+    key = AppleSSL::PKey::DSA.new(256)
     assert(key.private?)
-    key2 = OpenSSL::PKey::DSA.new(key.to_der)
+    key2 = AppleSSL::PKey::DSA.new(key.to_der)
     assert(key2.private?)
     key3 = key.public_key
     assert(!key3.private?)
-    key4 = OpenSSL::PKey::DSA.new(key3.to_der)
+    key4 = AppleSSL::PKey::DSA.new(key3.to_der)
     assert(!key4.private?)
   end
 
   def test_new
-    key = OpenSSL::PKey::DSA.new 256
+    key = AppleSSL::PKey::DSA.new 256
     pem  = key.public_key.to_pem
-    OpenSSL::PKey::DSA.new pem
+    AppleSSL::PKey::DSA.new pem
     if $0 == __FILE__
       assert_nothing_raised {
-        key = OpenSSL::PKey::DSA.new 2048
+        key = AppleSSL::PKey::DSA.new 2048
       }
     end
   end
 
   def test_new_break
-    assert_nil(OpenSSL::PKey::DSA.new(512) { break })
+    assert_nil(AppleSSL::PKey::DSA.new(512) { break })
     assert_raise(RuntimeError) do
-      OpenSSL::PKey::DSA.new(512) { raise }
+      AppleSSL::PKey::DSA.new(512) { raise }
     end
   end
 
   def test_sign_verify
     dsa512 = Fixtures.pkey("dsa512")
     data = "Sign me!"
-    if defined?(OpenSSL::Digest::DSS1)
-      signature = dsa512.sign(OpenSSL::Digest::DSS1.new, data)
-      assert_equal true, dsa512.verify(OpenSSL::Digest::DSS1.new, signature, data)
+    if defined?(AppleSSL::Digest::DSS1)
+      signature = dsa512.sign(AppleSSL::Digest::DSS1.new, data)
+      assert_equal true, dsa512.verify(AppleSSL::Digest::DSS1.new, signature, data)
     end
 
     signature = dsa512.sign("SHA1", data)
@@ -56,23 +56,23 @@ class OpenSSL::TestPKeyDSA < OpenSSL::PKeyTestCase
   def test_sys_sign_verify
     key = Fixtures.pkey("dsa256")
     data = 'Sign me!'
-    digest = OpenSSL::Digest::SHA1.digest(data)
+    digest = AppleSSL::Digest::SHA1.digest(data)
     sig = key.syssign(digest)
     assert(key.sysverify(digest, sig))
   end
 
   def test_DSAPrivateKey
-    # OpenSSL DSAPrivateKey format; similar to RSAPrivateKey
+    # AppleSSL DSAPrivateKey format; similar to RSAPrivateKey
     dsa512 = Fixtures.pkey("dsa512")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Integer(0),
-      OpenSSL::ASN1::Integer(dsa512.p),
-      OpenSSL::ASN1::Integer(dsa512.q),
-      OpenSSL::ASN1::Integer(dsa512.g),
-      OpenSSL::ASN1::Integer(dsa512.pub_key),
-      OpenSSL::ASN1::Integer(dsa512.priv_key)
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Integer(0),
+      AppleSSL::ASN1::Integer(dsa512.p),
+      AppleSSL::ASN1::Integer(dsa512.q),
+      AppleSSL::ASN1::Integer(dsa512.g),
+      AppleSSL::ASN1::Integer(dsa512.pub_key),
+      AppleSSL::ASN1::Integer(dsa512.priv_key)
     ])
-    key = OpenSSL::PKey::DSA.new(asn1.to_der)
+    key = AppleSSL::PKey::DSA.new(asn1.to_der)
     assert_predicate key, :private?
     assert_same_dsa dsa512, key
 
@@ -86,7 +86,7 @@ class OpenSSL::TestPKeyDSA < OpenSSL::PKeyTestCase
     55jreJD3Se3slps=
     -----END DSA PRIVATE KEY-----
     EOF
-    key = OpenSSL::PKey::DSA.new(pem)
+    key = AppleSSL::PKey::DSA.new(pem)
     assert_same_dsa dsa512, key
 
     assert_equal asn1.to_der, dsa512.to_der
@@ -109,35 +109,35 @@ class OpenSSL::TestPKeyDSA < OpenSSL::PKeyTestCase
     Wgx6c8K+qBAIVrilw3EWxw==
     -----END DSA PRIVATE KEY-----
     EOF
-    key = OpenSSL::PKey::DSA.new(pem, "abcdef")
+    key = AppleSSL::PKey::DSA.new(pem, "abcdef")
     assert_same_dsa dsa512, key
-    key = OpenSSL::PKey::DSA.new(pem) { "abcdef" }
+    key = AppleSSL::PKey::DSA.new(pem) { "abcdef" }
     assert_same_dsa dsa512, key
 
-    cipher = OpenSSL::Cipher.new("aes-128-cbc")
+    cipher = AppleSSL::Cipher.new("aes-128-cbc")
     exported = dsa512.to_pem(cipher, "abcdef\0\1")
-    assert_same_dsa dsa512, OpenSSL::PKey::DSA.new(exported, "abcdef\0\1")
-    assert_raise(OpenSSL::PKey::DSAError) {
-      OpenSSL::PKey::DSA.new(exported, "abcdef")
+    assert_same_dsa dsa512, AppleSSL::PKey::DSA.new(exported, "abcdef\0\1")
+    assert_raise(AppleSSL::PKey::DSAError) {
+      AppleSSL::PKey::DSA.new(exported, "abcdef")
     }
   end
 
   def test_PUBKEY
     dsa512 = Fixtures.pkey("dsa512")
-    asn1 = OpenSSL::ASN1::Sequence([
-      OpenSSL::ASN1::Sequence([
-        OpenSSL::ASN1::ObjectId("DSA"),
-        OpenSSL::ASN1::Sequence([
-          OpenSSL::ASN1::Integer(dsa512.p),
-          OpenSSL::ASN1::Integer(dsa512.q),
-          OpenSSL::ASN1::Integer(dsa512.g)
+    asn1 = AppleSSL::ASN1::Sequence([
+      AppleSSL::ASN1::Sequence([
+        AppleSSL::ASN1::ObjectId("DSA"),
+        AppleSSL::ASN1::Sequence([
+          AppleSSL::ASN1::Integer(dsa512.p),
+          AppleSSL::ASN1::Integer(dsa512.q),
+          AppleSSL::ASN1::Integer(dsa512.g)
         ])
       ]),
-      OpenSSL::ASN1::BitString(
-        OpenSSL::ASN1::Integer(dsa512.pub_key).to_der
+      AppleSSL::ASN1::BitString(
+        AppleSSL::ASN1::Integer(dsa512.pub_key).to_der
       )
     ])
-    key = OpenSSL::PKey::DSA.new(asn1.to_der)
+    key = AppleSSL::PKey::DSA.new(asn1.to_der)
     assert_not_predicate key, :private?
     assert_same_dsa dup_public(dsa512), key
 
@@ -151,7 +151,7 @@ class OpenSSL::TestPKeyDSA < OpenSSL::PKeyTestCase
     oXi9OA==
     -----END PUBLIC KEY-----
     EOF
-    key = OpenSSL::PKey::DSA.new(pem)
+    key = AppleSSL::PKey::DSA.new(pem)
     assert_same_dsa dup_public(dsa512), key
 
     assert_equal asn1.to_der, dup_public(dsa512).to_der
@@ -173,7 +173,7 @@ SG+is37hz1IaBeEudjB2HQJAR0AloavBvtsng8obsjLb7EKnB+pSeHr/BdIQ3VH7
 fWLOqqkzFeRrYMDzUpl36XktY6Yq8EJYlW9pCMmBVNy/dQ==
 -----END DSA PUBLIC KEY-----
     EOF
-    key = OpenSSL::PKey::DSA.new(pem)
+    key = AppleSSL::PKey::DSA.new(pem)
     assert(key.public?)
     assert(!key.private?)
     assert_equal(p, key.p)
@@ -184,7 +184,7 @@ fWLOqqkzFeRrYMDzUpl36XktY6Yq8EJYlW9pCMmBVNy/dQ==
   end
 
   def test_dup
-    key = OpenSSL::PKey::DSA.new(256)
+    key = AppleSSL::PKey::DSA.new(256)
     key2 = key.dup
     assert_equal key.params, key2.params
     key2.set_pqg(key2.p + 1, key2.q, key2.g)

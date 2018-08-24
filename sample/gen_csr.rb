@@ -3,7 +3,7 @@
 require 'optparse'
 require 'openssl'
 
-include OpenSSL
+include AppleSSL
 
 def usage
   myname = File::basename($0)

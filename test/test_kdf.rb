@@ -1,13 +1,13 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestKDF < OpenSSL::TestCase
+class AppleSSL::TestKDF < AppleSSL::TestCase
   def test_pkcs5_pbkdf2_hmac_compatibility
-    expected = OpenSSL::KDF.pbkdf2_hmac("password", salt: "salt", iterations: 1, length: 20, hash: "sha1")
-    assert_equal(expected, OpenSSL::PKCS5.pbkdf2_hmac("password", "salt", 1, 20, "sha1"))
-    assert_equal(expected, OpenSSL::PKCS5.pbkdf2_hmac_sha1("password", "salt", 1, 20))
+    expected = AppleSSL::KDF.pbkdf2_hmac("password", salt: "salt", iterations: 1, length: 20, hash: "sha1")
+    assert_equal(expected, AppleSSL::PKCS5.pbkdf2_hmac("password", "salt", 1, 20, "sha1"))
+    assert_equal(expected, AppleSSL::PKCS5.pbkdf2_hmac_sha1("password", "salt", 1, 20))
   end
 
   def test_pbkdf2_hmac_sha1_rfc6070_c_1_len_20
@@ -19,7 +19,7 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
               f3 a9 b5 24 af 60 12 06
               2f e0 37 a6 }
     expected = [raw.join('')].pack('H*')
-    value = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
+    value = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
     assert_equal(expected, value)
   end
 
@@ -32,7 +32,7 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
               cd 1e d9 2a ce 1d 41 f0
               d8 de 89 57 }
     expected = [raw.join('')].pack('H*')
-    value = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
+    value = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
     assert_equal(expected, value)
   end
 
@@ -45,7 +45,7 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
               be ad 49 d9 26 f7 21 d0
               65 a4 29 c1 }
     expected = [raw.join('')].pack('H*')
-    value = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
+    value = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
     assert_equal(expected, value)
   end
 
@@ -59,7 +59,7 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
 #              e9 94 5b 3d 6b a2 15 8c
 #              26 34 e9 84 }
 #    expected = [raw.join('')].pack('H*')
-#    value = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
+#    value = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
 #    assert_equal(expected, value)
 #  end
 
@@ -74,7 +74,7 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
               8b 29 1a 96 4c f2 f0 70
               38 }
     expected = [raw.join('')].pack('H*')
-    value = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
+    value = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
     assert_equal(expected, value)
   end
 
@@ -86,23 +86,23 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
     raw = %w{ 56 fa 6a a7 55 48 09 9d
               cc 37 d7 f0 34 25 e0 c3 }
     expected = [raw.join('')].pack('H*')
-    value = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
+    value = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha1")
     assert_equal(expected, value)
   end
 
   def test_pbkdf2_hmac_sha256_c_20000_len_32
     #unfortunately no official test vectors available yet for SHA-2
     p ="password"
-    s = OpenSSL::Random.random_bytes(16)
+    s = AppleSSL::Random.random_bytes(16)
     c = 20000
     dk_len = 32
-    value1 = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha256")
-    value2 = OpenSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha256")
+    value1 = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha256")
+    value2 = AppleSSL::KDF.pbkdf2_hmac(p, salt: s, iterations: c, length: dk_len, hash: "sha256")
     assert_equal(value1, value2)
   end
 
   def test_scrypt_rfc7914_first
-    pend "scrypt is not implemented" unless OpenSSL::KDF.respond_to?(:scrypt) # OpenSSL >= 1.1.0
+    pend "scrypt is not implemented" unless AppleSSL::KDF.respond_to?(:scrypt) # AppleSSL >= 1.1.0
     pass = ""
     salt = ""
     n = 16
@@ -113,11 +113,11 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
                      f1 6b 48 44 e3 07 4a e8 df df fa 3f ed e2 14 42
                      fc d0 06 9d ed 09 48 f8 32 6a 75 3a 0f c8 1f 17
                      e8 d3 e0 fb 2e 0d 36 28 cf 35 e2 0c 38 d1 89 06 })
-    assert_equal(expected, OpenSSL::KDF.scrypt(pass, salt: salt, N: n, r: r, p: p, length: dklen))
+    assert_equal(expected, AppleSSL::KDF.scrypt(pass, salt: salt, N: n, r: r, p: p, length: dklen))
   end
 
   def test_scrypt_rfc7914_second
-    pend "scrypt is not implemented" unless OpenSSL::KDF.respond_to?(:scrypt) # OpenSSL >= 1.1.0
+    pend "scrypt is not implemented" unless AppleSSL::KDF.respond_to?(:scrypt) # AppleSSL >= 1.1.0
     pass = "password"
     salt = "NaCl"
     n = 1024
@@ -128,11 +128,11 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
                      7c 6a d7 cb c8 23 78 30 e7 73 76 63 4b 37 31 62
                      2e af 30 d9 2e 22 a3 88 6f f1 09 27 9d 98 30 da
                      c7 27 af b9 4a 83 ee 6d 83 60 cb df a2 cc 06 40 })
-    assert_equal(expected, OpenSSL::KDF.scrypt(pass, salt: salt, N: n, r: r, p: p, length: dklen))
+    assert_equal(expected, AppleSSL::KDF.scrypt(pass, salt: salt, N: n, r: r, p: p, length: dklen))
   end
 
   def test_hkdf_rfc5869_test_case_1
-    pend "HKDF is not implemented" unless OpenSSL::KDF.respond_to?(:hkdf) # OpenSSL >= 1.1.0
+    pend "HKDF is not implemented" unless AppleSSL::KDF.respond_to?(:hkdf) # AppleSSL >= 1.1.0
     hash = "sha256"
     ikm = B("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b")
     salt = B("000102030405060708090a0b0c")
@@ -142,11 +142,11 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
     okm = B("3cb25f25faacd57a90434f64d0362f2a" \
             "2d2d0a90cf1a5a4c5db02d56ecc4c5bf" \
             "34007208d5b887185865")
-    assert_equal(okm, OpenSSL::KDF.hkdf(ikm, salt: salt, info: info, length: l, hash: hash))
+    assert_equal(okm, AppleSSL::KDF.hkdf(ikm, salt: salt, info: info, length: l, hash: hash))
   end
 
   def test_hkdf_rfc5869_test_case_3
-    pend "HKDF is not implemented" unless OpenSSL::KDF.respond_to?(:hkdf) # OpenSSL >= 1.1.0
+    pend "HKDF is not implemented" unless AppleSSL::KDF.respond_to?(:hkdf) # AppleSSL >= 1.1.0
     hash = "sha256"
     ikm = B("0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b0b")
     salt = B("")
@@ -156,11 +156,11 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
     okm = B("8da4e775a563c18f715f802a063c5a31" \
             "b8a11f5c5ee1879ec3454e5f3c738d2d" \
             "9d201395faa4b61a96c8")
-    assert_equal(okm, OpenSSL::KDF.hkdf(ikm, salt: salt, info: info, length: l, hash: hash))
+    assert_equal(okm, AppleSSL::KDF.hkdf(ikm, salt: salt, info: info, length: l, hash: hash))
   end
 
   def test_hkdf_rfc5869_test_case_4
-    pend "HKDF is not implemented" unless OpenSSL::KDF.respond_to?(:hkdf) # OpenSSL >= 1.1.0
+    pend "HKDF is not implemented" unless AppleSSL::KDF.respond_to?(:hkdf) # AppleSSL >= 1.1.0
     hash = "sha1"
     ikm = B("0b0b0b0b0b0b0b0b0b0b0b")
     salt = B("000102030405060708090a0b0c")
@@ -170,7 +170,7 @@ class OpenSSL::TestKDF < OpenSSL::TestCase
     okm = B("085a01ea1b10f36933068b56efa5ad81" \
             "a4f14b822f5b091568a9cdd4f155fda2" \
             "c22e422478d305f3f896")
-    assert_equal(okm, OpenSSL::KDF.hkdf(ikm, salt: salt, info: info, length: l, hash: hash))
+    assert_equal(okm, AppleSSL::KDF.hkdf(ikm, salt: salt, info: info, length: l, hash: hash))
   end
 
   private

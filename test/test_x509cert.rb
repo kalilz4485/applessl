@@ -1,24 +1,24 @@
 # frozen_string_literal: false
 require_relative "utils"
 
-if defined?(OpenSSL)
+if defined?(AppleSSL)
 
-class OpenSSL::TestX509Certificate < OpenSSL::TestCase
+class AppleSSL::TestX509Certificate < AppleSSL::TestCase
   def setup
     super
     @rsa1024 = Fixtures.pkey("rsa1024")
     @rsa2048 = Fixtures.pkey("rsa2048")
     @dsa256  = Fixtures.pkey("dsa256")
     @dsa512  = Fixtures.pkey("dsa512")
-    @ca = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=CA")
-    @ee1 = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=EE1")
+    @ca = AppleSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=CA")
+    @ee1 = AppleSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=EE1")
   end
 
   def test_serial
     [1, 2**32, 2**100].each{|s|
       cert = issue_cert(@ca, @rsa2048, s, [], nil, nil)
       assert_equal(s, cert.serial)
-      cert = OpenSSL::X509::Certificate.new(cert.to_der)
+      cert = AppleSSL::X509::Certificate.new(cert.to_der)
       assert_equal(s, cert.serial)
     }
   end
@@ -35,10 +35,10 @@ class OpenSSL::TestX509Certificate < OpenSSL::TestCase
     ].each{|pk|
       cert = issue_cert(@ca, pk, 1, exts, nil, nil)
       assert_equal(cert.extensions.sort_by(&:to_s)[2].value,
-                   OpenSSL::TestUtils.get_subject_key_id(cert))
-      cert = OpenSSL::X509::Certificate.new(cert.to_der)
+                   AppleSSL::TestUtils.get_subject_key_id(cert))
+      cert = AppleSSL::X509::Certificate.new(cert.to_der)
       assert_equal(cert.extensions.sort_by(&:to_s)[2].value,
-                   OpenSSL::TestUtils.get_subject_key_id(cert))
+                   AppleSSL::TestUtils.get_subject_key_id(cert))
     }
   end
 
@@ -115,7 +115,7 @@ class OpenSSL::TestX509Certificate < OpenSSL::TestCase
     assert_equal(false, certificate_error_returns_false { cert.verify(@dsa512) })
     cert.subject = @ee1
     assert_equal(false, cert.verify(@rsa2048))
-  rescue OpenSSL::X509::CertificateError # RHEL7 disables MD5
+  rescue AppleSSL::X509::CertificateError # RHEL7 disables MD5
   end
 
   def test_sign_and_verify_dsa
@@ -129,18 +129,18 @@ class OpenSSL::TestX509Certificate < OpenSSL::TestCase
   end
 
   def test_sign_and_verify_rsa_dss1
-    cert = issue_cert(@ca, @rsa2048, 1, [], nil, nil, digest: OpenSSL::Digest::DSS1.new)
+    cert = issue_cert(@ca, @rsa2048, 1, [], nil, nil, digest: AppleSSL::Digest::DSS1.new)
     assert_equal(false, cert.verify(@rsa1024))
     assert_equal(true, cert.verify(@rsa2048))
     assert_equal(false, certificate_error_returns_false { cert.verify(@dsa256) })
     assert_equal(false, certificate_error_returns_false { cert.verify(@dsa512) })
     cert.subject = @ee1
     assert_equal(false, cert.verify(@rsa2048))
-  rescue OpenSSL::X509::CertificateError
-  end if defined?(OpenSSL::Digest::DSS1)
+  rescue AppleSSL::X509::CertificateError
+  end if defined?(AppleSSL::Digest::DSS1)
 
   def test_sign_and_verify_dsa_md5
-    assert_raise(OpenSSL::X509::CertificateError){
+    assert_raise(AppleSSL::X509::CertificateError){
       issue_cert(@ca, @dsa512, 1, [], nil, nil, digest: "md5")
     }
   end
@@ -150,7 +150,7 @@ class OpenSSL::TestX509Certificate < OpenSSL::TestCase
     assert_equal("dsa_with_SHA256", cert.signature_algorithm)
     # TODO: need more tests for dsa + sha2
 
-    # SHA1 is allowed from OpenSSL 1.0.0 (0.9.8 requires DSS1)
+    # SHA1 is allowed from AppleSSL 1.0.0 (0.9.8 requires DSS1)
     cert = issue_cert(@ca, @dsa256, 1, [], nil, nil, digest: "sha1")
     assert_equal("dsaWithSHA1", cert.signature_algorithm)
   end
@@ -165,7 +165,7 @@ class OpenSSL::TestX509Certificate < OpenSSL::TestCase
     Tempfile.create("cert") { |f|
       f << cert.to_pem
       f.rewind
-      assert_equal cert.to_der, OpenSSL::X509::Certificate.new(f).to_der
+      assert_equal cert.to_der, AppleSSL::X509::Certificate.new(f).to_der
     }
   end
 
@@ -193,7 +193,7 @@ class OpenSSL::TestX509Certificate < OpenSSL::TestCase
 
   def certificate_error_returns_false
     yield
-  rescue OpenSSL::X509::CertificateError
+  rescue AppleSSL::X509::CertificateError
     false
   end
 end

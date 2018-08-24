@@ -77,11 +77,11 @@ private
   end
 
   def load_cert_str(cert_str)
-    OpenSSL::X509::Certificate.new(cert_str)
+    AppleSSL::X509::Certificate.new(cert_str)
   end
 
   def load_crl_str(crl_str)
-    OpenSSL::X509::CRL.new(crl_str)
+    AppleSSL::X509::CRL.new(crl_str)
   end
 
   def check_valid(crl, ca)
@@ -117,6 +117,6 @@ if $0 == __FILE__
   dir = "trust_certs"
   c_store = CHashDir.new(dir)
   s = CrlStore.new(c_store)
-  c = OpenSSL::X509::Certificate.new(File.read("cert_store/google_codesign.pem"))
+  c = AppleSSL::X509::Certificate.new(File.read("cert_store/google_codesign.pem"))
   p s.find_crl(c)
 end

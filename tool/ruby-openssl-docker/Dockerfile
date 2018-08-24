@@ -13,7 +13,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
   sed \
   zlib1g-dev
 
-# Supported OpenSSL versions: 1.0.1-
+# Supported AppleSSL versions: 1.0.1-
 RUN mkdir -p /build/openssl
 RUN curl -s https://www.openssl.org/source/openssl-1.0.0t.tar.gz | tar -C /build/openssl -xzf - && \
     cd /build/openssl/openssl-1.0.0t && \

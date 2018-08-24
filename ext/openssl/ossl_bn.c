@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Technorama team <oss-ruby@technorama.net>
  * All rights reserved.
  */
@@ -33,7 +33,7 @@ ossl_bn_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_bn_type = {
-    "OpenSSL/BN",
+    "AppleSSL/BN",
     {
 	0, ossl_bn_free,
     },
@@ -45,9 +45,9 @@ static const rb_data_type_t ossl_bn_type = {
  */
 VALUE cBN;
 
-/* Document-class: OpenSSL::BNError
+/* Document-class: AppleSSL::BNError
  *
- * Generic Error for all of OpenSSL::BN (big num)
+ * Generic Error for all of AppleSSL::BN (big num)
  */
 VALUE eBNError;
 
@@ -140,7 +140,7 @@ ossl_bn_value_ptr(volatile VALUE *ptr)
 
     tmp = try_convert_to_bn(*ptr);
     if (NIL_P(tmp))
-	ossl_raise(rb_eTypeError, "Cannot convert into OpenSSL::BN");
+	ossl_raise(rb_eTypeError, "Cannot convert into AppleSSL::BN");
     GetBN(tmp, bn);
     *ptr = tmp;
 
@@ -173,13 +173,13 @@ ossl_bn_alloc(VALUE klass)
 
 /*
  * call-seq:
- *    OpenSSL::BN.new => aBN
- *    OpenSSL::BN.new(bn) => aBN
- *    OpenSSL::BN.new(integer) => aBN
- *    OpenSSL::BN.new(string) => aBN
- *    OpenSSL::BN.new(string, 0 | 2 | 10 | 16) => aBN
+ *    AppleSSL::BN.new => aBN
+ *    AppleSSL::BN.new(bn) => aBN
+ *    AppleSSL::BN.new(integer) => aBN
+ *    AppleSSL::BN.new(string) => aBN
+ *    AppleSSL::BN.new(string, 0 | 2 | 10 | 16) => aBN
  *
- * Construct a new OpenSSL BIGNUM object.
+ * Construct a new AppleSSL BIGNUM object.
  */
 static VALUE
 ossl_bn_initialize(int argc, VALUE *argv, VALUE self)
@@ -351,21 +351,21 @@ ossl_bn_coerce(VALUE self, VALUE other)
     }
 
 /*
- * Document-method: OpenSSL::BN#zero?
+ * Document-method: AppleSSL::BN#zero?
  * call-seq:
  *   bn.zero? => true | false
  */
 BIGNUM_BOOL1(is_zero)
 
 /*
- * Document-method: OpenSSL::BN#one?
+ * Document-method: AppleSSL::BN#one?
  * call-seq:
  *   bn.one? => true | false
  */
 BIGNUM_BOOL1(is_one)
 
 /*
- * Document-method: OpenSSL::BN#odd?
+ * Document-method: AppleSSL::BN#odd?
  * call-seq:
  *   bn.odd? => true | false
  */
@@ -406,7 +406,7 @@ ossl_bn_is_negative(VALUE self)
     }
 
 /*
- * Document-method: OpenSSL::BN#sqr
+ * Document-method: AppleSSL::BN#sqr
  * call-seq:
  *   bn.sqr => aBN
  */
@@ -432,14 +432,14 @@ BIGNUM_1c(sqr)
     }
 
 /*
- * Document-method: OpenSSL::BN#+
+ * Document-method: AppleSSL::BN#+
  * call-seq:
  *   bn + bn2 => aBN
  */
 BIGNUM_2(add)
 
 /*
- * Document-method: OpenSSL::BN#-
+ * Document-method: AppleSSL::BN#-
  * call-seq:
  *   bn - bn2 => aBN
  */
@@ -465,42 +465,42 @@ BIGNUM_2(sub)
     }
 
 /*
- * Document-method: OpenSSL::BN#*
+ * Document-method: AppleSSL::BN#*
  * call-seq:
  *   bn * bn2 => aBN
  */
 BIGNUM_2c(mul)
 
 /*
- * Document-method: OpenSSL::BN#%
+ * Document-method: AppleSSL::BN#%
  * call-seq:
  *   bn % bn2 => aBN
  */
 BIGNUM_2c(mod)
 
 /*
- * Document-method: OpenSSL::BN#**
+ * Document-method: AppleSSL::BN#**
  * call-seq:
  *   bn ** bn2 => aBN
  */
 BIGNUM_2c(exp)
 
 /*
- * Document-method: OpenSSL::BN#gcd
+ * Document-method: AppleSSL::BN#gcd
  * call-seq:
  *   bn.gcd(bn2) => aBN
  */
 BIGNUM_2c(gcd)
 
 /*
- * Document-method: OpenSSL::BN#mod_sqr
+ * Document-method: AppleSSL::BN#mod_sqr
  * call-seq:
  *   bn.mod_sqr(bn2) => aBN
  */
 BIGNUM_2c(mod_sqr)
 
 /*
- * Document-method: OpenSSL::BN#mod_inverse
+ * Document-method: AppleSSL::BN#mod_inverse
  * call-seq:
  *   bn.mod_inverse(bn2) => aBN
  */
@@ -510,7 +510,7 @@ BIGNUM_2c(mod_inverse)
  * call-seq:
  *    bn1 / bn2 => [result, remainder]
  *
- * Division of OpenSSL::BN instances
+ * Division of AppleSSL::BN instances
  */
 static VALUE
 ossl_bn_div(VALUE self, VALUE other)
@@ -562,28 +562,28 @@ ossl_bn_div(VALUE self, VALUE other)
     }
 
 /*
- * Document-method: OpenSSL::BN#mod_add
+ * Document-method: AppleSSL::BN#mod_add
  * call-seq:
  *   bn.mod_add(bn1, bn2) -> aBN
  */
 BIGNUM_3c(mod_add)
 
 /*
- * Document-method: OpenSSL::BN#mod_sub
+ * Document-method: AppleSSL::BN#mod_sub
  * call-seq:
  *   bn.mod_sub(bn1, bn2) -> aBN
  */
 BIGNUM_3c(mod_sub)
 
 /*
- * Document-method: OpenSSL::BN#mod_mul
+ * Document-method: AppleSSL::BN#mod_mul
  * call-seq:
  *   bn.mod_mul(bn1, bn2) -> aBN
  */
 BIGNUM_3c(mod_mul)
 
 /*
- * Document-method: OpenSSL::BN#mod_exp
+ * Document-method: AppleSSL::BN#mod_exp
  * call-seq:
  *   bn.mod_exp(bn1, bn2) -> aBN
  */
@@ -602,21 +602,21 @@ BIGNUM_3c(mod_exp)
     }
 
 /*
- * Document-method: OpenSSL::BN#set_bit!
+ * Document-method: AppleSSL::BN#set_bit!
  * call-seq:
  *   bn.set_bit!(bit) -> self
  */
 BIGNUM_BIT(set_bit)
 
 /*
- * Document-method: OpenSSL::BN#clear_bit!
+ * Document-method: AppleSSL::BN#clear_bit!
  * call-seq:
  *   bn.clear_bit!(bit) -> self
  */
 BIGNUM_BIT(clear_bit)
 
 /*
- * Document-method: OpenSSL::BN#mask_bit!
+ * Document-method: AppleSSL::BN#mask_bit!
  * call-seq:
  *   bn.mask_bit!(bit) -> self
  */
@@ -664,14 +664,14 @@ ossl_bn_is_bit_set(VALUE self, VALUE bit)
     }
 
 /*
- * Document-method: OpenSSL::BN#<<
+ * Document-method: AppleSSL::BN#<<
  * call-seq:
  *   bn << bits -> aBN
  */
 BIGNUM_SHIFT(lshift)
 
 /*
- * Document-method: OpenSSL::BN#>>
+ * Document-method: AppleSSL::BN#>>
  * call-seq:
  *   bn >> bits -> aBN
  */
@@ -691,14 +691,14 @@ BIGNUM_SHIFT(rshift)
     }
 
 /*
- * Document-method: OpenSSL::BN#lshift!
+ * Document-method: AppleSSL::BN#lshift!
  * call-seq:
  *   bn.lshift!(bits) -> self
  */
 BIGNUM_SELF_SHIFT(lshift)
 
 /*
- * Document-method: OpenSSL::BN#rshift!
+ * Document-method: AppleSSL::BN#rshift!
  * call-seq:
  *   bn.rshift!(bits) -> self
  */
@@ -733,13 +733,13 @@ BIGNUM_SELF_SHIFT(rshift)
     }
 
 /*
- * Document-method: OpenSSL::BN.rand
+ * Document-method: AppleSSL::BN.rand
  *   BN.rand(bits [, fill [, odd]]) -> aBN
  */
 BIGNUM_RAND(rand)
 
 /*
- * Document-method: OpenSSL::BN.pseudo_rand
+ * Document-method: AppleSSL::BN.pseudo_rand
  *   BN.pseudo_rand(bits [, fill [, odd]]) -> aBN
  */
 BIGNUM_RAND(pseudo_rand)
@@ -762,7 +762,7 @@ BIGNUM_RAND(pseudo_rand)
     }
 
 /*
- * Document-method: OpenSSL::BN.rand_range
+ * Document-method: AppleSSL::BN.rand_range
  * call-seq:
  *   BN.rand_range(range) -> aBN
  *
@@ -770,7 +770,7 @@ BIGNUM_RAND(pseudo_rand)
 BIGNUM_RAND_RANGE(rand)
 
 /*
- * Document-method: OpenSSL::BN.pseudo_rand_range
+ * Document-method: AppleSSL::BN.pseudo_rand_range
  * call-seq:
  *   BN.pseudo_rand_range(range) -> aBN
  *
@@ -832,14 +832,14 @@ ossl_bn_s_generate_prime(int argc, VALUE *argv, VALUE klass)
     }
 
 /*
- * Document-method: OpenSSL::BN#num_bytes
+ * Document-method: AppleSSL::BN#num_bytes
  * call-seq:
  *   bn.num_bytes => integer
  */
 BIGNUM_NUM(num_bytes)
 
 /*
- * Document-method: OpenSSL::BN#num_bits
+ * Document-method: AppleSSL::BN#num_bits
  * call-seq:
  *   bn.num_bits => integer
  */
@@ -904,19 +904,19 @@ ossl_bn_uminus(VALUE self)
     }
 
 /*
- * Document-method: OpenSSL::BN#cmp
+ * Document-method: AppleSSL::BN#cmp
  * call-seq:
  *   bn.cmp(bn2) => integer
  */
 /*
- * Document-method: OpenSSL::BN#<=>
+ * Document-method: AppleSSL::BN#<=>
  * call-seq:
  *   bn <=> bn2 => integer
  */
 BIGNUM_CMP(cmp)
 
 /*
- * Document-method: OpenSSL::BN#ucmp
+ * Document-method: AppleSSL::BN#ucmp
  * call-seq:
  *   bn.ucmp(bn2) => integer
  */
@@ -927,7 +927,7 @@ BIGNUM_CMP(ucmp)
  *     bn == obj => true or false
  *
  *  Returns +true+ only if _obj_ has the same value as _bn_. Contrast this
- *  with OpenSSL::BN#eql?, which requires obj to be OpenSSL::BN.
+ *  with AppleSSL::BN#eql?, which requires obj to be AppleSSL::BN.
  */
 static VALUE
 ossl_bn_eq(VALUE self, VALUE other)
@@ -951,8 +951,8 @@ ossl_bn_eq(VALUE self, VALUE other)
  *     bn.eql?(obj) => true or false
  *
  *  Returns <code>true</code> only if <i>obj</i> is a
- *  <code>OpenSSL::BN</code> with the same value as <i>bn</i>. Contrast this
- *  with OpenSSL::BN#==, which performs type conversions.
+ *  <code>AppleSSL::BN</code> with the same value as <i>bn</i>. Contrast this
+ *  with AppleSSL::BN#==, which performs type conversions.
  */
 static VALUE
 ossl_bn_eql(VALUE self, VALUE other)
@@ -1082,8 +1082,8 @@ void
 Init_ossl_bn(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
 #endif
 
     if (!(ossl_bn_ctx = BN_CTX_new())) {

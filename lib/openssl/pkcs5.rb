@@ -1,17 +1,17 @@
 # frozen_string_literal: false
 #--
-# Ruby/OpenSSL Project
-# Copyright (C) 2017 Ruby/OpenSSL Project Authors
+# Ruby/AppleSSL Project
+# Copyright (C) 2017 Ruby/AppleSSL Project Authors
 #++
 
-module OpenSSL
+module AppleSSL
   module PKCS5
     module_function
 
-    # OpenSSL::PKCS5.pbkdf2_hmac has been renamed to OpenSSL::KDF.pbkdf2_hmac.
+    # AppleSSL::PKCS5.pbkdf2_hmac has been renamed to AppleSSL::KDF.pbkdf2_hmac.
     # This method is provided for backwards compatibility.
     def pbkdf2_hmac(pass, salt, iter, keylen, digest)
-      OpenSSL::KDF.pbkdf2_hmac(pass, salt: salt, iterations: iter,
+      AppleSSL::KDF.pbkdf2_hmac(pass, salt: salt, iterations: iter,
                                length: keylen, hash: digest)
     end
 

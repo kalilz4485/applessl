@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' team members
+ * 'AppleSSL for Ruby' team members
  * Copyright (C) 2003
  * All rights reserved.
  */
@@ -107,7 +107,7 @@ asn1integer_to_num(const ASN1_INTEGER *ai)
 	ossl_raise(rb_eTypeError, "ASN1_INTEGER is NULL!");
     }
     if (ai->type == V_ASN1_ENUMERATED)
-	/* const_cast: workaround for old OpenSSL */
+	/* const_cast: workaround for old AppleSSL */
 	bn = ASN1_ENUMERATED_to_BN((ASN1_ENUMERATED *)ai, NULL);
     else
 	bn = ASN1_INTEGER_to_BN(ai, NULL);
@@ -627,7 +627,7 @@ ossl_asn1_class2sym(int tc)
 
 /*
  * call-seq:
- *    OpenSSL::ASN1::ASN1Data.new(value, tag, tag_class) => ASN1Data
+ *    AppleSSL::ASN1::ASN1Data.new(value, tag, tag_class) => ASN1Data
  *
  * _value_: Please have a look at Constructive and Primitive to see how Ruby
  * types are mapped to ASN.1 types and vice versa.
@@ -638,8 +638,8 @@ ossl_asn1_class2sym(int tc)
  * possible values.
  *
  * == Example
- *   asn1_int = OpenSSL::ASN1Data.new(42, 2, :UNIVERSAL) # => Same as OpenSSL::ASN1::Integer.new(42)
- *   tagged_int = OpenSSL::ASN1Data.new(42, 0, :CONTEXT_SPECIFIC) # implicitly 0-tagged INTEGER
+ *   asn1_int = AppleSSL::ASN1Data.new(42, 2, :UNIVERSAL) # => Same as AppleSSL::ASN1::Integer.new(42)
+ *   tagged_int = AppleSSL::ASN1Data.new(42, 0, :CONTEXT_SPECIFIC) # implicitly 0-tagged INTEGER
  */
 static VALUE
 ossl_asn1data_initialize(VALUE self, VALUE value, VALUE tag, VALUE tag_class)
@@ -930,7 +930,7 @@ int_ossl_decode_sanity_check(long len, long read, long offset)
 
 /*
  * call-seq:
- *    OpenSSL::ASN1.traverse(asn1) -> nil
+ *    AppleSSL::ASN1.traverse(asn1) -> nil
  *
  * If a block is given, it prints out each of the elements encountered.
  * Block parameters are (in that order):
@@ -944,7 +944,7 @@ int_ossl_decode_sanity_check(long len, long read, long offset)
  *
  * == Example
  *   der = File.binread('asn1data.der')
- *   OpenSSL::ASN1.traverse(der) do | depth, offset, header_len, length, constructed, tag_class, tag|
+ *   AppleSSL::ASN1.traverse(der) do | depth, offset, header_len, length, constructed, tag_class, tag|
  *     puts "Depth: #{depth} Offset: #{offset} Length: #{length}"
  *     puts "Header length: #{header_len} Tag: #{tag} Tag class: #{tag_class} Constructed: #{constructed}"
  *   end
@@ -968,7 +968,7 @@ ossl_asn1_traverse(VALUE self, VALUE obj)
 
 /*
  * call-seq:
- *    OpenSSL::ASN1.decode(der) -> ASN1Data
+ *    AppleSSL::ASN1.decode(der) -> ASN1Data
  *
  * Decodes a BER- or DER-encoded value and creates an ASN1Data instance. _der_
  * may be a String or any object that features a +.to_der+ method transforming
@@ -976,7 +976,7 @@ ossl_asn1_traverse(VALUE self, VALUE obj)
  *
  * == Example
  *   der = File.binread('asn1data')
- *   asn1 = OpenSSL::ASN1.decode(der)
+ *   asn1 = AppleSSL::ASN1.decode(der)
  */
 static VALUE
 ossl_asn1_decode(VALUE self, VALUE obj)
@@ -998,7 +998,7 @@ ossl_asn1_decode(VALUE self, VALUE obj)
 
 /*
  * call-seq:
- *    OpenSSL::ASN1.decode_all(der) -> Array of ASN1Data
+ *    AppleSSL::ASN1.decode_all(der) -> Array of ASN1Data
  *
  * Similar to #decode with the difference that #decode expects one
  * distinct value represented in _der_. #decode_all on the contrary
@@ -1007,7 +1007,7 @@ ossl_asn1_decode(VALUE self, VALUE obj)
  *
  * == Example
  *   ders = File.binread('asn1data_seq')
- *   asn1_ary = OpenSSL::ASN1.decode_all(ders)
+ *   asn1_ary = AppleSSL::ASN1.decode_all(ders)
  */
 static VALUE
 ossl_asn1_decode_all(VALUE self, VALUE obj)
@@ -1037,7 +1037,7 @@ ossl_asn1_decode_all(VALUE self, VALUE obj)
 
 /*
  * call-seq:
- *    OpenSSL::ASN1::Primitive.new(value [, tag, tagging, tag_class ]) => Primitive
+ *    AppleSSL::ASN1::Primitive.new(value [, tag, tagging, tag_class ]) => Primitive
  *
  * _value_: is mandatory.
  *
@@ -1054,9 +1054,9 @@ ossl_asn1_decode_all(VALUE self, VALUE obj)
  * cf. ASN1.
  *
  * == Example
- *   int = OpenSSL::ASN1::Integer.new(42)
- *   zero_tagged_int = OpenSSL::ASN1::Integer.new(42, 0, :IMPLICIT)
- *   private_explicit_zero_tagged_int = OpenSSL::ASN1::Integer.new(42, 0, :EXPLICIT, :PRIVATE)
+ *   int = AppleSSL::ASN1::Integer.new(42)
+ *   zero_tagged_int = AppleSSL::ASN1::Integer.new(42, 0, :IMPLICIT)
+ *   private_explicit_zero_tagged_int = AppleSSL::ASN1::Integer.new(42, 0, :EXPLICIT, :PRIVATE)
  */
 static VALUE
 ossl_asn1_initialize(int argc, VALUE *argv, VALUE self)
@@ -1223,13 +1223,13 @@ ossl_asn1cons_each(VALUE self)
 
 /*
  * call-seq:
- *    OpenSSL::ASN1::ObjectId.register(object_id, short_name, long_name)
+ *    AppleSSL::ASN1::ObjectId.register(object_id, short_name, long_name)
  *
  * This adds a new ObjectId to the internal tables. Where _object_id_ is the
  * numerical form, _short_name_ is the short name, and _long_name_ is the long
  * name.
  *
- * Returns +true+ if successful. Raises an OpenSSL::ASN1::ASN1Error if it fails.
+ * Returns +true+ if successful. Raises an AppleSSL::ASN1::ASN1Error if it fails.
  *
  */
 static VALUE
@@ -1365,8 +1365,8 @@ Init_ossl_asn1(void)
     int i;
 
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
 #endif
 
     sym_UNIVERSAL = ID2SYM(rb_intern_const("UNIVERSAL"));
@@ -1384,7 +1384,7 @@ Init_ossl_asn1(void)
     sivUNUSED_BITS = rb_intern("@unused_bits");
 
     /*
-     * Document-module: OpenSSL::ASN1
+     * Document-module: AppleSSL::ASN1
      *
      * Abstract Syntax Notation One (or ASN.1) is a notation syntax to
      * describe data structures and is defined in ITU-T X.680. ASN.1 itself
@@ -1458,35 +1458,35 @@ Init_ossl_asn1(void)
      * == Tag constants
      *
      * There is a constant defined for each universal tag:
-     * * OpenSSL::ASN1::EOC (0)
-     * * OpenSSL::ASN1::BOOLEAN (1)
-     * * OpenSSL::ASN1::INTEGER (2)
-     * * OpenSSL::ASN1::BIT_STRING (3)
-     * * OpenSSL::ASN1::OCTET_STRING (4)
-     * * OpenSSL::ASN1::NULL (5)
-     * * OpenSSL::ASN1::OBJECT (6)
-     * * OpenSSL::ASN1::ENUMERATED (10)
-     * * OpenSSL::ASN1::UTF8STRING (12)
-     * * OpenSSL::ASN1::SEQUENCE (16)
-     * * OpenSSL::ASN1::SET (17)
-     * * OpenSSL::ASN1::NUMERICSTRING (18)
-     * * OpenSSL::ASN1::PRINTABLESTRING (19)
-     * * OpenSSL::ASN1::T61STRING (20)
-     * * OpenSSL::ASN1::VIDEOTEXSTRING (21)
-     * * OpenSSL::ASN1::IA5STRING (22)
-     * * OpenSSL::ASN1::UTCTIME (23)
-     * * OpenSSL::ASN1::GENERALIZEDTIME (24)
-     * * OpenSSL::ASN1::GRAPHICSTRING (25)
-     * * OpenSSL::ASN1::ISO64STRING (26)
-     * * OpenSSL::ASN1::GENERALSTRING (27)
-     * * OpenSSL::ASN1::UNIVERSALSTRING (28)
-     * * OpenSSL::ASN1::BMPSTRING (30)
+     * * AppleSSL::ASN1::EOC (0)
+     * * AppleSSL::ASN1::BOOLEAN (1)
+     * * AppleSSL::ASN1::INTEGER (2)
+     * * AppleSSL::ASN1::BIT_STRING (3)
+     * * AppleSSL::ASN1::OCTET_STRING (4)
+     * * AppleSSL::ASN1::NULL (5)
+     * * AppleSSL::ASN1::OBJECT (6)
+     * * AppleSSL::ASN1::ENUMERATED (10)
+     * * AppleSSL::ASN1::UTF8STRING (12)
+     * * AppleSSL::ASN1::SEQUENCE (16)
+     * * AppleSSL::ASN1::SET (17)
+     * * AppleSSL::ASN1::NUMERICSTRING (18)
+     * * AppleSSL::ASN1::PRINTABLESTRING (19)
+     * * AppleSSL::ASN1::T61STRING (20)
+     * * AppleSSL::ASN1::VIDEOTEXSTRING (21)
+     * * AppleSSL::ASN1::IA5STRING (22)
+     * * AppleSSL::ASN1::UTCTIME (23)
+     * * AppleSSL::ASN1::GENERALIZEDTIME (24)
+     * * AppleSSL::ASN1::GRAPHICSTRING (25)
+     * * AppleSSL::ASN1::ISO64STRING (26)
+     * * AppleSSL::ASN1::GENERALSTRING (27)
+     * * AppleSSL::ASN1::UNIVERSALSTRING (28)
+     * * AppleSSL::ASN1::BMPSTRING (30)
      *
      * == UNIVERSAL_TAG_NAME constant
      *
      * An Array that stores the name of a given tag number. These names are
      * the same as the name of the tag constant that is additionally defined,
-     * e.g. UNIVERSAL_TAG_NAME[2] = "INTEGER" and OpenSSL::ASN1::INTEGER = 2.
+     * e.g. UNIVERSAL_TAG_NAME[2] = "INTEGER" and AppleSSL::ASN1::INTEGER = 2.
      *
      * == Example usage
      *
@@ -1494,21 +1494,21 @@ Init_ossl_asn1(void)
      *   require 'openssl'
      *   require 'pp'
      *   der = File.binread('data.der')
-     *   asn1 = OpenSSL::ASN1.decode(der)
+     *   asn1 = AppleSSL::ASN1.decode(der)
      *   pp der
      *
      * === Creating an ASN.1 structure and DER-encoding it
      *   require 'openssl'
-     *   version = OpenSSL::ASN1::Integer.new(1)
+     *   version = AppleSSL::ASN1::Integer.new(1)
      *   # Explicitly 0-tagged implies context-specific tag class
-     *   serial = OpenSSL::ASN1::Integer.new(12345, 0, :EXPLICIT, :CONTEXT_SPECIFIC)
-     *   name = OpenSSL::ASN1::PrintableString.new('Data 1')
-     *   sequence = OpenSSL::ASN1::Sequence.new( [ version, serial, name ] )
+     *   serial = AppleSSL::ASN1::Integer.new(12345, 0, :EXPLICIT, :CONTEXT_SPECIFIC)
+     *   name = AppleSSL::ASN1::PrintableString.new('Data 1')
+     *   sequence = AppleSSL::ASN1::Sequence.new( [ version, serial, name ] )
      *   der = sequence.to_der
      */
     mASN1 = rb_define_module_under(mOSSL, "ASN1");
 
-    /* Document-class: OpenSSL::ASN1::ASN1Error
+    /* Document-class: AppleSSL::ASN1::ASN1Error
      *
      * Generic error class for all errors raised in ASN1 and any of the
      * classes defined in it.
@@ -1529,7 +1529,7 @@ Init_ossl_asn1(void)
 	rb_ary_store(ary, i, rb_str_new2(ossl_asn1_info[i].name));
     }
 
-    /* Document-class: OpenSSL::ASN1::ASN1Data
+    /* Document-class: AppleSSL::ASN1::ASN1Data
      *
      * The top-level class representing any ASN.1 object. When parsed by
      * ASN1.decode, tagged values are always represented by an instance
@@ -1564,50 +1564,50 @@ Init_ossl_asn1(void)
      * * _tag_ equal to 1
      * * _tag_class_ equal to +:CONTEXT_SPECIFIC+
      * * _value_ equal to an Array with one single element, an
-     *   instance of OpenSSL::ASN1::Integer, i.e. the inner element
+     *   instance of AppleSSL::ASN1::Integer, i.e. the inner element
      *   is the non-tagged primitive value, and the tagging is represented
      *   in the outer ASN1Data
      *
      * == Example - Decoding an implicitly tagged INTEGER
-     *   int = OpenSSL::ASN1::Integer.new(1, 0, :IMPLICIT) # implicit 0-tagged
-     *   seq = OpenSSL::ASN1::Sequence.new( [int] )
+     *   int = AppleSSL::ASN1::Integer.new(1, 0, :IMPLICIT) # implicit 0-tagged
+     *   seq = AppleSSL::ASN1::Sequence.new( [int] )
      *   der = seq.to_der
-     *   asn1 = OpenSSL::ASN1.decode(der)
-     *   # pp asn1 => #<OpenSSL::ASN1::Sequence:0x87326e0
+     *   asn1 = AppleSSL::ASN1.decode(der)
+     *   # pp asn1 => #<AppleSSL::ASN1::Sequence:0x87326e0
      *   #              @indefinite_length=false,
      *   #              @tag=16,
      *   #              @tag_class=:UNIVERSAL,
      *   #              @tagging=nil,
      *   #              @value=
-     *   #                [#<OpenSSL::ASN1::ASN1Data:0x87326f4
+     *   #                [#<AppleSSL::ASN1::ASN1Data:0x87326f4
      *   #                   @indefinite_length=false,
      *   #                   @tag=0,
      *   #                   @tag_class=:CONTEXT_SPECIFIC,
      *   #                   @value="\x01">]>
      *   raw_int = asn1.value[0]
      *   # manually rewrite tag and tag class to make it an UNIVERSAL value
-     *   raw_int.tag = OpenSSL::ASN1::INTEGER
+     *   raw_int.tag = AppleSSL::ASN1::INTEGER
      *   raw_int.tag_class = :UNIVERSAL
-     *   int2 = OpenSSL::ASN1.decode(raw_int)
+     *   int2 = AppleSSL::ASN1.decode(raw_int)
      *   puts int2.value # => 1
      *
      * == Example - Decoding an explicitly tagged INTEGER
-     *   int = OpenSSL::ASN1::Integer.new(1, 0, :EXPLICIT) # explicit 0-tagged
-     *   seq = OpenSSL::ASN1::Sequence.new( [int] )
+     *   int = AppleSSL::ASN1::Integer.new(1, 0, :EXPLICIT) # explicit 0-tagged
+     *   seq = AppleSSL::ASN1::Sequence.new( [int] )
      *   der = seq.to_der
-     *   asn1 = OpenSSL::ASN1.decode(der)
-     *   # pp asn1 => #<OpenSSL::ASN1::Sequence:0x87326e0
+     *   asn1 = AppleSSL::ASN1.decode(der)
+     *   # pp asn1 => #<AppleSSL::ASN1::Sequence:0x87326e0
      *   #              @indefinite_length=false,
      *   #              @tag=16,
      *   #              @tag_class=:UNIVERSAL,
      *   #              @tagging=nil,
      *   #              @value=
-     *   #                [#<OpenSSL::ASN1::ASN1Data:0x87326f4
+     *   #                [#<AppleSSL::ASN1::ASN1Data:0x87326f4
      *   #                   @indefinite_length=false,
      *   #                   @tag=0,
      *   #                   @tag_class=:CONTEXT_SPECIFIC,
      *   #                   @value=
-     *   #                     [#<OpenSSL::ASN1::Integer:0x85bf308
+     *   #                     [#<AppleSSL::ASN1::Integer:0x85bf308
      *   #                        @indefinite_length=false,
      *   #                        @tag=2,
      *   #                        @tag_class=:UNIVERSAL
@@ -1655,7 +1655,7 @@ Init_ossl_asn1(void)
     rb_define_method(cASN1Data, "initialize", ossl_asn1data_initialize, 3);
     rb_define_method(cASN1Data, "to_der", ossl_asn1data_to_der, 0);
 
-    /* Document-class: OpenSSL::ASN1::Primitive
+    /* Document-class: AppleSSL::ASN1::Primitive
      *
      * The parent class for all primitive encodings. Attributes are the same as
      * for ASN1Data, with the addition of _tagging_.
@@ -1664,29 +1664,29 @@ Init_ossl_asn1(void)
      * and its sub-classes.
      *
      * == Primitive sub-classes and their mapping to Ruby classes
-     * * OpenSSL::ASN1::EndOfContent    <=> _value_ is always +nil+
-     * * OpenSSL::ASN1::Boolean         <=> _value_ is +true+ or +false+
-     * * OpenSSL::ASN1::Integer         <=> _value_ is an OpenSSL::BN
-     * * OpenSSL::ASN1::BitString       <=> _value_ is a String
-     * * OpenSSL::ASN1::OctetString     <=> _value_ is a String
-     * * OpenSSL::ASN1::Null            <=> _value_ is always +nil+
-     * * OpenSSL::ASN1::Object          <=> _value_ is a String
-     * * OpenSSL::ASN1::Enumerated      <=> _value_ is an OpenSSL::BN
-     * * OpenSSL::ASN1::UTF8String      <=> _value_ is a String
-     * * OpenSSL::ASN1::NumericString   <=> _value_ is a String
-     * * OpenSSL::ASN1::PrintableString <=> _value_ is a String
-     * * OpenSSL::ASN1::T61String       <=> _value_ is a String
-     * * OpenSSL::ASN1::VideotexString  <=> _value_ is a String
-     * * OpenSSL::ASN1::IA5String       <=> _value_ is a String
-     * * OpenSSL::ASN1::UTCTime         <=> _value_ is a Time
-     * * OpenSSL::ASN1::GeneralizedTime <=> _value_ is a Time
-     * * OpenSSL::ASN1::GraphicString   <=> _value_ is a String
-     * * OpenSSL::ASN1::ISO64String     <=> _value_ is a String
-     * * OpenSSL::ASN1::GeneralString   <=> _value_ is a String
-     * * OpenSSL::ASN1::UniversalString <=> _value_ is a String
-     * * OpenSSL::ASN1::BMPString       <=> _value_ is a String
+     * * AppleSSL::ASN1::EndOfContent    <=> _value_ is always +nil+
+     * * AppleSSL::ASN1::Boolean         <=> _value_ is +true+ or +false+
+     * * AppleSSL::ASN1::Integer         <=> _value_ is an AppleSSL::BN
+     * * AppleSSL::ASN1::BitString       <=> _value_ is a String
+     * * AppleSSL::ASN1::OctetString     <=> _value_ is a String
+     * * AppleSSL::ASN1::Null            <=> _value_ is always +nil+
+     * * AppleSSL::ASN1::Object          <=> _value_ is a String
+     * * AppleSSL::ASN1::Enumerated      <=> _value_ is an AppleSSL::BN
+     * * AppleSSL::ASN1::UTF8String      <=> _value_ is a String
+     * * AppleSSL::ASN1::NumericString   <=> _value_ is a String
+     * * AppleSSL::ASN1::PrintableString <=> _value_ is a String
+     * * AppleSSL::ASN1::T61String       <=> _value_ is a String
+     * * AppleSSL::ASN1::VideotexString  <=> _value_ is a String
+     * * AppleSSL::ASN1::IA5String       <=> _value_ is a String
+     * * AppleSSL::ASN1::UTCTime         <=> _value_ is a Time
+     * * AppleSSL::ASN1::GeneralizedTime <=> _value_ is a Time
+     * * AppleSSL::ASN1::GraphicString   <=> _value_ is a String
+     * * AppleSSL::ASN1::ISO64String     <=> _value_ is a String
+     * * AppleSSL::ASN1::GeneralString   <=> _value_ is a String
+     * * AppleSSL::ASN1::UniversalString <=> _value_ is a String
+     * * AppleSSL::ASN1::BMPString       <=> _value_ is a String
      *
-     * == OpenSSL::ASN1::BitString
+     * == AppleSSL::ASN1::BitString
      *
      * === Additional attributes
      * _unused_bits_: if the underlying BIT STRING's
@@ -1694,9 +1694,9 @@ Init_ossl_asn1(void)
      * _unused_bits_ indicates the number of bits that are to be ignored in
      * the final octet of the BitString's _value_.
      *
-     * == OpenSSL::ASN1::ObjectId
+     * == AppleSSL::ASN1::ObjectId
      *
-     * NOTE: While OpenSSL::ASN1::ObjectId.new will allocate a new ObjectId,
+     * NOTE: While AppleSSL::ASN1::ObjectId.new will allocate a new ObjectId,
      * it is not typically allocated this way, but rather that are received from
      * parsed ASN1 encodings.
      *
@@ -1708,11 +1708,11 @@ Init_ossl_asn1(void)
      * * _long_name_: alias for _ln_.
      *
      * == Examples
-     * With the Exception of OpenSSL::ASN1::EndOfContent, each Primitive class
+     * With the Exception of AppleSSL::ASN1::EndOfContent, each Primitive class
      * constructor takes at least one parameter, the _value_.
      *
      * === Creating EndOfContent
-     *   eoc = OpenSSL::ASN1::EndOfContent.new
+     *   eoc = AppleSSL::ASN1::EndOfContent.new
      *
      * === Creating any other Primitive
      *   prim = <class>.new(value) # <class> being one of the sub-classes except EndOfContent
@@ -1724,7 +1724,7 @@ Init_ossl_asn1(void)
      * May be used as a hint for encoding a value either implicitly or
      * explicitly by setting it either to +:IMPLICIT+ or to +:EXPLICIT+.
      * _tagging_ is not set when a ASN.1 structure is parsed using
-     * OpenSSL::ASN1.decode.
+     * AppleSSL::ASN1.decode.
      */
     rb_attr(cASN1Primitive, rb_intern("tagging"), 1, 1, Qtrue);
     rb_undef_method(cASN1Primitive, "indefinite_length=");
@@ -1732,7 +1732,7 @@ Init_ossl_asn1(void)
     rb_define_method(cASN1Primitive, "initialize", ossl_asn1_initialize, -1);
     rb_define_method(cASN1Primitive, "to_der", ossl_asn1prim_to_der, 0);
 
-    /* Document-class: OpenSSL::ASN1::Constructive
+    /* Document-class: AppleSSL::ASN1::Constructive
      *
      * The parent class for all constructed encodings. The _value_ attribute
      * of a Constructive is always an Array. Attributes are the same as
@@ -1743,21 +1743,21 @@ Init_ossl_asn1(void)
      * Most constructed encodings come in the form of a SET or a SEQUENCE.
      * These encodings are represented by one of the two sub-classes of
      * Constructive:
-     * * OpenSSL::ASN1::Set
-     * * OpenSSL::ASN1::Sequence
+     * * AppleSSL::ASN1::Set
+     * * AppleSSL::ASN1::Sequence
      * Please note that tagged sequences and sets are still parsed as
      * instances of ASN1Data. Find further details on tagged values
      * there.
      *
      * === Example - constructing a SEQUENCE
-     *   int = OpenSSL::ASN1::Integer.new(1)
-     *   str = OpenSSL::ASN1::PrintableString.new('abc')
-     *   sequence = OpenSSL::ASN1::Sequence.new( [ int, str ] )
+     *   int = AppleSSL::ASN1::Integer.new(1)
+     *   str = AppleSSL::ASN1::PrintableString.new('abc')
+     *   sequence = AppleSSL::ASN1::Sequence.new( [ int, str ] )
      *
      * === Example - constructing a SET
-     *   int = OpenSSL::ASN1::Integer.new(1)
-     *   str = OpenSSL::ASN1::PrintableString.new('abc')
-     *   set = OpenSSL::ASN1::Set.new( [ int, str ] )
+     *   int = AppleSSL::ASN1::Integer.new(1)
+     *   str = AppleSSL::ASN1::PrintableString.new('abc')
+     *   set = AppleSSL::ASN1::Set.new( [ int, str ] )
      */
     cASN1Constructive = rb_define_class_under(mASN1,"Constructive", cASN1Data);
     rb_include_module(cASN1Constructive, rb_mEnumerable);
@@ -1765,7 +1765,7 @@ Init_ossl_asn1(void)
      * May be used as a hint for encoding a value either implicitly or
      * explicitly by setting it either to +:IMPLICIT+ or to +:EXPLICIT+.
      * _tagging_ is not set when a ASN.1 structure is parsed using
-     * OpenSSL::ASN1.decode.
+     * AppleSSL::ASN1.decode.
      */
     rb_attr(cASN1Constructive, rb_intern("tagging"), 1, 1, Qtrue);
     rb_define_method(cASN1Constructive, "initialize", ossl_asn1_initialize, -1);
@@ -1805,9 +1805,9 @@ do{\
     OSSL_ASN1_DEFINE_CLASS(EndOfContent, Data);
 
 
-    /* Document-class: OpenSSL::ASN1::ObjectId
+    /* Document-class: AppleSSL::ASN1::ObjectId
      *
-     * Represents the primitive object id for OpenSSL::ASN1
+     * Represents the primitive object id for AppleSSL::ASN1
      */
 #if 0
     cASN1ObjectId = rb_define_class_under(mASN1, "ObjectId", cASN1Primitive);  /* let rdoc know */

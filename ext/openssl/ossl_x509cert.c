@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -37,7 +37,7 @@ ossl_x509_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_x509_type = {
-    "OpenSSL/X509",
+    "AppleSSL/X509",
     {
 	0, ossl_x509_free,
     },
@@ -550,7 +550,7 @@ ossl_x509_sign(VALUE self, VALUE key, VALUE digest)
  *    cert.verify(key) => true | false
  *
  * Verifies the signature of the certificate, with the public key _key_. _key_
- * must be an instance of OpenSSL::PKey.
+ * must be an instance of AppleSSL::PKey.
  */
 static VALUE
 ossl_x509_verify(VALUE self, VALUE key)
@@ -711,14 +711,14 @@ void
 Init_ossl_x509cert(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
     mX509 = rb_define_module_under(mOSSL, "X509");
 #endif
 
     eX509CertError = rb_define_class_under(mX509, "CertificateError", eOSSLError);
 
-    /* Document-class: OpenSSL::X509::Certificate
+    /* Document-class: AppleSSL::X509::Certificate
      *
      * Implementation of an X.509 certificate as specified in RFC 5280.
      * Provides access to a certificate's attributes and allows certificates
@@ -728,10 +728,10 @@ Init_ossl_x509cert(void)
      * === Reading a certificate from a file
      *
      * Certificate is capable of handling DER-encoded certificates and
-     * certificates encoded in OpenSSL's PEM format.
+     * certificates encoded in AppleSSL's PEM format.
      *
      *   raw = File.read "cert.cer" # DER- or PEM-encoded
-     *   certificate = OpenSSL::X509::Certificate.new raw
+     *   certificate = AppleSSL::X509::Certificate.new raw
      *
      * === Saving a certificate to a file
      *
@@ -746,10 +746,10 @@ Init_ossl_x509cert(void)
      *   File.open("cert.pem", "wb") { |f| f.print cert.to_pem }
      *
      * X.509 certificates are associated with a private/public key pair,
-     * typically a RSA, DSA or ECC key (see also OpenSSL::PKey::RSA,
-     * OpenSSL::PKey::DSA and OpenSSL::PKey::EC), the public key itself is
+     * typically a RSA, DSA or ECC key (see also AppleSSL::PKey::RSA,
+     * AppleSSL::PKey::DSA and AppleSSL::PKey::EC), the public key itself is
      * stored within the certificate and can be accessed in form of an
-     * OpenSSL::PKey. Certificates are typically used to be able to associate
+     * AppleSSL::PKey. Certificates are typically used to be able to associate
      * some form of identity with a key pair, for example web servers serving
      * pages over HTTPs use certificates to authenticate themselves to the user.
      *
@@ -759,7 +759,7 @@ Init_ossl_x509cert(void)
      * that themselves again vouch for subordinate CAs issuing their
      * certificates to end users.
      *
-     * The OpenSSL::X509 module provides the tools to set up an independent
+     * The AppleSSL::X509 module provides the tools to set up an independent
      * PKI, similar to scenarios where the 'openssl' command line tool is
      * used for issuing certificates in a private PKI.
      *
@@ -772,42 +772,42 @@ Init_ossl_x509cert(void)
      * not sequential but secure random numbers, steps omitted here to keep
      * the example concise.
      *
-     *   root_key = OpenSSL::PKey::RSA.new 2048 # the CA's public/private key
-     *   root_ca = OpenSSL::X509::Certificate.new
+     *   root_key = AppleSSL::PKey::RSA.new 2048 # the CA's public/private key
+     *   root_ca = AppleSSL::X509::Certificate.new
      *   root_ca.version = 2 # cf. RFC 5280 - to make it a "v3" certificate
      *   root_ca.serial = 1
-     *   root_ca.subject = OpenSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby CA"
+     *   root_ca.subject = AppleSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby CA"
      *   root_ca.issuer = root_ca.subject # root CA's are "self-signed"
      *   root_ca.public_key = root_key.public_key
      *   root_ca.not_before = Time.now
      *   root_ca.not_after = root_ca.not_before + 2 * 365 * 24 * 60 * 60 # 2 years validity
-     *   ef = OpenSSL::X509::ExtensionFactory.new
+     *   ef = AppleSSL::X509::ExtensionFactory.new
      *   ef.subject_certificate = root_ca
      *   ef.issuer_certificate = root_ca
      *   root_ca.add_extension(ef.create_extension("basicConstraints","CA:TRUE",true))
      *   root_ca.add_extension(ef.create_extension("keyUsage","keyCertSign, cRLSign", true))
      *   root_ca.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
      *   root_ca.add_extension(ef.create_extension("authorityKeyIdentifier","keyid:always",false))
-     *   root_ca.sign(root_key, OpenSSL::Digest::SHA256.new)
+     *   root_ca.sign(root_key, AppleSSL::Digest::SHA256.new)
      *
      * The next step is to create the end-entity certificate using the root CA
      * certificate.
      *
-     *   key = OpenSSL::PKey::RSA.new 2048
-     *   cert = OpenSSL::X509::Certificate.new
+     *   key = AppleSSL::PKey::RSA.new 2048
+     *   cert = AppleSSL::X509::Certificate.new
      *   cert.version = 2
      *   cert.serial = 2
-     *   cert.subject = OpenSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby certificate"
+     *   cert.subject = AppleSSL::X509::Name.parse "/DC=org/DC=ruby-lang/CN=Ruby certificate"
      *   cert.issuer = root_ca.subject # root CA is the issuer
      *   cert.public_key = key.public_key
      *   cert.not_before = Time.now
      *   cert.not_after = cert.not_before + 1 * 365 * 24 * 60 * 60 # 1 years validity
-     *   ef = OpenSSL::X509::ExtensionFactory.new
+     *   ef = AppleSSL::X509::ExtensionFactory.new
      *   ef.subject_certificate = cert
      *   ef.issuer_certificate = root_ca
      *   cert.add_extension(ef.create_extension("keyUsage","digitalSignature", true))
      *   cert.add_extension(ef.create_extension("subjectKeyIdentifier","hash",false))
-     *   cert.sign(root_key, OpenSSL::Digest::SHA256.new)
+     *   cert.sign(root_key, AppleSSL::Digest::SHA256.new)
      *
      */
     cX509Cert = rb_define_class_under(mX509, "Certificate", rb_cObject);

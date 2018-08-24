@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001 Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -37,7 +37,7 @@ ossl_x509attr_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_x509attr_type = {
-    "OpenSSL/X509/ATTRIBUTE",
+    "AppleSSL/X509/ATTRIBUTE",
     {
 	0, ossl_x509attr_free,
     },
@@ -305,8 +305,8 @@ void
 Init_ossl_x509attr(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
     mX509 = rb_define_module_under(mOSSL, "X509");
 #endif
 

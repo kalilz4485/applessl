@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -157,7 +157,7 @@ rsa_generate(int size, unsigned long exp)
     if (!gen_arg.result) {
 	RSA_free(rsa);
 	if (cb_arg.state) {
-	    /* must clear OpenSSL error stack */
+	    /* must clear AppleSSL error stack */
 	    ossl_clear_error();
 	    rb_jump_tag(cb_arg.state);
 	}
@@ -209,13 +209,13 @@ ossl_rsa_s_generate(int argc, VALUE *argv, VALUE klass)
  *
  * A key can instead be loaded from an _encoded_key_ which must be PEM or DER
  * encoded.  A _pass_phrase_ can be used to decrypt the key.  If none is given
- * OpenSSL will prompt for the pass phrase.
+ * AppleSSL will prompt for the pass phrase.
  *
  * = Examples
  *
- *   OpenSSL::PKey::RSA.new 2048
- *   OpenSSL::PKey::RSA.new File.read 'rsa.pem'
- *   OpenSSL::PKey::RSA.new File.read('rsa.pem'), 'my pass phrase'
+ *   AppleSSL::PKey::RSA.new 2048
+ *   AppleSSL::PKey::RSA.new File.read 'rsa.pem'
+ *   AppleSSL::PKey::RSA.new File.read('rsa.pem'), 'my pass phrase'
  */
 static VALUE
 ossl_rsa_initialize(int argc, VALUE *argv, VALUE self)
@@ -335,7 +335,7 @@ ossl_rsa_is_private(VALUE self)
  *
  * Outputs this keypair in PEM encoding.  If _cipher_ and _pass_phrase_ are
  * given they will be used to encrypt the key.  _cipher_ must be an
- * OpenSSL::Cipher instance.
+ * AppleSSL::Cipher instance.
  */
 static VALUE
 ossl_rsa_export(int argc, VALUE *argv, VALUE self)
@@ -563,7 +563,7 @@ ossl_rsa_private_decrypt(int argc, VALUE *argv, VALUE self)
  *
  * === Example
  *   data = "Sign me!"
- *   pkey = OpenSSL::PKey::RSA.new(2048)
+ *   pkey = AppleSSL::PKey::RSA.new(2048)
  *   signature = pkey.sign_pss("SHA256", data, salt_length: :max, mgf1_hash: "SHA256")
  *   pub_key = pkey.public_key
  *   puts pub_key.verify_pss("SHA256", signature, data,
@@ -845,7 +845,7 @@ ossl_rsa_blinding_off(VALUE self)
  */
 
 /*
- * Document-method: OpenSSL::PKey::RSA#set_key
+ * Document-method: AppleSSL::PKey::RSA#set_key
  * call-seq:
  *   rsa.set_key(n, e, d) -> self
  *
@@ -853,7 +853,7 @@ ossl_rsa_blinding_off(VALUE self)
  */
 OSSL_PKEY_BN_DEF3(rsa, RSA, key, n, e, d)
 /*
- * Document-method: OpenSSL::PKey::RSA#set_factors
+ * Document-method: AppleSSL::PKey::RSA#set_factors
  * call-seq:
  *   rsa.set_factors(p, q) -> self
  *
@@ -861,7 +861,7 @@ OSSL_PKEY_BN_DEF3(rsa, RSA, key, n, e, d)
  */
 OSSL_PKEY_BN_DEF2(rsa, RSA, factors, p, q)
 /*
- * Document-method: OpenSSL::PKey::RSA#set_crt_params
+ * Document-method: AppleSSL::PKey::RSA#set_crt_params
  * call-seq:
  *   rsa.set_crt_params(dmp1, dmq1, iqmp) -> self
  *
@@ -885,7 +885,7 @@ Init_ossl_rsa(void)
     ePKeyError = rb_define_class_under(mPKey, "PKeyError", eOSSLError);
 #endif
 
-    /* Document-class: OpenSSL::PKey::RSAError
+    /* Document-class: AppleSSL::PKey::RSAError
      *
      * Generic exception that is raised if an operation on an RSA PKey
      * fails unexpectedly or in case an instantiation of an instance of RSA
@@ -893,11 +893,11 @@ Init_ossl_rsa(void)
      */
     eRSAError = rb_define_class_under(mPKey, "RSAError", ePKeyError);
 
-    /* Document-class: OpenSSL::PKey::RSA
+    /* Document-class: AppleSSL::PKey::RSA
      *
      * RSA is an asymmetric public key algorithm that has been formalized in
      * RFC 3447. It is in widespread use in public key infrastructures (PKI)
-     * where certificates (cf. OpenSSL::X509::Certificate) often are issued
+     * where certificates (cf. AppleSSL::X509::Certificate) often are issued
      * on the basis of a public/private RSA key pair. RSA is used in a wide
      * field of applications such as secure (symmetric) key exchange, e.g.
      * when establishing a secure TLS/SSL connection. It is also used in

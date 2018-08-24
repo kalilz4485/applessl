@@ -1,7 +1,7 @@
 # frozen_string_literal: false
 =begin
 = Info
-  'OpenSSL for Ruby 2' project
+  'AppleSSL for Ruby 2' project
   Copyright (C) 2001 GOTOU YUUZOU <gotoyuzo@notwork.org>
   All rights reserved.
 
@@ -14,23 +14,23 @@ require "openssl/buffering"
 require "io/nonblock"
 require "ipaddr"
 
-module OpenSSL
+module AppleSSL
   module SSL
     class SSLContext
       DEFAULT_PARAMS = { # :nodoc:
-        :min_version => OpenSSL::SSL::TLS1_VERSION,
-        :verify_mode => OpenSSL::SSL::VERIFY_PEER,
+        :min_version => AppleSSL::SSL::TLS1_VERSION,
+        :verify_mode => AppleSSL::SSL::VERIFY_PEER,
         :verify_hostname => true,
         :options => -> {
-          opts = OpenSSL::SSL::OP_ALL
-          opts &= ~OpenSSL::SSL::OP_DONT_INSERT_EMPTY_FRAGMENTS
-          opts |= OpenSSL::SSL::OP_NO_COMPRESSION
+          opts = AppleSSL::SSL::OP_ALL
+          opts &= ~AppleSSL::SSL::OP_DONT_INSERT_EMPTY_FRAGMENTS
+          opts |= AppleSSL::SSL::OP_NO_COMPRESSION
           opts
         }.call
       }
 
-      if defined?(OpenSSL::PKey::DH)
-        DEFAULT_2048 = OpenSSL::PKey::DH.new <<-_end_of_pem_
+      if defined?(AppleSSL::PKey::DH)
+        DEFAULT_2048 = AppleSSL::PKey::DH.new <<-_end_of_pem_
 -----BEGIN DH PARAMETERS-----
 MIIBCAKCAQEA7E6kBrYiyvmKAMzQ7i8WvwVk9Y/+f8S7sCTN712KkK3cqd1jhJDY
 JbrYeNV3kUIKhPxWHhObHKpD1R84UpL+s2b55+iMd6GmL7OYmNIT/FccKhTcveab
@@ -48,8 +48,8 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
         }
       end
 
-      if !(OpenSSL::OPENSSL_VERSION.start_with?("OpenSSL") &&
-           OpenSSL::OPENSSL_VERSION_NUMBER >= 0x10100000)
+      if !(AppleSSL::OPENSSL_VERSION.start_with?("AppleSSL") &&
+           AppleSSL::OPENSSL_VERSION_NUMBER >= 0x10100000)
         DEFAULT_PARAMS.merge!(
           ciphers: %w{
             ECDHE-ECDSA-AES128-GCM-SHA256
@@ -86,9 +86,9 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
         )
       end
 
-      DEFAULT_CERT_STORE = OpenSSL::X509::Store.new # :nodoc:
+      DEFAULT_CERT_STORE = AppleSSL::X509::Store.new # :nodoc:
       DEFAULT_CERT_STORE.set_default_paths
-      DEFAULT_CERT_STORE.flags = OpenSSL::X509::V_FLAG_CRL_CHECK_ALL
+      DEFAULT_CERT_STORE.flags = AppleSSL::X509::V_FLAG_CRL_CHECK_ALL
 
       # A callback invoked when DH parameters are required.
       #
@@ -96,7 +96,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       # flag indicating the use of an export cipher and the keylength
       # required.
       #
-      # The callback must return an OpenSSL::PKey::DH instance of the correct
+      # The callback must return an AppleSSL::PKey::DH instance of the correct
       # key length.
 
       attr_accessor :tmp_dh_callback
@@ -119,7 +119,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       # that this form is deprecated. New applications should use #min_version=
       # and #max_version= as necessary.
       def initialize(version = nil)
-        self.options |= OpenSSL::SSL::OP_ALL
+        self.options |= AppleSSL::SSL::OP_ALL
         self.ssl_version = version if version
       end
 
@@ -139,7 +139,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
         params = DEFAULT_PARAMS.merge(params)
         self.options = params.delete(:options) # set before min_version/max_version
         params.each{|name, value| self.__send__("#{name}=", value) }
-        if self.verify_mode != OpenSSL::SSL::VERIFY_NONE
+        if self.verify_mode != AppleSSL::SSL::VERIFY_NONE
           unless self.ca_file or self.ca_path or self.cert_store
             self.cert_store = DEFAULT_CERT_STORE
           end
@@ -148,24 +148,24 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       end
 
       # call-seq:
-      #    ctx.min_version = OpenSSL::SSL::TLS1_2_VERSION
+      #    ctx.min_version = AppleSSL::SSL::TLS1_2_VERSION
       #    ctx.min_version = :TLS1_2
       #    ctx.min_version = nil
       #
       # Sets the lower bound on the supported SSL/TLS protocol version. The
       # version may be specified by an integer constant named
-      # OpenSSL::SSL::*_VERSION, a Symbol, or +nil+ which means "any version".
+      # AppleSSL::SSL::*_VERSION, a Symbol, or +nil+ which means "any version".
       #
-      # Be careful that you don't overwrite OpenSSL::SSL::OP_NO_{SSL,TLS}v*
+      # Be careful that you don't overwrite AppleSSL::SSL::OP_NO_{SSL,TLS}v*
       # options by #options= once you have called #min_version= or
       # #max_version=.
       #
       # === Example
-      #   ctx = OpenSSL::SSL::SSLContext.new
-      #   ctx.min_version = OpenSSL::SSL::TLS1_1_VERSION
-      #   ctx.max_version = OpenSSL::SSL::TLS1_2_VERSION
+      #   ctx = AppleSSL::SSL::SSLContext.new
+      #   ctx.min_version = AppleSSL::SSL::TLS1_1_VERSION
+      #   ctx.max_version = AppleSSL::SSL::TLS1_2_VERSION
       #
-      #   sock = OpenSSL::SSL::SSLSocket.new(tcp_sock, ctx)
+      #   sock = AppleSSL::SSL::SSLSocket.new(tcp_sock, ctx)
       #   sock.connect # Initiates a connection using either TLS 1.1 or TLS 1.2
       def min_version=(version)
         set_minmax_proto_version(version, @max_proto_version ||= nil)
@@ -173,7 +173,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       end
 
       # call-seq:
-      #    ctx.max_version = OpenSSL::SSL::TLS1_2_VERSION
+      #    ctx.max_version = AppleSSL::SSL::TLS1_2_VERSION
       #    ctx.max_version = :TLS1_2
       #    ctx.max_version = nil
       #
@@ -196,7 +196,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       # === History
       # As the name hints, this used to call the SSL_CTX_set_ssl_version()
       # function which sets the SSL method used for connections created from
-      # the context. As of Ruby/OpenSSL 2.1, this accessor method is
+      # the context. As of Ruby/AppleSSL 2.1, this accessor method is
       # implemented to call #min_version= and #max_version= instead.
       def ssl_version=(meth)
         meth = meth.to_s if meth.is_a?(Symbol)
@@ -214,11 +214,11 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
 
       METHODS_MAP = {
         SSLv23: 0,
-        SSLv2: OpenSSL::SSL::SSL2_VERSION,
-        SSLv3: OpenSSL::SSL::SSL3_VERSION,
-        TLSv1: OpenSSL::SSL::TLS1_VERSION,
-        TLSv1_1: OpenSSL::SSL::TLS1_1_VERSION,
-        TLSv1_2: OpenSSL::SSL::TLS1_2_VERSION,
+        SSLv2: AppleSSL::SSL::SSL2_VERSION,
+        SSLv3: AppleSSL::SSL::SSL3_VERSION,
+        TLSv1: AppleSSL::SSL::TLS1_VERSION,
+        TLSv1_1: AppleSSL::SSL::TLS1_1_VERSION,
+        TLSv1_2: AppleSSL::SSL::TLS1_2_VERSION,
       }.freeze
       private_constant :METHODS_MAP
 
@@ -264,8 +264,8 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       should_verify_common_name = true
       cert.extensions.each{|ext|
         next if ext.oid != "subjectAltName"
-        ostr = OpenSSL::ASN1.decode(ext.to_der).value.last
-        sequence = OpenSSL::ASN1.decode(ostr.value)
+        ostr = AppleSSL::ASN1.decode(ext.to_der).value.last
+        sequence = AppleSSL::ASN1.decode(ostr.value)
         sequence.value.each{|san|
           case san.tag
           when 2 # dNSName in GeneralName (RFC5280)
@@ -391,7 +391,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
           raise SSLError, msg
         end
 
-        unless OpenSSL::SSL.verify_certificate_identity(peer_cert, hostname)
+        unless AppleSSL::SSL.verify_certificate_identity(peer_cert, hostname)
           raise SSLError, "hostname \"#{hostname}\" does not match the server certificate"
         end
         return true
@@ -411,7 +411,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       private
 
       def using_anon_cipher?
-        ctx = OpenSSL::SSL::SSLContext.new
+        ctx = AppleSSL::SSL::SSLContext.new
         ctx.ciphers = "aNULL"
         ctx.ciphers.include?(cipher)
       end
@@ -421,7 +421,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
       end
 
       def tmp_dh_callback
-        @context.tmp_dh_callback || OpenSSL::SSL::SSLContext::DEFAULT_TMP_DH_CALLBACK
+        @context.tmp_dh_callback || AppleSSL::SSL::SSLContext::DEFAULT_TMP_DH_CALLBACK
       end
 
       def tmp_ecdh_callback
@@ -446,7 +446,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
 
       # Creates a new instance of SSLServer.
       # * _srv_ is an instance of TCPServer.
-      # * _ctx_ is an instance of OpenSSL::SSL::SSLContext.
+      # * _ctx_ is an instance of AppleSSL::SSL::SSLContext.
       def initialize(svr, ctx)
         @svr = svr
         @ctx = ctx
@@ -481,7 +481,7 @@ YoaOffgTf5qxiwkjnlVZQc3whgnEt9FpVMvQ9eknyeGB5KHfayAc3+hUAvI3/Cr3
         # The following comma strips addrinfo.
         sock, = @svr.accept
         begin
-          ssl = OpenSSL::SSL::SSLSocket.new(sock, @ctx)
+          ssl = AppleSSL::SSL::SSLSocket.new(sock, @ctx)
           ssl.sync_close = true
           ssl.accept if @start_immediately
           ssl

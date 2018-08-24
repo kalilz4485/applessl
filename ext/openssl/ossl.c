@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -9,7 +9,7 @@
  */
 #include "ossl.h"
 #include <stdarg.h> /* for ossl_raise */
-#include <ruby/thread_native.h> /* for OpenSSL < 1.1.0 locks */
+#include <ruby/thread_native.h> /* for AppleSSL < 1.1.0 locks */
 
 /*
  * Data Conversion
@@ -231,7 +231,7 @@ ossl_pem_passwd_cb(char *buf, int max_len, int flag, void *pwd_)
 VALUE mOSSL;
 
 /*
- * OpenSSLError < StandardError
+ * AppleSSLError < StandardError
  */
 VALUE eOSSLError;
 
@@ -330,11 +330,11 @@ ossl_clear_error(void)
 
 /*
  * call-seq:
- *   OpenSSL.errors -> [String...]
+ *   AppleSSL.errors -> [String...]
  *
  * See any remaining errors held in queue.
  *
- * Any errors you see here are probably due to a bug in Ruby's OpenSSL
+ * Any errors you see here are probably due to a bug in Ruby's AppleSSL
  * implementation.
  */
 VALUE
@@ -374,7 +374,7 @@ ossl_debug(const char *fmt, ...)
 
 /*
  * call-seq:
- *   OpenSSL.debug -> true | false
+ *   AppleSSL.debug -> true | false
  */
 static VALUE
 ossl_debug_get(VALUE self)
@@ -384,9 +384,9 @@ ossl_debug_get(VALUE self)
 
 /*
  * call-seq:
- *   OpenSSL.debug = boolean -> boolean
+ *   AppleSSL.debug = boolean -> boolean
  *
- * Turns on or off debug mode. With debug mode, all erros added to the OpenSSL
+ * Turns on or off debug mode. With debug mode, all erros added to the AppleSSL
  * error queue will be printed to stderr.
  */
 static VALUE
@@ -399,7 +399,7 @@ ossl_debug_set(VALUE self, VALUE val)
 
 /*
  * call-seq
- *   OpenSSL.fips_mode -> true | false
+ *   AppleSSL.fips_mode -> true | false
  */
 static VALUE
 ossl_fips_mode_get(VALUE self)
@@ -416,15 +416,15 @@ ossl_fips_mode_get(VALUE self)
 
 /*
  * call-seq:
- *   OpenSSL.fips_mode = boolean -> boolean
+ *   AppleSSL.fips_mode = boolean -> boolean
  *
  * Turns FIPS mode on or off. Turning on FIPS mode will obviously only have an
- * effect for FIPS-capable installations of the OpenSSL library. Trying to do
+ * effect for FIPS-capable installations of the AppleSSL library. Trying to do
  * so otherwise will result in an error.
  *
  * === Examples
- *   OpenSSL.fips_mode = true   # turn FIPS mode on
- *   OpenSSL.fips_mode = false  # and off again
+ *   AppleSSL.fips_mode = true   # turn FIPS mode on
+ *   AppleSSL.fips_mode = false  # and off again
  */
 static VALUE
 ossl_fips_mode_set(VALUE self, VALUE enabled)
@@ -442,7 +442,7 @@ ossl_fips_mode_set(VALUE self, VALUE enabled)
     return enabled;
 #else
     if (RTEST(enabled))
-	ossl_raise(eOSSLError, "This version of OpenSSL does not support FIPS mode");
+	ossl_raise(eOSSLError, "This version of AppleSSL does not support FIPS mode");
     return enabled;
 #endif
 }
@@ -453,12 +453,12 @@ ossl_fips_mode_set(VALUE self, VALUE enabled)
      defined(CRYPTO_malloc_debug_init))
 /*
  * call-seq:
- *   OpenSSL.mem_check_start -> nil
+ *   AppleSSL.mem_check_start -> nil
  *
  * Calls CRYPTO_mem_ctrl(CRYPTO_MEM_CHECK_ON). Starts tracking memory
- * allocations. See also OpenSSL.print_mem_leaks.
+ * allocations. See also AppleSSL.print_mem_leaks.
  *
- * This is available only when built with a capable OpenSSL and --enable-debug
+ * This is available only when built with a capable AppleSSL and --enable-debug
  * configure option.
  */
 static VALUE
@@ -470,24 +470,24 @@ mem_check_start(VALUE self)
 
 /*
  * call-seq:
- *   OpenSSL.print_mem_leaks -> true | false
+ *   AppleSSL.print_mem_leaks -> true | false
  *
- * For debugging the Ruby/OpenSSL library. Calls CRYPTO_mem_leaks_fp(stderr).
+ * For debugging the Ruby/AppleSSL library. Calls CRYPTO_mem_leaks_fp(stderr).
  * Prints detected memory leaks to standard error. This cleans the global state
  * up thus you cannot use any methods of the library after calling this.
  *
  * Returns +true+ if leaks detected, +false+ otherwise.
  *
- * This is available only when built with a capable OpenSSL and --enable-debug
+ * This is available only when built with a capable AppleSSL and --enable-debug
  * configure option.
  *
  * === Example
- *   OpenSSL.mem_check_start
- *   NOT_GCED = OpenSSL::PKey::RSA.new(256)
+ *   AppleSSL.mem_check_start
+ *   NOT_GCED = AppleSSL::PKey::RSA.new(256)
  *
  *   END {
  *     GC.start
- *     OpenSSL.print_mem_leaks # will print the leakage
+ *     AppleSSL.print_mem_leaks # will print the leakage
  *   }
  */
 static VALUE
@@ -515,7 +515,7 @@ print_mem_leaks(VALUE self)
 
 #if !defined(HAVE_OPENSSL_110_THREADING_API)
 /**
- * Stores locks needed for OpenSSL thread safety
+ * Stores locks needed for AppleSSL thread safety
  */
 struct CRYPTO_dynlock_value {
     rb_nativethread_lock_t lock;
@@ -605,12 +605,12 @@ static void Init_ossl_locks(void)
 #endif /* !HAVE_OPENSSL_110_THREADING_API */
 
 /*
- * OpenSSL provides SSL, TLS and general purpose cryptography.  It wraps the
- * OpenSSL[https://www.openssl.org/] library.
+ * AppleSSL provides SSL, TLS and general purpose cryptography.  It wraps the
+ * AppleSSL[https://www.openssl.org/] library.
  *
  * = Examples
  *
- * All examples assume you have loaded OpenSSL with:
+ * All examples assume you have loaded AppleSSL with:
  *
  *   require 'openssl'
  *
@@ -624,7 +624,7 @@ static void Init_ossl_locks(void)
  * This example creates a 2048 bit RSA keypair and writes it to the current
  * directory.
  *
- *   key = OpenSSL::PKey::RSA.new 2048
+ *   key = AppleSSL::PKey::RSA.new 2048
  *
  *   open 'private_key.pem', 'w' do |io| io.write key.to_pem end
  *   open 'public_key.pem', 'w' do |io| io.write key.public_key.to_pem end
@@ -635,7 +635,7 @@ static void Init_ossl_locks(void)
  * ahold of the key may use it unless it is encrypted.  In order to securely
  * export a key you may export it with a pass phrase.
  *
- *   cipher = OpenSSL::Cipher.new 'AES-128-CBC'
+ *   cipher = AppleSSL::Cipher.new 'AES-128-CBC'
  *   pass_phrase = 'my secure pass phrase goes here'
  *
  *   key_secure = key.export cipher, pass_phrase
@@ -644,31 +644,31 @@ static void Init_ossl_locks(void)
  *     io.write key_secure
  *   end
  *
- * OpenSSL::Cipher.ciphers returns a list of available ciphers.
+ * AppleSSL::Cipher.ciphers returns a list of available ciphers.
  *
  * === Loading a Key
  *
  * A key can also be loaded from a file.
  *
- *   key2 = OpenSSL::PKey::RSA.new File.read 'private_key.pem'
+ *   key2 = AppleSSL::PKey::RSA.new File.read 'private_key.pem'
  *   key2.public? # => true
  *   key2.private? # => true
  *
  * or
  *
- *   key3 = OpenSSL::PKey::RSA.new File.read 'public_key.pem'
+ *   key3 = AppleSSL::PKey::RSA.new File.read 'public_key.pem'
  *   key3.public? # => true
  *   key3.private? # => false
  *
  * === Loading an Encrypted Key
  *
- * OpenSSL will prompt you for your pass phrase when loading an encrypted key.
+ * AppleSSL will prompt you for your pass phrase when loading an encrypted key.
  * If you will not be able to type in the pass phrase you may provide it when
  * loading the key:
  *
  *   key4_pem = File.read 'private.secure.pem'
  *   pass_phrase = 'my secure pass phrase goes here'
- *   key4 = OpenSSL::PKey::RSA.new key4_pem, pass_phrase
+ *   key4 = AppleSSL::PKey::RSA.new key4_pem, pass_phrase
  *
  * == RSA Encryption
  *
@@ -703,14 +703,14 @@ static void Init_ossl_locks(void)
  * equivalent to applying a digital signature to the data. A verifying
  * party may validate the signature by comparing the result of decrypting
  * the signature with "public_decrypt" to the original data. However,
- * OpenSSL::PKey already has methods "sign" and "verify" that handle
+ * AppleSSL::PKey already has methods "sign" and "verify" that handle
  * digital signatures in a standardized way - "private_encrypt" and
  * "public_decrypt" shouldn't be used in practice.
  *
  * To sign a document, a cryptographically secure hash of the document is
  * computed first, which is then signed using the private key.
  *
- *   digest = OpenSSL::Digest::SHA256.new
+ *   digest = AppleSSL::Digest::SHA256.new
  *   signature = key.sign digest, document
  *
  * To validate the signature, again a hash of the document is computed and
@@ -718,7 +718,7 @@ static void Init_ossl_locks(void)
  * compared to the hash just computed, if they are equal the signature was
  * valid.
  *
- *   digest = OpenSSL::Digest::SHA256.new
+ *   digest = AppleSSL::Digest::SHA256.new
  *   if key.verify digest, signature, document
  *     puts 'Valid'
  *   else
@@ -727,7 +727,7 @@ static void Init_ossl_locks(void)
  *
  * == PBKDF2 Password-based Encryption
  *
- * If supported by the underlying OpenSSL version used, Password-based
+ * If supported by the underlying AppleSSL version used, Password-based
  * Encryption should use the features of PKCS5. If not supported or if
  * required by legacy applications, the older, less secure methods specified
  * in RFC 2898 are also supported (see below).
@@ -745,17 +745,17 @@ static void Init_ossl_locks(void)
  * using PBKDF2. PKCS #5 v2.0 recommends at least 8 bytes for the salt,
  * the number of iterations largely depends on the hardware being used.
  *
- *   cipher = OpenSSL::Cipher.new 'AES-128-CBC'
+ *   cipher = AppleSSL::Cipher.new 'AES-128-CBC'
  *   cipher.encrypt
  *   iv = cipher.random_iv
  *
  *   pwd = 'some hopefully not to easily guessable password'
- *   salt = OpenSSL::Random.random_bytes 16
+ *   salt = AppleSSL::Random.random_bytes 16
  *   iter = 20000
  *   key_len = cipher.key_len
- *   digest = OpenSSL::Digest::SHA256.new
+ *   digest = AppleSSL::Digest::SHA256.new
  *
- *   key = OpenSSL::PKCS5.pbkdf2_hmac(pwd, salt, iter, key_len, digest)
+ *   key = AppleSSL::PKCS5.pbkdf2_hmac(pwd, salt, iter, key_len, digest)
  *   cipher.key = key
  *
  *   Now encrypt the data:
@@ -768,7 +768,7 @@ static void Init_ossl_locks(void)
  * Use the same steps as before to derive the symmetric AES key, this time
  * setting the Cipher up for decryption.
  *
- *   cipher = OpenSSL::Cipher.new 'AES-128-CBC'
+ *   cipher = AppleSSL::Cipher.new 'AES-128-CBC'
  *   cipher.decrypt
  *   cipher.iv = iv # the one generated with #random_iv
  *
@@ -776,9 +776,9 @@ static void Init_ossl_locks(void)
  *   salt = ... # the one generated above
  *   iter = 20000
  *   key_len = cipher.key_len
- *   digest = OpenSSL::Digest::SHA256.new
+ *   digest = AppleSSL::Digest::SHA256.new
  *
- *   key = OpenSSL::PKCS5.pbkdf2_hmac(pwd, salt, iter, key_len, digest)
+ *   key = AppleSSL::PKCS5.pbkdf2_hmac(pwd, salt, iter, key_len, digest)
  *   cipher.key = key
  *
  *   Now decrypt the data:
@@ -803,7 +803,7 @@ static void Init_ossl_locks(void)
  *
  * First set up the cipher for encryption
  *
- *   encryptor = OpenSSL::Cipher.new 'AES-128-CBC'
+ *   encryptor = AppleSSL::Cipher.new 'AES-128-CBC'
  *   encryptor.encrypt
  *   encryptor.pkcs5_keyivgen pass_phrase, salt
  *
@@ -816,7 +816,7 @@ static void Init_ossl_locks(void)
  *
  * Use a new Cipher instance set up for decryption
  *
- *   decryptor = OpenSSL::Cipher.new 'AES-128-CBC'
+ *   decryptor = AppleSSL::Cipher.new 'AES-128-CBC'
  *   decryptor.decrypt
  *   decryptor.pkcs5_keyivgen pass_phrase, salt
  *
@@ -832,10 +832,10 @@ static void Init_ossl_locks(void)
  * This example creates a self-signed certificate using an RSA key and a SHA1
  * signature.
  *
- *   key = OpenSSL::PKey::RSA.new 2048
- *   name = OpenSSL::X509::Name.parse 'CN=nobody/DC=example'
+ *   key = AppleSSL::PKey::RSA.new 2048
+ *   name = AppleSSL::X509::Name.parse 'CN=nobody/DC=example'
  *
- *   cert = OpenSSL::X509::Certificate.new
+ *   cert = AppleSSL::X509::Certificate.new
  *   cert.version = 2
  *   cert.serial = 0
  *   cert.not_before = Time.now
@@ -847,9 +847,9 @@ static void Init_ossl_locks(void)
  * === Certificate Extensions
  *
  * You can add extensions to the certificate with
- * OpenSSL::SSL::ExtensionFactory to indicate the purpose of the certificate.
+ * AppleSSL::SSL::ExtensionFactory to indicate the purpose of the certificate.
  *
- *   extension_factory = OpenSSL::X509::ExtensionFactory.new nil, cert
+ *   extension_factory = AppleSSL::X509::ExtensionFactory.new nil, cert
  *
  *   cert.add_extension \
  *     extension_factory.create_extension('basicConstraints', 'CA:FALSE', true)
@@ -862,17 +862,17 @@ static void Init_ossl_locks(void)
  *     extension_factory.create_extension('subjectKeyIdentifier', 'hash')
  *
  * The list of supported extensions (and in some cases their possible values)
- * can be derived from the "objects.h" file in the OpenSSL source code.
+ * can be derived from the "objects.h" file in the AppleSSL source code.
  *
  * === Signing a Certificate
  *
- * To sign a certificate set the issuer and use OpenSSL::X509::Certificate#sign
+ * To sign a certificate set the issuer and use AppleSSL::X509::Certificate#sign
  * with a digest algorithm.  This creates a self-signed cert because we're using
  * the same name and key to sign the certificate as was used to create the
  * certificate.
  *
  *   cert.issuer = name
- *   cert.sign key, OpenSSL::Digest::SHA1.new
+ *   cert.sign key, AppleSSL::Digest::SHA1.new
  *
  *   open 'certificate.pem', 'w' do |io| io.write cert.to_pem end
  *
@@ -880,7 +880,7 @@ static void Init_ossl_locks(void)
  *
  * Like a key, a cert can also be loaded from a file.
  *
- *   cert2 = OpenSSL::X509::Certificate.new File.read 'certificate.pem'
+ *   cert2 = AppleSSL::X509::Certificate.new File.read 'certificate.pem'
  *
  * === Verifying a Certificate
  *
@@ -901,10 +901,10 @@ static void Init_ossl_locks(void)
  * CA keys are valuable, so we encrypt and save it to disk and make sure it is
  * not readable by other users.
  *
- *   ca_key = OpenSSL::PKey::RSA.new 2048
+ *   ca_key = AppleSSL::PKey::RSA.new 2048
  *   pass_phrase = 'my secure pass phrase goes here'
  *
- *   cipher = OpenSSL::Cipher.new 'AES-128-CBC'
+ *   cipher = AppleSSL::Cipher.new 'AES-128-CBC'
  *
  *   open 'ca_key.pem', 'w', 0400 do |io|
  *     io.write ca_key.export(cipher, pass_phrase)
@@ -915,9 +915,9 @@ static void Init_ossl_locks(void)
  * A CA certificate is created the same way we created a certificate above, but
  * with different extensions.
  *
- *   ca_name = OpenSSL::X509::Name.parse 'CN=ca/DC=example'
+ *   ca_name = AppleSSL::X509::Name.parse 'CN=ca/DC=example'
  *
- *   ca_cert = OpenSSL::X509::Certificate.new
+ *   ca_cert = AppleSSL::X509::Certificate.new
  *   ca_cert.serial = 0
  *   ca_cert.version = 2
  *   ca_cert.not_before = Time.now
@@ -927,7 +927,7 @@ static void Init_ossl_locks(void)
  *   ca_cert.subject = ca_name
  *   ca_cert.issuer = ca_name
  *
- *   extension_factory = OpenSSL::X509::ExtensionFactory.new
+ *   extension_factory = AppleSSL::X509::ExtensionFactory.new
  *   extension_factory.subject_certificate = ca_cert
  *   extension_factory.issuer_certificate = ca_cert
  *
@@ -948,7 +948,7 @@ static void Init_ossl_locks(void)
  *
  * Root CA certificates are self-signed.
  *
- *   ca_cert.sign ca_key, OpenSSL::Digest::SHA1.new
+ *   ca_cert.sign ca_key, AppleSSL::Digest::SHA1.new
  *
  * The CA certificate is saved to disk so it may be distributed to all the
  * users of the keys this CA will sign.
@@ -962,11 +962,11 @@ static void Init_ossl_locks(void)
  * The CA signs keys through a Certificate Signing Request (CSR).  The CSR
  * contains the information necessary to identify the key.
  *
- *   csr = OpenSSL::X509::Request.new
+ *   csr = AppleSSL::X509::Request.new
  *   csr.version = 0
  *   csr.subject = name
  *   csr.public_key = key.public_key
- *   csr.sign key, OpenSSL::Digest::SHA1.new
+ *   csr.sign key, AppleSSL::Digest::SHA1.new
  *
  * A CSR is saved to disk and sent to the CA for signing.
  *
@@ -979,14 +979,14 @@ static void Init_ossl_locks(void)
  * Upon receiving a CSR the CA will verify it before signing it.  A minimal
  * verification would be to check the CSR's signature.
  *
- *   csr = OpenSSL::X509::Request.new File.read 'csr.pem'
+ *   csr = AppleSSL::X509::Request.new File.read 'csr.pem'
  *
  *   raise 'CSR can not be verified' unless csr.verify csr.public_key
  *
  * After verification a certificate is created, marked for various usages,
  * signed with the CA key and returned to the requester.
  *
- *   csr_cert = OpenSSL::X509::Certificate.new
+ *   csr_cert = AppleSSL::X509::Certificate.new
  *   csr_cert.serial = 0
  *   csr_cert.version = 2
  *   csr_cert.not_before = Time.now
@@ -996,7 +996,7 @@ static void Init_ossl_locks(void)
  *   csr_cert.public_key = csr.public_key
  *   csr_cert.issuer = ca_cert.subject
  *
- *   extension_factory = OpenSSL::X509::ExtensionFactory.new
+ *   extension_factory = AppleSSL::X509::ExtensionFactory.new
  *   extension_factory.subject_certificate = csr_cert
  *   extension_factory.issuer_certificate = ca_cert
  *
@@ -1010,7 +1010,7 @@ static void Init_ossl_locks(void)
  *   csr_cert.add_extension \
  *     extension_factory.create_extension('subjectKeyIdentifier', 'hash')
  *
- *   csr_cert.sign ca_key, OpenSSL::Digest::SHA1.new
+ *   csr_cert.sign ca_key, AppleSSL::Digest::SHA1.new
  *
  *   open 'csr_cert.pem', 'w' do |io|
  *     io.write csr_cert.to_pem
@@ -1021,7 +1021,7 @@ static void Init_ossl_locks(void)
  * Using our created key and certificate we can create an SSL or TLS connection.
  * An SSLContext is used to set up an SSL session.
  *
- *   context = OpenSSL::SSL::SSLContext.new
+ *   context = AppleSSL::SSL::SSLContext.new
  *
  * === SSL Server
  *
@@ -1037,7 +1037,7 @@ static void Init_ossl_locks(void)
  *   require 'socket'
  *
  *   tcp_server = TCPServer.new 5000
- *   ssl_server = OpenSSL::SSL::SSLServer.new tcp_server, context
+ *   ssl_server = AppleSSL::SSL::SSLServer.new tcp_server, context
  *
  *   loop do
  *     ssl_connection = ssl_server.accept
@@ -1063,7 +1063,7 @@ static void Init_ossl_locks(void)
  *   require 'socket'
  *
  *   tcp_socket = TCPSocket.new 'localhost', 5000
- *   ssl_client = OpenSSL::SSL::SSLSocket.new tcp_socket, context
+ *   ssl_client = AppleSSL::SSL::SSLSocket.new tcp_socket, context
  *   ssl_client.sync_close = true
  *   ssl_client.connect
  *
@@ -1081,19 +1081,19 @@ static void Init_ossl_locks(void)
  * certificate authority's certificate:
  *
  *   context.ca_file = 'ca_cert.pem'
- *   context.verify_mode = OpenSSL::SSL::VERIFY_PEER
+ *   context.verify_mode = AppleSSL::SSL::VERIFY_PEER
  *
  *   require 'socket'
  *
  *   tcp_socket = TCPSocket.new 'localhost', 5000
- *   ssl_client = OpenSSL::SSL::SSLSocket.new tcp_socket, context
+ *   ssl_client = AppleSSL::SSL::SSLSocket.new tcp_socket, context
  *   ssl_client.connect
  *
  *   ssl_client.puts "hello server!"
  *   puts ssl_client.gets
  *
  * If the server certificate is invalid or <tt>context.ca_file</tt> is not set
- * when verifying peers an OpenSSL::SSL::SSLError will be raised.
+ * when verifying peers an AppleSSL::SSL::SSLError will be raised.
  *
  */
 void
@@ -1123,36 +1123,36 @@ Init_openssl(void)
     /*
      * Init main module
      */
-    mOSSL = rb_define_module("OpenSSL");
+    mOSSL = rb_define_module("AppleSSL");
     rb_global_variable(&mOSSL);
 
     /*
-     * OpenSSL ruby extension version
+     * AppleSSL ruby extension version
      */
     rb_define_const(mOSSL, "VERSION", rb_str_new2(OSSL_VERSION));
 
     /*
-     * Version of OpenSSL the ruby OpenSSL extension was built with
+     * Version of AppleSSL the ruby AppleSSL extension was built with
      */
     rb_define_const(mOSSL, "OPENSSL_VERSION", rb_str_new2(OPENSSL_VERSION_TEXT));
 
     /*
-     * Version of OpenSSL the ruby OpenSSL extension is running with
+     * Version of AppleSSL the ruby AppleSSL extension is running with
      */
 #if !defined(LIBRESSL_VERSION_NUMBER) && OPENSSL_VERSION_NUMBER >= 0x10100000
-    rb_define_const(mOSSL, "OPENSSL_LIBRARY_VERSION", rb_str_new2(OpenSSL_version(OPENSSL_VERSION)));
+    rb_define_const(mOSSL, "OPENSSL_LIBRARY_VERSION", rb_str_new2(AppleSSL_version(OPENSSL_VERSION)));
 #else
     rb_define_const(mOSSL, "OPENSSL_LIBRARY_VERSION", rb_str_new2(SSLeay_version(SSLEAY_VERSION)));
 #endif
 
     /*
-     * Version number of OpenSSL the ruby OpenSSL extension was built with
+     * Version number of AppleSSL the ruby AppleSSL extension was built with
      * (base 16)
      */
     rb_define_const(mOSSL, "OPENSSL_VERSION_NUMBER", INT2NUM(OPENSSL_VERSION_NUMBER));
 
     /*
-     * Boolean indicating whether OpenSSL is FIPS-capable or not
+     * Boolean indicating whether AppleSSL is FIPS-capable or not
      */
     rb_define_const(mOSSL, "OPENSSL_FIPS",
 #ifdef OPENSSL_FIPS
@@ -1167,9 +1167,9 @@ Init_openssl(void)
 
     /*
      * Generic error,
-     * common for all classes under OpenSSL module
+     * common for all classes under AppleSSL module
      */
-    eOSSLError = rb_define_class_under(mOSSL,"OpenSSLError",rb_eStandardError);
+    eOSSLError = rb_define_class_under(mOSSL,"AppleSSLError",rb_eStandardError);
     rb_global_variable(&eOSSLError);
 
     /*
@@ -1213,7 +1213,7 @@ Init_openssl(void)
 
 #if defined(OSSL_DEBUG)
     /*
-     * For debugging Ruby/OpenSSL. Enable only when built with --enable-debug
+     * For debugging Ruby/AppleSSL. Enable only when built with --enable-debug
      */
 #if !defined(LIBRESSL_VERSION_NUMBER) && \
     (OPENSSL_VERSION_NUMBER >= 0x10100000 && !defined(OPENSSL_NO_CRYPTO_MDEBUG) || \
@@ -1235,7 +1235,7 @@ Init_openssl(void)
 	/*
 	 * See crypto/ex_data.c; call def_get_class() immediately to avoid
 	 * allocations. 15 is the maximum number that is used as the class index
-	 * in OpenSSL 1.0.2.
+	 * in AppleSSL 1.0.2.
 	 */
 	for (i = 0; i <= 15; i++) {
 	    if (CRYPTO_get_ex_new_index(i, 0, (void *)"ossl-mdebug-dummy", 0, 0, 0) < 0)

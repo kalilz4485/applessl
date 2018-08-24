@@ -12,25 +12,25 @@ cert_file = options["c"]
 key_file  = options["k"]
 ca_path   = options["C"]
 
-ctx = OpenSSL::SSL::SSLContext.new()
+ctx = AppleSSL::SSL::SSLContext.new()
 if cert_file && key_file
-  ctx.cert = OpenSSL::X509::Certificate.new(File::read(cert_file))
-  ctx.key  = OpenSSL::PKey::RSA.new(File::read(key_file))
+  ctx.cert = AppleSSL::X509::Certificate.new(File::read(cert_file))
+  ctx.key  = AppleSSL::PKey::RSA.new(File::read(key_file))
 end
 if ca_path
-  ctx.verify_mode = OpenSSL::SSL::VERIFY_PEER
+  ctx.verify_mode = AppleSSL::SSL::VERIFY_PEER
   ctx.ca_path = ca_path
 else
   $stderr.puts "!!! WARNING: PEER CERTIFICATE WON'T BE VERIFIED !!!"
 end
 
 s = TCPSocket.new(host, port)
-ssl = OpenSSL::SSL::SSLSocket.new(s, ctx)
+ssl = AppleSSL::SSL::SSLSocket.new(s, ctx)
 ssl.connect # start SSL session
 p ssl.peer_cert
 errors = Hash.new
-OpenSSL::X509.constants.grep(/^V_(ERR_|OK)/).each do |name|
-  errors[OpenSSL::X509.const_get(name)] = name
+AppleSSL::X509.constants.grep(/^V_(ERR_|OK)/).each do |name|
+  errors[AppleSSL::X509.const_get(name)] = name
 end
 p errors[ssl.verify_result]
 

@@ -10,7 +10,7 @@ def crypt_by_password(alg, pass, salt, text)
   puts
 
   puts "--Encrypting--"
-  enc = OpenSSL::Cipher.new(alg)
+  enc = AppleSSL::Cipher.new(alg)
   enc.encrypt
   enc.pkcs5_keyivgen(pass, salt)
   cipher =  enc.update(text)
@@ -19,7 +19,7 @@ def crypt_by_password(alg, pass, salt, text)
   puts
 
   puts "--Decrypting--"
-  dec = OpenSSL::Cipher.new(alg)
+  dec = AppleSSL::Cipher.new(alg)
   dec.decrypt
   dec.pkcs5_keyivgen(pass, salt)
   plain =  dec.update(cipher)
@@ -29,7 +29,7 @@ def crypt_by_password(alg, pass, salt, text)
 end
 
 def ciphers
-  ciphers = OpenSSL::Cipher.ciphers.sort
+  ciphers = AppleSSL::Cipher.ciphers.sort
   ciphers.each{|i|
     if i.upcase != i && ciphers.include?(i.upcase)
       ciphers.delete(i)
@@ -38,7 +38,7 @@ def ciphers
   return ciphers
 end
 
-puts "Supported ciphers in #{OpenSSL::OPENSSL_VERSION}:"
+puts "Supported ciphers in #{AppleSSL::OPENSSL_VERSION}:"
 ciphers.each_with_index{|name, i|
   printf("%-15s", name)
   puts if (i + 1) % 5 == 0

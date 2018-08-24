@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -51,7 +51,7 @@ ossl_x509ext_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_x509ext_type = {
-    "OpenSSL/X509/EXTENSION",
+    "AppleSSL/X509/EXTENSION",
     {
 	0, ossl_x509ext_free,
     },
@@ -104,7 +104,7 @@ ossl_x509extfactory_free(void *ctx)
 }
 
 static const rb_data_type_t ossl_x509extfactory_type = {
-    "OpenSSL/X509/EXTENSION/Factory",
+    "AppleSSL/X509/EXTENSION/Factory",
     {
 	0, ossl_x509extfactory_free,
     },
@@ -259,9 +259,9 @@ ossl_x509ext_alloc(VALUE klass)
 
 /*
  * call-seq:
- *    OpenSSL::X509::Extension.new(der)
- *    OpenSSL::X509::Extension.new(oid, value)
- *    OpenSSL::X509::Extension.new(oid, value, critical)
+ *    AppleSSL::X509::Extension.new(der)
+ *    AppleSSL::X509::Extension.new(oid, value)
+ *    AppleSSL::X509::Extension.new(oid, value, critical)
  *
  * Creates an X509 extension.
  *
@@ -439,8 +439,8 @@ Init_ossl_x509ext(void)
 {
 #undef rb_intern
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
     mX509 = rb_define_module_under(mOSSL, "X509");
 #endif
 

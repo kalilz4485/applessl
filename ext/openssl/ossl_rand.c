@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'AppleSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  *
  * All rights reserved.
@@ -46,8 +46,8 @@ ossl_rand_seed(VALUE self, VALUE str)
  *    pid = $$
  *    now = Time.now
  *    ary = [now.to_i, now.nsec, 1000, pid]
- *    OpenSSL::Random.add(ary.join, 0.0)
- *    OpenSSL::Random.seed(ary.join)
+ *    AppleSSL::Random.add(ary.join, 0.0)
+ *    AppleSSL::Random.seed(ary.join)
  */
 static VALUE
 ossl_rand_add(VALUE self, VALUE str, VALUE entropy)
@@ -103,7 +103,7 @@ ossl_rand_write_file(VALUE self, VALUE filename)
  *
  * === Example
  *
- *    OpenSSL::Random.random_bytes(12)
+ *    AppleSSL::Random.random_bytes(12)
  *    #=> "..."
  */
 static VALUE
@@ -136,7 +136,7 @@ ossl_rand_bytes(VALUE self, VALUE len)
  *
  * === Example
  *
- *    OpenSSL::Random.pseudo_bytes(12)
+ *    AppleSSL::Random.pseudo_bytes(12)
  *    #=> "..."
  */
 static VALUE
@@ -178,7 +178,7 @@ ossl_rand_egd(VALUE self, VALUE filename)
  *
  * Queries the entropy gathering daemon EGD on socket path given by _filename_.
  *
- * Fetches _length_ number of bytes and uses ::add to seed the OpenSSL built-in
+ * Fetches _length_ number of bytes and uses ::add to seed the AppleSSL built-in
  * PRNG.
  */
 static VALUE
@@ -214,8 +214,8 @@ void
 Init_ossl_rand(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("AppleSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "AppleSSLError", rb_eStandardError);
 #endif
 
     mRandom = rb_define_module_under(mOSSL, "Random");
