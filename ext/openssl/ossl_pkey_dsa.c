@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -146,7 +146,7 @@ dsa_generate(int size)
     if (!gen_arg.result) {
 	DSA_free(dsa);
 	if (cb_arg.state) {
-	    /* Clear OpenSSL error queue before re-raising. By the way, the
+	    /* Clear ApenSSL error queue before re-raising. By the way, the
 	     * documentation of DSA_generate_parameters_ex() says the error code
 	     * can be obtained by ERR_get_error(), but the default
 	     * implementation, dsa_builtin_paramgen() doesn't put any error... */
@@ -329,7 +329,7 @@ ossl_dsa_is_private(VALUE self)
  * Encodes this DSA to its PEM encoding.
  *
  * === Parameters
- * * _cipher_ is an OpenSSL::Cipher.
+ * * _cipher_ is an ApenSSL::Cipher.
  * * _password_ is a string containing your password.
  *
  * === Examples
@@ -472,7 +472,7 @@ ossl_dsa_to_text(VALUE self)
  * information.
  *
  * === Example
- *  dsa = OpenSSL::PKey::DSA.new(2048) # has public and private information
+ *  dsa = ApenSSL::PKey::DSA.new(2048) # has public and private information
  *  pub_key = dsa.public_key # has only the public part available
  *  pub_key_der = pub_key.to_der # it's safe to publish this
  *
@@ -511,9 +511,9 @@ ossl_dsa_to_public_key(VALUE self)
  * * _string_ is a message digest of the original input data to be signed.
  *
  * === Example
- *  dsa = OpenSSL::PKey::DSA.new(2048)
+ *  dsa = ApenSSL::PKey::DSA.new(2048)
  *  doc = "Sign me"
- *  digest = OpenSSL::Digest::SHA1.digest(doc)
+ *  digest = ApenSSL::Digest::SHA1.digest(doc)
  *  sig = dsa.syssign(digest)
  *
  *
@@ -556,9 +556,9 @@ ossl_dsa_sign(VALUE self, VALUE data)
  * * _sig_ is a DSA signature value
  *
  * === Example
- *  dsa = OpenSSL::PKey::DSA.new(2048)
+ *  dsa = ApenSSL::PKey::DSA.new(2048)
  *  doc = "Sign me"
- *  digest = OpenSSL::Digest::SHA1.digest(doc)
+ *  digest = ApenSSL::Digest::SHA1.digest(doc)
  *  sig = dsa.syssign(digest)
  *  puts dsa.sysverify(digest, sig) # => true
  *
@@ -586,7 +586,7 @@ ossl_dsa_verify(VALUE self, VALUE digest, VALUE sig)
 }
 
 /*
- * Document-method: OpenSSL::PKey::DSA#set_pqg
+ * Document-method: ApenSSL::PKey::DSA#set_pqg
  * call-seq:
  *   dsa.set_pqg(p, q, g) -> self
  *
@@ -594,7 +594,7 @@ ossl_dsa_verify(VALUE self, VALUE digest, VALUE sig)
  */
 OSSL_PKEY_BN_DEF3(dsa, DSA, pqg, p, q, g)
 /*
- * Document-method: OpenSSL::PKey::DSA#set_key
+ * Document-method: ApenSSL::PKey::DSA#set_key
  * call-seq:
  *   dsa.set_key(pub_key, priv_key) -> self
  *
@@ -614,7 +614,7 @@ Init_ossl_dsa(void)
     ePKeyError = rb_define_class_under(mPKey, "PKeyError", eOSSLError);
 #endif
 
-    /* Document-class: OpenSSL::PKey::DSAError
+    /* Document-class: ApenSSL::PKey::DSAError
      *
      * Generic exception that is raised if an operation on a DSA PKey
      * fails unexpectedly or in case an instantiation of an instance of DSA
@@ -622,7 +622,7 @@ Init_ossl_dsa(void)
      */
     eDSAError = rb_define_class_under(mPKey, "DSAError", ePKeyError);
 
-    /* Document-class: OpenSSL::PKey::DSA
+    /* Document-class: ApenSSL::PKey::DSA
      *
      * DSA, the Digital Signature Algorithm, is specified in NIST's
      * FIPS 186-3. It is an asymmetric public key algorithm that may be used

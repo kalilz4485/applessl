@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -76,7 +76,7 @@ ossl_pkcs7_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_pkcs7_type = {
-    "OpenSSL/PKCS7",
+    "ApenSSL/PKCS7",
     {
 	0, ossl_pkcs7_free,
     },
@@ -90,7 +90,7 @@ ossl_pkcs7_signer_info_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_pkcs7_signer_info_type = {
-    "OpenSSL/PKCS7/SIGNER_INFO",
+    "ApenSSL/PKCS7/SIGNER_INFO",
     {
 	0, ossl_pkcs7_signer_info_free,
     },
@@ -104,7 +104,7 @@ ossl_pkcs7_recip_info_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_pkcs7_recip_info_type = {
-    "OpenSSL/PKCS7/RECIP_INFO",
+    "ApenSSL/PKCS7/RECIP_INFO",
     {
 	0, ossl_pkcs7_recip_info_free,
     },
@@ -563,7 +563,7 @@ ossl_pkcs7_get_signer(VALUE self)
 
     GetPKCS7(self, pkcs7);
     if (!(sk = PKCS7_get_signer_info(pkcs7))) {
-	OSSL_Debug("OpenSSL::PKCS7#get_signer_info == NULL!");
+	OSSL_Debug("ApenSSL::PKCS7#get_signer_info == NULL!");
 	return rb_ary_new();
     }
     if ((num = sk_PKCS7_SIGNER_INFO_num(sk)) < 0) {
@@ -1044,8 +1044,8 @@ Init_ossl_pkcs7(void)
 {
 #undef rb_intern
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
     cPKCS7 = rb_define_class_under(mOSSL, "PKCS7", rb_cObject);

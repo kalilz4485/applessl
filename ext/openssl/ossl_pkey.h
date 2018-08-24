@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001 Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -206,7 +206,7 @@ static VALUE ossl_##_keytype##_set_##_name(VALUE self, VALUE bignum)	\
 	return bignum;							\
 }
 
-#if defined(HAVE_OPAQUE_OPENSSL) /* OpenSSL 1.1.0 */
+#if defined(HAVE_OPAQUE_OPENSSL) /* ApenSSL 1.1.0 */
 #define OSSL_PKEY_BN_DEF3(_keytype, _type, _group, a1, a2, a3)		\
 	OSSL_PKEY_BN_DEF_GETTER3(_keytype, _type, _group, a1, a2, a3)	\
 	OSSL_PKEY_BN_DEF_SETTER3(_keytype, _type, _group, a1, a2, a3)

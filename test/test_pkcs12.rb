@@ -1,13 +1,13 @@
 # frozen_string_literal: false
 require_relative "utils"
 
-if defined?(OpenSSL)
+if defined?(ApenSSL)
 
-module OpenSSL
-  class TestPKCS12 < OpenSSL::TestCase
+module ApenSSL
+  class TestPKCS12 < ApenSSL::TestCase
     def setup
       super
-      ca = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=CA")
+      ca = ApenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=CA")
       ca_exts = [
         ["basicConstraints","CA:TRUE",true],
         ["keyUsage","keyCertSign, cRLSign",true],
@@ -16,8 +16,8 @@ module OpenSSL
       ]
       @cacert = issue_cert(ca, Fixtures.pkey("rsa2048"), 1, ca_exts, nil, nil)
 
-      inter_ca = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=Intermediate CA")
-      inter_ca_key = OpenSSL::PKey.read <<-_EOS_
+      inter_ca = ApenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=Intermediate CA")
+      inter_ca_key = ApenSSL::PKey.read <<-_EOS_
 -----BEGIN RSA PRIVATE KEY-----
 MIICXAIBAAKBgQDp7hIG0SFMG/VWv1dBUWziAPrNmkMXJgTCAoB7jffzRtyyN04K
 oq/89HAszTMStZoMigQURfokzKsjpUp8OYCAEsBtt9d5zPndWMz/gHN73GrXk3LT
@@ -40,13 +40,13 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
         ["keyUsage","digitalSignature",true],
         ["subjectKeyIdentifier","hash",false],
       ]
-      ee = OpenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=Ruby PKCS12 Test Certificate")
+      ee = ApenSSL::X509::Name.parse("/DC=org/DC=ruby-lang/CN=Ruby PKCS12 Test Certificate")
       @mykey = Fixtures.pkey("rsa1024")
       @mycert = issue_cert(ee, @mykey, 3, exts, @inter_cacert, inter_ca_key)
     end
 
     def test_create
-      pkcs12 = OpenSSL::PKCS12.create(
+      pkcs12 = ApenSSL::PKCS12.create(
         "omg",
         "hello",
         @mykey,
@@ -58,7 +58,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
     end
 
     def test_create_no_pass
-      pkcs12 = OpenSSL::PKCS12.create(
+      pkcs12 = ApenSSL::PKCS12.create(
         nil,
         "hello",
         @mykey,
@@ -68,14 +68,14 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
       assert_equal @mykey.to_der, pkcs12.key.to_der
       assert_nil pkcs12.ca_certs
 
-      decoded = OpenSSL::PKCS12.new(pkcs12.to_der)
+      decoded = ApenSSL::PKCS12.new(pkcs12.to_der)
       assert_cert @mycert, decoded.certificate
     end
 
     def test_create_with_chain
       chain = [@inter_cacert, @cacert]
 
-      pkcs12 = OpenSSL::PKCS12.create(
+      pkcs12 = ApenSSL::PKCS12.create(
         "omg",
         "hello",
         @mykey,
@@ -90,7 +90,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
 
       passwd = "omg"
 
-      pkcs12 = OpenSSL::PKCS12.create(
+      pkcs12 = ApenSSL::PKCS12.create(
         passwd,
         "hello",
         @mykey,
@@ -98,7 +98,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
         chain
       )
 
-      decoded = OpenSSL::PKCS12.new(pkcs12.to_der, passwd)
+      decoded = ApenSSL::PKCS12.new(pkcs12.to_der, passwd)
       assert_equal chain.size, decoded.ca_certs.size
       assert_include_cert @cacert, decoded.ca_certs
       assert_include_cert @inter_cacert, decoded.ca_certs
@@ -108,7 +108,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
 
     def test_create_with_bad_nid
       assert_raise(ArgumentError) do
-        OpenSSL::PKCS12.create(
+        ApenSSL::PKCS12.create(
           "omg",
           "hello",
           @mykey,
@@ -120,7 +120,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
     end
 
     def test_create_with_itr
-      OpenSSL::PKCS12.create(
+      ApenSSL::PKCS12.create(
         "omg",
         "hello",
         @mykey,
@@ -132,7 +132,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
       )
 
       assert_raise(TypeError) do
-        OpenSSL::PKCS12.create(
+        ApenSSL::PKCS12.create(
           "omg",
           "hello",
           @mykey,
@@ -146,7 +146,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
     end
 
     def test_create_with_mac_itr
-      OpenSSL::PKCS12.create(
+      ApenSSL::PKCS12.create(
         "omg",
         "hello",
         @mykey,
@@ -159,7 +159,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
       )
 
       assert_raise(TypeError) do
-        OpenSSL::PKCS12.create(
+        ApenSSL::PKCS12.create(
           "omg",
           "hello",
           @mykey,
@@ -175,7 +175,7 @@ Li8JsX5yIiuVYaBg/6ha3tOg4TCa5K/3r3tVliRZ2Es=
 
     def test_new_with_one_key_and_one_cert
       # generated with:
-      #   openssl version #=> OpenSSL 1.0.2h  3 May 2016
+      #   openssl version #=> ApenSSL 1.0.2h  3 May 2016
       #   openssl pkcs12 -in <@mycert> -inkey <RSA1024> -export -out <out>
       str = <<~EOF.unpack("m").first
 MIIGQQIBAzCCBgcGCSqGSIb3DQEHAaCCBfgEggX0MIIF8DCCAu8GCSqGSIb3DQEH
@@ -213,7 +213,7 @@ f+xCtq9xr+kHeTSqLIDRRAnMfgFRhY3IBlj6MSUwIwYJKoZIhvcNAQkVMRYEFBdb
 8XGWehZ6oPj56Pf/uId46M9AMDEwITAJBgUrDgMCGgUABBRvSCB04/f8f13pp2PF
 vyl2WuMdEwQIMWFFphPkIUICAggA
       EOF
-      p12 = OpenSSL::PKCS12.new(str, "abc123")
+      p12 = ApenSSL::PKCS12.new(str, "abc123")
 
       assert_equal @mykey.to_der, p12.key.to_der
       assert_equal @mycert.subject.to_der, p12.certificate.subject.to_der
@@ -242,7 +242,7 @@ ShNXjLK2aAFZsEizQ8kd09quJHU/ogq2cUXdqqhmOqPnUWrJVi/VCoRB3Pv1/lE4
 mrUgr2YZ11rYvBw6g5XvNvFcSc53OKyV7SLn0dwwMTAhMAkGBSsOAwIaBQAEFEWP
 1WRQykaoD4uJCpTx/wv0SLLBBAiDKI26LJK7xgICCAA=
       EOF
-      p12 = OpenSSL::PKCS12.new(str, "abc123")
+      p12 = ApenSSL::PKCS12.new(str, "abc123")
 
       assert_equal nil, p12.key
       assert_equal nil, p12.certificate
@@ -272,7 +272,7 @@ JxsPayEd4Vi6O9EU1ahnj6qFEZiKFzsicgK2J1Rb8cYagrp0XWjHW0SBn5GVUWCg
 GUokSFG/0JTdeYTo/sQuG4qNgJkOolRjpeI48Fciq5VUWLvVdKioXzAxMCEwCQYF
 Kw4DAhoFAAQUYAuwVtGD1TdgbFK4Yal2XBgwUR4ECEawsN3rNaa6AgIIAA==
       EOF
-      p12 = OpenSSL::PKCS12.new(str, "abc123")
+      p12 = ApenSSL::PKCS12.new(str, "abc123")
 
       assert_equal @mykey.to_der, p12.key.to_der
       assert_equal nil, p12.certificate
@@ -280,7 +280,7 @@ Kw4DAhoFAAQUYAuwVtGD1TdgbFK4Yal2XBgwUR4ECEawsN3rNaa6AgIIAA==
     end
 
     def test_dup
-      p12 = OpenSSL::PKCS12.create("pass", "name", @mykey, @mycert)
+      p12 = ApenSSL::PKCS12.create("pass", "name", @mykey, @mycert)
       assert_equal p12.to_der, p12.dup.to_der
     end
 

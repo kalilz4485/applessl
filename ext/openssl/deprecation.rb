@@ -1,5 +1,5 @@
 # frozen_string_literal: false
-module OpenSSL
+module ApenSSL
   def self.deprecated_warning_flag
     unless flag = (@deprecated_warning_flag ||= nil)
       if try_compile("", flag = "-Werror=deprecated-declarations")

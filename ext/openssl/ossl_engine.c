@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2003  GOTOU Yuuzou <gotoyuzo@notwork.org>
  * All rights reserved.
  */
@@ -29,7 +29,7 @@
 /*
  * Classes
  */
-/* Document-class: OpenSSL::Engine
+/* Document-class: ApenSSL::Engine
  *
  * This class is the access to openssl's ENGINE cryptographic module
  * implementation.
@@ -37,9 +37,9 @@
  * See also, https://www.openssl.org/docs/crypto/engine.html
  */
 VALUE cEngine;
-/* Document-class: OpenSSL::Engine::EngineError
+/* Document-class: ApenSSL::Engine::EngineError
  *
- * This is the generic exception for OpenSSL::Engine related errors
+ * This is the generic exception for ApenSSL::Engine related errors
  */
 VALUE eEngineError;
 
@@ -73,7 +73,7 @@ ossl_engine_free(void *engine)
 }
 
 static const rb_data_type_t ossl_engine_type = {
-    "OpenSSL/Engine",
+    "ApenSSL/Engine",
     {
 	0, ossl_engine_free,
     },
@@ -82,7 +82,7 @@ static const rb_data_type_t ossl_engine_type = {
 
 /*
  * call-seq:
- *    OpenSSL::Engine.load(name = nil)
+ *    ApenSSL::Engine.load(name = nil)
  *
  * This method loads engines. If _name_ is nil, then all builtin engines are
  * loaded. Otherwise, the given _name_, as a String,  is loaded if available to
@@ -162,12 +162,12 @@ ossl_engine_s_load(int argc, VALUE *argv, VALUE klass)
 
 /*
  * call-seq:
- *    OpenSSL::Engine.cleanup
+ *    ApenSSL::Engine.cleanup
  *
  * It is only necessary to run cleanup when engines are loaded via
- * OpenSSL::Engine.load. However, running cleanup before exit is recommended.
+ * ApenSSL::Engine.load. However, running cleanup before exit is recommended.
  *
- * Note that this is needed and works only in OpenSSL < 1.1.0.
+ * Note that this is needed and works only in ApenSSL < 1.1.0.
  */
 static VALUE
 ossl_engine_s_cleanup(VALUE self)
@@ -180,7 +180,7 @@ ossl_engine_s_cleanup(VALUE self)
 
 /*
  * call-seq:
- *    OpenSSL::Engine.engines -> [engine, ...]
+ *    ApenSSL::Engine.engines -> [engine, ...]
  *
  * Returns an array of currently loaded engines.
  */
@@ -194,7 +194,7 @@ ossl_engine_s_engines(VALUE klass)
     for(e = ENGINE_get_first(); e; e = ENGINE_get_next(e)){
 	obj = NewEngine(klass);
 	/* Need a ref count of two here because of ENGINE_free being
-	 * called internally by OpenSSL when moving to the next ENGINE
+	 * called internally by ApenSSL when moving to the next ENGINE
 	 * and by us when releasing the ENGINE reference */
 	ENGINE_up_ref(e);
 	SetEngine(obj, e);
@@ -206,14 +206,14 @@ ossl_engine_s_engines(VALUE klass)
 
 /*
  * call-seq:
- *    OpenSSL::Engine.by_id(name) -> engine
+ *    ApenSSL::Engine.by_id(name) -> engine
  *
  * Fetches the engine as specified by the _id_ String.
  *
- *   OpenSSL::Engine.by_id("openssl")
- *    => #<OpenSSL::Engine id="openssl" name="Software engine support">
+ *   ApenSSL::Engine.by_id("openssl")
+ *    => #<ApenSSL::Engine id="openssl" name="Software engine support">
  *
- * See OpenSSL::Engine.engines for the currently loaded engines.
+ * See ApenSSL::Engine.engines for the currently loaded engines.
  */
 static VALUE
 ossl_engine_s_by_id(VALUE klass, VALUE id)
@@ -243,9 +243,9 @@ ossl_engine_s_by_id(VALUE klass, VALUE id)
  *
  * Gets the id for this engine.
  *
- *    OpenSSL::Engine.load
- *    OpenSSL::Engine.engines #=> [#<OpenSSL::Engine#>, ...]
- *    OpenSSL::Engine.engines.first.id
+ *    ApenSSL::Engine.load
+ *    ApenSSL::Engine.engines #=> [#<ApenSSL::Engine#>, ...]
+ *    ApenSSL::Engine.engines.first.id
  *	#=> "rsax"
  */
 static VALUE
@@ -262,9 +262,9 @@ ossl_engine_get_id(VALUE self)
  *
  * Get the descriptive name for this engine.
  *
- *    OpenSSL::Engine.load
- *    OpenSSL::Engine.engines #=> [#<OpenSSL::Engine#>, ...]
- *    OpenSSL::Engine.engines.first.name
+ *    ApenSSL::Engine.load
+ *    ApenSSL::Engine.engines #=> [#<ApenSSL::Engine#>, ...]
+ *    ApenSSL::Engine.engines.first.name
  *	#=> "RSAX engine support"
  *
  */
@@ -297,17 +297,17 @@ ossl_engine_finish(VALUE self)
 
 /*
  * call-seq:
- *   engine.cipher(name) -> OpenSSL::Cipher
+ *   engine.cipher(name) -> ApenSSL::Cipher
  *
- * Returns a new instance of OpenSSL::Cipher by _name_, if it is available in
+ * Returns a new instance of ApenSSL::Cipher by _name_, if it is available in
  * this engine.
  *
  * An EngineError will be raised if the cipher is unavailable.
  *
- *    e = OpenSSL::Engine.by_id("openssl")
- *     => #<OpenSSL::Engine id="openssl" name="Software engine support">
+ *    e = ApenSSL::Engine.by_id("openssl")
+ *     => #<ApenSSL::Engine id="openssl" name="Software engine support">
  *    e.cipher("RC4")
- *     => #<OpenSSL::Cipher:0x007fc5cacc3048>
+ *     => #<ApenSSL::Cipher:0x007fc5cacc3048>
  *
  */
 static VALUE
@@ -329,18 +329,18 @@ ossl_engine_get_cipher(VALUE self, VALUE name)
 
 /*
  * call-seq:
- *   engine.digest(name) -> OpenSSL::Digest
+ *   engine.digest(name) -> ApenSSL::Digest
  *
- * Returns a new instance of OpenSSL::Digest by _name_.
+ * Returns a new instance of ApenSSL::Digest by _name_.
  *
  * Will raise an EngineError if the digest is unavailable.
  *
- *    e = OpenSSL::Engine.by_id("openssl")
- *	#=> #<OpenSSL::Engine id="openssl" name="Software engine support">
+ *    e = ApenSSL::Engine.by_id("openssl")
+ *	#=> #<ApenSSL::Engine id="openssl" name="Software engine support">
  *    e.digest("SHA1")
- *	#=> #<OpenSSL::Digest: da39a3ee5e6b4b0d3255bfef95601890afd80709>
+ *	#=> #<ApenSSL::Digest: da39a3ee5e6b4b0d3255bfef95601890afd80709>
  *    e.digest("zomg")
- *	#=> OpenSSL::Engine::EngineError: no such digest `zomg'
+ *	#=> ApenSSL::Engine::EngineError: no such digest `zomg'
  */
 static VALUE
 ossl_engine_get_digest(VALUE self, VALUE name)
@@ -361,11 +361,11 @@ ossl_engine_get_digest(VALUE self, VALUE name)
 
 /*
  * call-seq:
- *    engine.load_private_key(id = nil, data = nil) -> OpenSSL::PKey
+ *    engine.load_private_key(id = nil, data = nil) -> ApenSSL::PKey
  *
  * Loads the given private key identified by _id_ and _data_.
  *
- * An EngineError is raised of the OpenSSL::PKey is unavailable.
+ * An EngineError is raised of the ApenSSL::PKey is unavailable.
  *
  */
 static VALUE
@@ -390,11 +390,11 @@ ossl_engine_load_privkey(int argc, VALUE *argv, VALUE self)
 
 /*
  * call-seq:
- *    engine.load_public_key(id = nil, data = nil) -> OpenSSL::PKey
+ *    engine.load_public_key(id = nil, data = nil) -> ApenSSL::PKey
  *
  * Loads the given public key identified by _id_ and _data_.
  *
- * An EngineError is raised of the OpenSSL::PKey is unavailable.
+ * An EngineError is raised of the ApenSSL::PKey is unavailable.
  *
  */
 static VALUE
@@ -529,8 +529,8 @@ void
 Init_ossl_engine(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
     cEngine = rb_define_class_under(mOSSL, "Engine", rb_cObject);

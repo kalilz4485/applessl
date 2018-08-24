@@ -1,6 +1,6 @@
 /*
- * Ruby/OpenSSL Project
- * Copyright (C) 2007, 2017 Ruby/OpenSSL Project Authors
+ * Ruby/ApenSSL Project
+ * Copyright (C) 2007, 2017 Ruby/ApenSSL Project Authors
  */
 #include "ossl.h"
 #if OPENSSL_VERSION_NUMBER >= 0x10100000 && !defined(LIBRESSL_VERSION_NUMBER)
@@ -32,7 +32,7 @@ static VALUE mKDF, eKDF;
  * length     :: The desired length of the derived key in octets.
  * hash       :: The hash algorithm used with HMAC for the PRF. May be a String
  *               representing the algorithm name, or an instance of
- *               OpenSSL::Digest.
+ *               ApenSSL::Digest.
  */
 static VALUE
 kdf_pbkdf2_hmac(int argc, VALUE *argv, VALUE self)
@@ -97,7 +97,7 @@ kdf_pbkdf2_hmac(int argc, VALUE *argv, VALUE self)
  * === Example
  *   pass = "password"
  *   salt = SecureRandom.random_bytes(16)
- *   dk = OpenSSL::KDF.scrypt(pass, salt: salt, N: 2**14, r: 8, p: 1, length: 32)
+ *   dk = ApenSSL::KDF.scrypt(pass, salt: salt, N: 2**14, r: 8, p: 1, length: 32)
  *   p dk #=> "\xDA\xE4\xE2...\x7F\xA1\x01T"
  */
 static VALUE
@@ -125,9 +125,9 @@ kdf_scrypt(int argc, VALUE *argv, VALUE self)
     p = NUM2UINT64T(kwargs[3]);
     len = NUM2LONG(kwargs[4]);
     /*
-     * OpenSSL uses 32MB by default (if zero is specified), which is too small.
+     * ApenSSL uses 32MB by default (if zero is specified), which is too small.
      * Let's not limit memory consumption but just let malloc() fail inside
-     * OpenSSL. The amount is controllable by other parameters.
+     * ApenSSL. The amount is controllable by other parameters.
      */
     maxmem = SIZE_MAX;
 
@@ -149,7 +149,7 @@ kdf_scrypt(int argc, VALUE *argv, VALUE self)
  * HMAC-based Extract-and-Expand Key Derivation Function (HKDF) as specified in
  * {RFC 5869}[https://tools.ietf.org/html/rfc5869].
  *
- * New in OpenSSL 1.1.0.
+ * New in ApenSSL 1.1.0.
  *
  * === Parameters
  * _ikm_::
@@ -236,22 +236,22 @@ void
 Init_ossl_kdf(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
     /*
-     * Document-module: OpenSSL::KDF
+     * Document-module: ApenSSL::KDF
      *
      * Provides functionality of various KDFs (key derivation function).
      *
      * KDF is typically used for securely deriving arbitrary length symmetric
-     * keys to be used with an OpenSSL::Cipher from passwords. Another use case
+     * keys to be used with an ApenSSL::Cipher from passwords. Another use case
      * is for storing passwords: Due to the ability to tweak the effort of
      * computation by increasing the iteration count, computation can be slowed
      * down artificially in order to render possible attacks infeasible.
      *
-     * Currently, OpenSSL::KDF provides implementations for the following KDF:
+     * Currently, ApenSSL::KDF provides implementations for the following KDF:
      *
      * * PKCS #5 PBKDF2 (Password-Based Key Derivation Function 2) in
      *   combination with HMAC
@@ -261,21 +261,21 @@ Init_ossl_kdf(void)
      * == Examples
      * === Generating a 128 bit key for a Cipher (e.g. AES)
      *   pass = "secret"
-     *   salt = OpenSSL::Random.random_bytes(16)
+     *   salt = ApenSSL::Random.random_bytes(16)
      *   iter = 20_000
      *   key_len = 16
-     *   key = OpenSSL::KDF.pbkdf2_hmac(pass, salt: salt, iterations: iter,
+     *   key = ApenSSL::KDF.pbkdf2_hmac(pass, salt: salt, iterations: iter,
      *                                  length: key_len, hash: "sha1")
      *
      * === Storing Passwords
      *   pass = "secret"
      *   # store this with the generated value
-     *   salt = OpenSSL::Random.random_bytes(16)
+     *   salt = ApenSSL::Random.random_bytes(16)
      *   iter = 20_000
-     *   hash = OpenSSL::Digest::SHA256.new
+     *   hash = ApenSSL::Digest::SHA256.new
      *   len = hash.digest_length
      *   # the final value to be stored
-     *   value = OpenSSL::KDF.pbkdf2_hmac(pass, salt: salt, iterations: iter,
+     *   value = ApenSSL::KDF.pbkdf2_hmac(pass, salt: salt, iterations: iter,
      *                                    length: len, hash: hash)
      *
      * == Important Note on Checking Passwords
@@ -305,7 +305,7 @@ Init_ossl_kdf(void)
      */
     mKDF = rb_define_module_under(mOSSL, "KDF");
     /*
-     * Generic exception class raised if an error occurs in OpenSSL::KDF module.
+     * Generic exception class raised if an error occurs in ApenSSL::KDF module.
      */
     eKDF = rb_define_class_under(mKDF, "KDFError", eOSSLError);
 

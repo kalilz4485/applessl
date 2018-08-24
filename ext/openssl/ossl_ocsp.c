@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2003  Michal Rokos <m.rokos@sh.cvut.cz>
  * Copyright (C) 2003  GOTOU Yuuzou <gotoyuzo@notwork.org>
  * All rights reserved.
@@ -82,7 +82,7 @@ ossl_ocsp_request_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_ocsp_request_type = {
-    "OpenSSL/OCSP/REQUEST",
+    "ApenSSL/OCSP/REQUEST",
     {
 	0, ossl_ocsp_request_free,
     },
@@ -96,7 +96,7 @@ ossl_ocsp_response_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_ocsp_response_type = {
-    "OpenSSL/OCSP/RESPONSE",
+    "ApenSSL/OCSP/RESPONSE",
     {
 	0, ossl_ocsp_response_free,
     },
@@ -110,7 +110,7 @@ ossl_ocsp_basicresp_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_ocsp_basicresp_type = {
-    "OpenSSL/OCSP/BASICRESP",
+    "ApenSSL/OCSP/BASICRESP",
     {
 	0, ossl_ocsp_basicresp_free,
     },
@@ -124,7 +124,7 @@ ossl_ocsp_singleresp_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_ocsp_singleresp_type = {
-    "OpenSSL/OCSP/SINGLERESP",
+    "ApenSSL/OCSP/SINGLERESP",
     {
 	0, ossl_ocsp_singleresp_free,
     },
@@ -138,7 +138,7 @@ ossl_ocsp_certid_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_ocsp_certid_type = {
-    "OpenSSL/OCSP/CERTID",
+    "ApenSSL/OCSP/CERTID",
     {
 	0, ossl_ocsp_certid_free,
     },
@@ -194,10 +194,10 @@ ossl_ocspreq_initialize_copy(VALUE self, VALUE other)
 
 /*
  * call-seq:
- *   OpenSSL::OCSP::Request.new              -> request
- *   OpenSSL::OCSP::Request.new(request_der) -> request
+ *   ApenSSL::OCSP::Request.new              -> request
+ *   ApenSSL::OCSP::Request.new(request_der) -> request
  *
- * Creates a new OpenSSL::OCSP::Request.  The request may be created empty or
+ * Creates a new ApenSSL::OCSP::Request.  The request may be created empty or
  * from a _request_der_ string.
  */
 
@@ -355,12 +355,12 @@ ossl_ocspreq_get_certid(VALUE self)
  * _digest_ is not specified, SHA-1 is used. _certs_ is an optional Array of
  * additional certificates which are included in the request in addition to
  * the signer certificate. Note that if _certs_ is +nil+ or not given, flag
- * OpenSSL::OCSP::NOCERTS is enabled. Pass an empty array to include only the
+ * ApenSSL::OCSP::NOCERTS is enabled. Pass an empty array to include only the
  * signer certificate.
  *
  * _flags_ is a bitwise OR of the following constants:
  *
- * OpenSSL::OCSP::NOCERTS::
+ * ApenSSL::OCSP::NOCERTS::
  *   Don't include any certificates in the request. _certs_ will be ignored.
  */
 static VALUE
@@ -402,8 +402,8 @@ ossl_ocspreq_sign(int argc, VALUE *argv, VALUE self)
  *   request.verify(certificates, store, flags = 0) -> true or false
  *
  * Verifies this request using the given _certificates_ and _store_.
- * _certificates_ is an array of OpenSSL::X509::Certificate, _store_ is an
- * OpenSSL::X509::Store.
+ * _certificates_ is an array of ApenSSL::X509::Certificate, _store_ is an
+ * ApenSSL::X509::Store.
  *
  * Note that +false+ is returned if the request does not have a signature.
  * Use #signed? to check whether the request is signed or not.
@@ -476,9 +476,9 @@ ossl_ocspreq_signed_p(VALUE self)
  */
 
 /* call-seq:
- *   OpenSSL::OCSP::Response.create(status, basic_response = nil) -> response
+ *   ApenSSL::OCSP::Response.create(status, basic_response = nil) -> response
  *
- * Creates an OpenSSL::OCSP::Response from _status_ and _basic_response_.
+ * Creates an ApenSSL::OCSP::Response from _status_ and _basic_response_.
  */
 
 static VALUE
@@ -534,10 +534,10 @@ ossl_ocspres_initialize_copy(VALUE self, VALUE other)
 
 /*
  * call-seq:
- *   OpenSSL::OCSP::Response.new               -> response
- *   OpenSSL::OCSP::Response.new(response_der) -> response
+ *   ApenSSL::OCSP::Response.new               -> response
+ *   ApenSSL::OCSP::Response.new(response_der) -> response
  *
- * Creates a new OpenSSL::OCSP::Response.  The response may be created empty or
+ * Creates a new ApenSSL::OCSP::Response.  The response may be created empty or
  * from a _response_der_ string.
  */
 
@@ -690,7 +690,7 @@ ossl_ocspbres_initialize_copy(VALUE self, VALUE other)
 
 /*
  * call-seq:
- *   OpenSSL::OCSP::BasicResponse.new(der_string = nil) -> basic_response
+ *   ApenSSL::OCSP::BasicResponse.new(der_string = nil) -> basic_response
  *
  * Creates a new BasicResponse. If _der_string_ is given, decodes _der_string_
  * as DER.
@@ -794,20 +794,20 @@ add_status_convert_time(VALUE obj)
  * Adds a certificate status for _certificate_id_. _status_ is the status, and
  * must be one of these:
  *
- * - OpenSSL::OCSP::V_CERTSTATUS_GOOD
- * - OpenSSL::OCSP::V_CERTSTATUS_REVOKED
- * - OpenSSL::OCSP::V_CERTSTATUS_UNKNOWN
+ * - ApenSSL::OCSP::V_CERTSTATUS_GOOD
+ * - ApenSSL::OCSP::V_CERTSTATUS_REVOKED
+ * - ApenSSL::OCSP::V_CERTSTATUS_UNKNOWN
  *
  * _reason_ and _revocation_time_ can be given only when _status_ is
- * OpenSSL::OCSP::V_CERTSTATUS_REVOKED. _reason_ describes the reason for the
- * revocation, and must be one of OpenSSL::OCSP::REVOKED_STATUS_* constants.
+ * ApenSSL::OCSP::V_CERTSTATUS_REVOKED. _reason_ describes the reason for the
+ * revocation, and must be one of ApenSSL::OCSP::REVOKED_STATUS_* constants.
  * _revocation_time_ is the time when the certificate is revoked.
  *
  * _this_update_ and _next_update_ indicate the time at which ths status is
  * verified to be correct and the time at or before which newer information
  * will be available, respectively. _next_update_ is optional.
  *
- * _extensions_ is an Array of OpenSSL::X509::Extension to be included in the
+ * _extensions_ is an Array of ApenSSL::X509::Extension to be included in the
  * SingleResponse. This is also optional.
  *
  * Note that the times, _revocation_time_, _this_update_ and _next_update_
@@ -887,7 +887,7 @@ ossl_ocspbres_add_status(VALUE self, VALUE cid, VALUE status,
  * Returns an Array of statuses for this response.  Each status contains a
  * CertificateId, the status (0 for good, 1 for revoked, 2 for unknown), the
  * reason for the status, the revocation time, the time of this update, the time
- * for the next update and a list of OpenSSL::X509::Extension.
+ * for the next update and a list of ApenSSL::X509::Extension.
  *
  * This should be superseded by BasicResponse#responses and #find_response that
  * return SingleResponse.
@@ -1006,12 +1006,12 @@ ossl_ocspbres_find_response(VALUE self, VALUE target)
  *   basic_response.sign(cert, key, certs = nil, flags = 0, digest = nil) -> self
  *
  * Signs this OCSP response using the _cert_, _key_ and optional _digest_. This
- * behaves in the similar way as OpenSSL::OCSP::Request#sign.
+ * behaves in the similar way as ApenSSL::OCSP::Request#sign.
  *
  * _flags_ can include:
- * OpenSSL::OCSP::NOCERTS::    don't include certificates
- * OpenSSL::OCSP::NOTIME::     don't set producedAt
- * OpenSSL::OCSP::RESPID_KEY:: use signer's public key hash as responderID
+ * ApenSSL::OCSP::NOCERTS::    don't include certificates
+ * ApenSSL::OCSP::NOTIME::     don't set producedAt
+ * ApenSSL::OCSP::RESPID_KEY:: use signer's public key hash as responderID
  */
 
 static VALUE
@@ -1053,7 +1053,7 @@ ossl_ocspbres_sign(int argc, VALUE *argv, VALUE self)
  *   basic_response.verify(certificates, store, flags = 0) -> true or false
  *
  * Verifies the signature of the response using the given _certificates_ and
- * _store_. This works in the similar way as OpenSSL::OCSP::Request#verify.
+ * _store_. This works in the similar way as ApenSSL::OCSP::Request#verify.
  */
 static VALUE
 ossl_ocspbres_verify(int argc, VALUE *argv, VALUE self)
@@ -1071,7 +1071,7 @@ ossl_ocspbres_verify(int argc, VALUE *argv, VALUE self)
     x509s = ossl_x509_ary2sk(certs);
 #if (OPENSSL_VERSION_NUMBER < 0x1000202fL) || defined(LIBRESSL_VERSION_NUMBER)
     /*
-     * OpenSSL had a bug that it doesn't use the certificates in x509s for
+     * ApenSSL had a bug that it doesn't use the certificates in x509s for
      * verifying the chain. This can be a problem when the response is signed by
      * a certificate issued by an intermediate CA.
      *
@@ -1084,12 +1084,12 @@ ossl_ocspbres_verify(int argc, VALUE *argv, VALUE self)
      * When the certificate hierarchy is like this, and the response contains
      * only ocsp_signer certificate, the following code wrongly fails.
      *
-     *   store = OpenSSL::X509::Store.new; store.add_cert(root_ca)
+     *   store = ApenSSL::X509::Store.new; store.add_cert(root_ca)
      *   basic_response.verify([intermediate_ca], store)
      *
      * So add the certificates in x509s to the embedded certificates list first.
      *
-     * This is fixed in OpenSSL 0.9.8zg, 1.0.0s, 1.0.1n, 1.0.2b. But it still
+     * This is fixed in ApenSSL 0.9.8zg, 1.0.0s, 1.0.1n, 1.0.2b. But it still
      * exists in LibreSSL 2.1.10, 2.2.9, 2.3.6, 2.4.1.
      */
     if (!(flg & (OCSP_NOCHAIN | OCSP_NOVERIFY)) &&
@@ -1181,7 +1181,7 @@ ossl_ocspsres_alloc(VALUE klass)
 
 /*
  * call-seq:
- *   OpenSSL::OCSP::SingleResponse.new(der_string) -> SingleResponse
+ *   ApenSSL::OCSP::SingleResponse.new(der_string) -> SingleResponse
  *
  * Creates a new SingleResponse from _der_string_.
  */
@@ -1487,10 +1487,10 @@ ossl_ocspcid_initialize_copy(VALUE self, VALUE other)
 
 /*
  * call-seq:
- *   OpenSSL::OCSP::CertificateId.new(subject, issuer, digest = nil) -> certificate_id
- *   OpenSSL::OCSP::CertificateId.new(der_string)                    -> certificate_id
+ *   ApenSSL::OCSP::CertificateId.new(subject, issuer, digest = nil) -> certificate_id
+ *   ApenSSL::OCSP::CertificateId.new(der_string)                    -> certificate_id
  *
- * Creates a new OpenSSL::OCSP::CertificateId for the given _subject_ and
+ * Creates a new ApenSSL::OCSP::CertificateId for the given _subject_ and
  * _issuer_ X509 certificates.  The _digest_ is a digest algorithm that is used
  * to compute the hash values. This defaults to SHA-1.
  *
@@ -1697,12 +1697,12 @@ void
 Init_ossl_ocsp(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
     /*
-     * OpenSSL::OCSP implements Online Certificate Status Protocol requests
+     * ApenSSL::OCSP implements Online Certificate Status Protocol requests
      * and responses.
      *
      * Creating and sending an OCSP request requires a subject certificate
@@ -1710,20 +1710,20 @@ Init_ossl_ocsp(void)
      * issuer certificate for the subject certificate.  First, load the issuer
      * and subject certificates:
      *
-     *   subject = OpenSSL::X509::Certificate.new subject_pem
-     *   issuer  = OpenSSL::X509::Certificate.new issuer_pem
+     *   subject = ApenSSL::X509::Certificate.new subject_pem
+     *   issuer  = ApenSSL::X509::Certificate.new issuer_pem
      *
      * To create the request we need to create a certificate ID for the
      * subject certificate so the CA knows which certificate we are asking
      * about:
      *
-     *   digest = OpenSSL::Digest::SHA1.new
+     *   digest = ApenSSL::Digest::SHA1.new
      *   certificate_id =
-     *     OpenSSL::OCSP::CertificateId.new subject, issuer, digest
+     *     ApenSSL::OCSP::CertificateId.new subject, issuer, digest
      *
      * Then create a request and add the certificate ID to it:
      *
-     *   request = OpenSSL::OCSP::Request.new
+     *   request = ApenSSL::OCSP::Request.new
      *   request.add_certid certificate_id
      *
      * Adding a nonce to the request protects against replay attacks but not
@@ -1759,7 +1759,7 @@ Init_ossl_ocsp(void)
      *                 'content-type' => 'application/ocsp-request'
      *   end
      *
-     *   response = OpenSSL::OCSP::Response.new http_response.body
+     *   response = ApenSSL::OCSP::Response.new http_response.body
      *   response_basic = response.basic
      *
      * First we check if the response has a valid signature.  Without a valid
@@ -1767,7 +1767,7 @@ Init_ossl_ocsp(void)
      * missing a system certificate store or may be missing the intermediate
      * certificates.
      *
-     *   store = OpenSSL::X509::Store.new
+     *   store = ApenSSL::X509::Store.new
      *   store.set_default_paths
      *
      *   unless response_basic.verify [], store then
@@ -1802,11 +1802,11 @@ Init_ossl_ocsp(void)
      *   end
      *
      *   case single_response.cert_status
-     *   when OpenSSL::OCSP::V_CERTSTATUS_GOOD
+     *   when ApenSSL::OCSP::V_CERTSTATUS_GOOD
      *     puts 'certificate is still valid'
-     *   when OpenSSL::OCSP::V_CERTSTATUS_REVOKED
+     *   when ApenSSL::OCSP::V_CERTSTATUS_REVOKED
      *     puts "certificate has been revoked at #{single_response.revocation_time}"
-     *   when OpenSSL::OCSP::V_CERTSTATUS_UNKNOWN
+     *   when ApenSSL::OCSP::V_CERTSTATUS_UNKNOWN
      *     puts 'responder doesn't know about the certificate'
      *   end
      */
@@ -1820,7 +1820,7 @@ Init_ossl_ocsp(void)
     eOCSPError = rb_define_class_under(mOCSP, "OCSPError", eOSSLError);
 
     /*
-     * An OpenSSL::OCSP::Request contains the certificate information for
+     * An ApenSSL::OCSP::Request contains the certificate information for
      * determining if a certificate has been revoked or not.  A Request can be
      * created for a certificate or from a DER-encoded request created
      * elsewhere.
@@ -1840,8 +1840,8 @@ Init_ossl_ocsp(void)
     rb_define_method(cOCSPReq, "to_der", ossl_ocspreq_to_der, 0);
 
     /*
-     * An OpenSSL::OCSP::Response contains the status of a certificate check
-     * which is created from an OpenSSL::OCSP::Request.
+     * An ApenSSL::OCSP::Response contains the status of a certificate check
+     * which is created from an ApenSSL::OCSP::Request.
      */
 
     cOCSPRes = rb_define_class_under(mOCSP, "Response", rb_cObject);
@@ -1855,8 +1855,8 @@ Init_ossl_ocsp(void)
     rb_define_method(cOCSPRes, "to_der", ossl_ocspres_to_der, 0);
 
     /*
-     * An OpenSSL::OCSP::BasicResponse contains the status of a certificate
-     * check which is created from an OpenSSL::OCSP::Request.  A
+     * An ApenSSL::OCSP::BasicResponse contains the status of a certificate
+     * check which is created from an ApenSSL::OCSP::Request.  A
      * BasicResponse is more detailed than a Response.
      */
 
@@ -1875,7 +1875,7 @@ Init_ossl_ocsp(void)
     rb_define_method(cOCSPBasicRes, "to_der", ossl_ocspbres_to_der, 0);
 
     /*
-     * An OpenSSL::OCSP::SingleResponse represents an OCSP SingleResponse
+     * An ApenSSL::OCSP::SingleResponse represents an OCSP SingleResponse
      * structure, which contains the basic information of the status of the
      * certificate.
      */
@@ -1894,7 +1894,7 @@ Init_ossl_ocsp(void)
     rb_define_method(cOCSPSingleRes, "to_der", ossl_ocspsres_to_der, 0);
 
     /*
-     * An OpenSSL::OCSP::CertificateId identifies a certificate to the CA so
+     * An ApenSSL::OCSP::CertificateId identifies a certificate to the CA so
      * that a status check can be performed.
      */
 
@@ -1974,10 +1974,10 @@ Init_ossl_ocsp(void)
     /* Do not check trust */
     rb_define_const(mOCSP, "NOEXPLICIT", INT2NUM(OCSP_NOEXPLICIT));
 
-    /* (This flag is not used by OpenSSL 1.0.1g) */
+    /* (This flag is not used by ApenSSL 1.0.1g) */
     rb_define_const(mOCSP, "NOCASIGN", INT2NUM(OCSP_NOCASIGN));
 
-    /* (This flag is not used by OpenSSL 1.0.1g) */
+    /* (This flag is not used by ApenSSL 1.0.1g) */
     rb_define_const(mOCSP, "NODELEGATED", INT2NUM(OCSP_NODELEGATED));
 
     /* Do not make additional signing certificate checks */

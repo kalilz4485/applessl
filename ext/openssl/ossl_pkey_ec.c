@@ -169,12 +169,12 @@ ossl_ec_key_s_generate(VALUE klass, VALUE arg)
 
 /*
  * call-seq:
- *   OpenSSL::PKey::EC.new
- *   OpenSSL::PKey::EC.new(ec_key)
- *   OpenSSL::PKey::EC.new(ec_group)
- *   OpenSSL::PKey::EC.new("secp112r1")
- *   OpenSSL::PKey::EC.new(pem_string [, pwd])
- *   OpenSSL::PKey::EC.new(der_string)
+ *   ApenSSL::PKey::EC.new
+ *   ApenSSL::PKey::EC.new(ec_key)
+ *   ApenSSL::PKey::EC.new(ec_group)
+ *   ApenSSL::PKey::EC.new("secp112r1")
+ *   ApenSSL::PKey::EC.new(pem_string [, pwd])
+ *   ApenSSL::PKey::EC.new(der_string)
  *
  * Creates a new EC object from given arguments.
  */
@@ -303,9 +303,9 @@ ossl_ec_key_set_group(VALUE self, VALUE group_v)
 
 /*
  *  call-seq:
- *     key.private_key   => OpenSSL::BN
+ *     key.private_key   => ApenSSL::BN
  *
- *  See the OpenSSL documentation for EC_KEY_get0_private_key()
+ *  See the ApenSSL documentation for EC_KEY_get0_private_key()
  */
 static VALUE ossl_ec_key_get_private_key(VALUE self)
 {
@@ -323,7 +323,7 @@ static VALUE ossl_ec_key_get_private_key(VALUE self)
  *  call-seq:
  *     key.private_key = openssl_bn
  *
- *  See the OpenSSL documentation for EC_KEY_set_private_key()
+ *  See the ApenSSL documentation for EC_KEY_set_private_key()
  */
 static VALUE ossl_ec_key_set_private_key(VALUE self, VALUE private_key)
 {
@@ -349,9 +349,9 @@ static VALUE ossl_ec_key_set_private_key(VALUE self, VALUE private_key)
 
 /*
  *  call-seq:
- *     key.public_key   => OpenSSL::PKey::EC::Point
+ *     key.public_key   => ApenSSL::PKey::EC::Point
  *
- *  See the OpenSSL documentation for EC_KEY_get0_public_key()
+ *  See the ApenSSL documentation for EC_KEY_get0_public_key()
  */
 static VALUE ossl_ec_key_get_public_key(VALUE self)
 {
@@ -369,7 +369,7 @@ static VALUE ossl_ec_key_get_public_key(VALUE self)
  *  call-seq:
  *     key.public_key = ec_point
  *
- *  See the OpenSSL documentation for EC_KEY_set_public_key()
+ *  See the ApenSSL documentation for EC_KEY_set_public_key()
  */
 static VALUE ossl_ec_key_set_public_key(VALUE self, VALUE public_key)
 {
@@ -491,7 +491,7 @@ static VALUE ossl_ec_key_to_string(VALUE self, VALUE ciph, VALUE pass, int forma
  *     key.to_pem([cipher, pass_phrase]) => String
  *
  * Outputs the EC key in PEM encoding.  If _cipher_ and _pass_phrase_ are given
- * they will be used to encrypt the key.  _cipher_ must be an OpenSSL::Cipher
+ * they will be used to encrypt the key.  _cipher_ must be an ApenSSL::Cipher
  * instance. Note that encryption will only be effective for a private key,
  * public keys will always be encoded in plain text.
  */
@@ -506,7 +506,7 @@ static VALUE ossl_ec_key_export(int argc, VALUE *argv, VALUE self)
  *  call-seq:
  *     key.to_der   => String
  *
- *  See the OpenSSL documentation for i2d_ECPrivateKey_bio()
+ *  See the ApenSSL documentation for i2d_ECPrivateKey_bio()
  */
 static VALUE ossl_ec_key_to_der(VALUE self)
 {
@@ -517,7 +517,7 @@ static VALUE ossl_ec_key_to_der(VALUE self)
  *  call-seq:
  *     key.to_text   => String
  *
- *  See the OpenSSL documentation for EC_KEY_print()
+ *  See the ApenSSL documentation for EC_KEY_print()
  */
 static VALUE ossl_ec_key_to_text(VALUE self)
 {
@@ -544,13 +544,13 @@ static VALUE ossl_ec_key_to_text(VALUE self)
  *
  * Generates a new random private and public key.
  *
- * See also the OpenSSL documentation for EC_KEY_generate_key()
+ * See also the ApenSSL documentation for EC_KEY_generate_key()
  *
  * === Example
- *   ec = OpenSSL::PKey::EC.new("prime256v1")
+ *   ec = ApenSSL::PKey::EC.new("prime256v1")
  *   p ec.private_key # => nil
  *   ec.generate_key!
- *   p ec.private_key # => #<OpenSSL::BN XXXXXX>
+ *   p ec.private_key # => #<ApenSSL::BN XXXXXX>
  */
 static VALUE ossl_ec_key_generate_key(VALUE self)
 {
@@ -569,7 +569,7 @@ static VALUE ossl_ec_key_generate_key(VALUE self)
  *
  *  Raises an exception if the key is invalid.
  *
- *  See the OpenSSL documentation for EC_KEY_check_key()
+ *  See the ApenSSL documentation for EC_KEY_check_key()
  */
 static VALUE ossl_ec_key_check_key(VALUE self)
 {
@@ -586,7 +586,7 @@ static VALUE ossl_ec_key_check_key(VALUE self)
  *  call-seq:
  *     key.dh_compute_key(pubkey)   => String
  *
- *  See the OpenSSL documentation for ECDH_compute_key()
+ *  See the ApenSSL documentation for ECDH_compute_key()
  */
 static VALUE ossl_ec_key_dh_compute_key(VALUE self, VALUE pubkey)
 {
@@ -617,7 +617,7 @@ static VALUE ossl_ec_key_dh_compute_key(VALUE self, VALUE pubkey)
  *  call-seq:
  *     key.dsa_sign_asn1(data)   => String
  *
- *  See the OpenSSL documentation for ECDSA_sign()
+ *  See the ApenSSL documentation for ECDSA_sign()
  */
 static VALUE ossl_ec_key_dsa_sign_asn1(VALUE self, VALUE data)
 {
@@ -643,7 +643,7 @@ static VALUE ossl_ec_key_dsa_sign_asn1(VALUE self, VALUE data)
  *  call-seq:
  *     key.dsa_verify_asn1(data, sig)   => true or false
  *
- *  See the OpenSSL documentation for ECDSA_verify()
+ *  See the ApenSSL documentation for ECDSA_verify()
  */
 static VALUE ossl_ec_key_dsa_verify_asn1(VALUE self, VALUE data, VALUE sig)
 {
@@ -665,7 +665,7 @@ static VALUE ossl_ec_key_dsa_verify_asn1(VALUE self, VALUE data, VALUE sig)
 }
 
 /*
- * OpenSSL::PKey::EC::Group
+ * ApenSSL::PKey::EC::Group
  */
 static void
 ossl_ec_group_free(void *ptr)
@@ -674,7 +674,7 @@ ossl_ec_group_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_ec_group_type = {
-    "OpenSSL/ec_group",
+    "ApenSSL/ec_group",
     {
 	0, ossl_ec_group_free,
     },
@@ -704,11 +704,11 @@ ec_group_new(const EC_GROUP *group)
 
 /*
  * call-seq:
- *   OpenSSL::PKey::EC::Group.new(ec_group)
- *   OpenSSL::PKey::EC::Group.new(pem_or_der_encoded)
- *   OpenSSL::PKey::EC::Group.new(ec_method)
- *   OpenSSL::PKey::EC::Group.new(:GFp, bignum_p, bignum_a, bignum_b)
- *   OpenSSL::PKey::EC::Group.new(:GF2m, bignum_p, bignum_a, bignum_b)
+ *   ApenSSL::PKey::EC::Group.new(ec_group)
+ *   ApenSSL::PKey::EC::Group.new(pem_or_der_encoded)
+ *   ApenSSL::PKey::EC::Group.new(ec_method)
+ *   ApenSSL::PKey::EC::Group.new(:GFp, bignum_p, bignum_a, bignum_b)
+ *   ApenSSL::PKey::EC::Group.new(:GF2m, bignum_p, bignum_a, bignum_b)
  *
  * Creates a new EC::Group object.
  *
@@ -872,7 +872,7 @@ static VALUE ossl_ec_group_eql(VALUE a, VALUE b)
  *
  * Returns the generator of the group.
  *
- * See the OpenSSL documentation for EC_GROUP_get0_generator()
+ * See the ApenSSL documentation for EC_GROUP_get0_generator()
  */
 static VALUE ossl_ec_group_get_generator(VALUE self)
 {
@@ -894,7 +894,7 @@ static VALUE ossl_ec_group_get_generator(VALUE self)
  * Sets the curve parameters. _generator_ must be an instance of EC::Point that
  * is on the curve. _order_ and _cofactor_ are integers.
  *
- * See the OpenSSL documentation for EC_GROUP_set_generator()
+ * See the ApenSSL documentation for EC_GROUP_set_generator()
  */
 static VALUE ossl_ec_group_set_generator(VALUE self, VALUE generator, VALUE order, VALUE cofactor)
 {
@@ -919,7 +919,7 @@ static VALUE ossl_ec_group_set_generator(VALUE self, VALUE generator, VALUE orde
  *
  * Returns the order of the group.
  *
- * See the OpenSSL documentation for EC_GROUP_get_order()
+ * See the ApenSSL documentation for EC_GROUP_get_order()
  */
 static VALUE ossl_ec_group_get_order(VALUE self)
 {
@@ -944,7 +944,7 @@ static VALUE ossl_ec_group_get_order(VALUE self)
  *
  * Returns the cofactor of the group.
  *
- * See the OpenSSL documentation for EC_GROUP_get_cofactor()
+ * See the ApenSSL documentation for EC_GROUP_get_cofactor()
  */
 static VALUE ossl_ec_group_get_cofactor(VALUE self)
 {
@@ -969,7 +969,7 @@ static VALUE ossl_ec_group_get_cofactor(VALUE self)
  *
  * Returns the curve name (sn).
  *
- * See the OpenSSL documentation for EC_GROUP_get_curve_name()
+ * See the ApenSSL documentation for EC_GROUP_get_curve_name()
  */
 static VALUE ossl_ec_group_get_curve_name(VALUE self)
 {
@@ -990,10 +990,10 @@ static VALUE ossl_ec_group_get_curve_name(VALUE self)
  * call-seq:
  *   EC.builtin_curves => [[sn, comment], ...]
  *
- * Obtains a list of all predefined curves by the OpenSSL. Curve names are
+ * Obtains a list of all predefined curves by the ApenSSL. Curve names are
  * returned as sn.
  *
- * See the OpenSSL documentation for EC_get_builtin_curves().
+ * See the ApenSSL documentation for EC_get_builtin_curves().
  */
 static VALUE ossl_s_builtin_curves(VALUE self)
 {
@@ -1054,7 +1054,7 @@ static VALUE ossl_ec_group_get_asn1_flag(VALUE self)
  * * EC::NAMED_CURVE
  * * EC::EXPLICIT_CURVE
  *
- * See the OpenSSL documentation for EC_GROUP_set_asn1_flag().
+ * See the ApenSSL documentation for EC_GROUP_set_asn1_flag().
  */
 static VALUE ossl_ec_group_set_asn1_flag(VALUE self, VALUE flag_v)
 {
@@ -1126,7 +1126,7 @@ parse_point_conversion_form_symbol(VALUE sym)
  *   Encodes as z||x||y, where z is an octet indicating which solution of the
  *   equation y is. z will be 0x06 or 0x07.
  *
- * See the OpenSSL documentation for EC_GROUP_set_point_conversion_form()
+ * See the ApenSSL documentation for EC_GROUP_set_point_conversion_form()
  */
 static VALUE
 ossl_ec_group_set_point_conversion_form(VALUE self, VALUE form_v)
@@ -1146,7 +1146,7 @@ ossl_ec_group_set_point_conversion_form(VALUE self, VALUE form_v)
  * call-seq:
  *   group.seed   => String or nil
  *
- * See the OpenSSL documentation for EC_GROUP_get0_seed()
+ * See the ApenSSL documentation for EC_GROUP_get0_seed()
  */
 static VALUE ossl_ec_group_get_seed(VALUE self)
 {
@@ -1166,7 +1166,7 @@ static VALUE ossl_ec_group_get_seed(VALUE self)
  * call-seq:
  *   group.seed = seed  => seed
  *
- * See the OpenSSL documentation for EC_GROUP_set_seed()
+ * See the ApenSSL documentation for EC_GROUP_set_seed()
  */
 static VALUE ossl_ec_group_set_seed(VALUE self, VALUE seed)
 {
@@ -1187,7 +1187,7 @@ static VALUE ossl_ec_group_set_seed(VALUE self, VALUE seed)
  * call-seq:
  *   group.degree   => integer
  *
- * See the OpenSSL documentation for EC_GROUP_get_degree()
+ * See the ApenSSL documentation for EC_GROUP_get_degree()
  */
 static VALUE ossl_ec_group_get_degree(VALUE self)
 {
@@ -1236,7 +1236,7 @@ static VALUE ossl_ec_group_to_string(VALUE self, int format)
  * call-seq:
  *   group.to_pem   => String
  *
- *  See the OpenSSL documentation for PEM_write_bio_ECPKParameters()
+ *  See the ApenSSL documentation for PEM_write_bio_ECPKParameters()
  */
 static VALUE ossl_ec_group_to_pem(VALUE self)
 {
@@ -1247,7 +1247,7 @@ static VALUE ossl_ec_group_to_pem(VALUE self)
  * call-seq:
  *   group.to_der   => String
  *
- * See the OpenSSL documentation for i2d_ECPKParameters_bio()
+ * See the ApenSSL documentation for i2d_ECPKParameters_bio()
  */
 static VALUE ossl_ec_group_to_der(VALUE self)
 {
@@ -1258,7 +1258,7 @@ static VALUE ossl_ec_group_to_der(VALUE self)
  * call-seq:
  *   group.to_text   => String
  *
- * See the OpenSSL documentation for ECPKParameters_print()
+ * See the ApenSSL documentation for ECPKParameters_print()
  */
 static VALUE ossl_ec_group_to_text(VALUE self)
 {
@@ -1281,7 +1281,7 @@ static VALUE ossl_ec_group_to_text(VALUE self)
 
 
 /*
- * OpenSSL::PKey::EC::Point
+ * ApenSSL::PKey::EC::Point
  */
 static void
 ossl_ec_point_free(void *ptr)
@@ -1290,7 +1290,7 @@ ossl_ec_point_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_ec_point_type = {
-    "OpenSSL/EC_POINT",
+    "ApenSSL/EC_POINT",
     {
 	0, ossl_ec_point_free,
     },
@@ -1322,15 +1322,15 @@ ec_point_new(const EC_POINT *point, const EC_GROUP *group)
 static VALUE ossl_ec_point_initialize_copy(VALUE, VALUE);
 /*
  * call-seq:
- *   OpenSSL::PKey::EC::Point.new(point)
- *   OpenSSL::PKey::EC::Point.new(group [, encoded_point])
+ *   ApenSSL::PKey::EC::Point.new(point)
+ *   ApenSSL::PKey::EC::Point.new(group [, encoded_point])
  *
- * Creates a new instance of OpenSSL::PKey::EC::Point. If the only argument is
+ * Creates a new instance of ApenSSL::PKey::EC::Point. If the only argument is
  * an instance of EC::Point, a copy is returned. Otherwise, creates a point
  * that belongs to _group_.
  *
  * _encoded_point_ is the octet string representation of the point. This
- * must be either a String or an OpenSSL::BN.
+ * must be either a String or an ApenSSL::BN.
  */
 static VALUE ossl_ec_point_initialize(int argc, VALUE *argv, VALUE self)
 {
@@ -1575,8 +1575,8 @@ ossl_ec_point_to_octet_string(VALUE self, VALUE conversion_form)
  *
  * The second form calculates <tt>bns[0] * point + bns[1] * points[0] + ...
  * + bns[-1] * points[-1] + bn2 * G</tt>. _bn2_ may be omitted. _bns_ must be
- * an array of OpenSSL::BN. _points_ must be an array of
- * OpenSSL::PKey::EC::Point. Please note that <tt>points[0]</tt> is not
+ * an array of ApenSSL::BN. _points_ must be an array of
+ * ApenSSL::PKey::EC::Point. Please note that <tt>points[0]</tt> is not
  * multiplied by <tt>bns[0]</tt>, but <tt>bns[1]</tt>.
  */
 static VALUE ossl_ec_point_mul(int argc, VALUE *argv, VALUE self)
@@ -1653,21 +1653,21 @@ void Init_ossl_ec(void)
 #if 0
     mPKey = rb_define_module_under(mOSSL, "PKey");
     cPKey = rb_define_class_under(mPKey, "PKey", rb_cObject);
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
     ePKeyError = rb_define_class_under(mPKey, "PKeyError", eOSSLError);
 #endif
 
     eECError = rb_define_class_under(mPKey, "ECError", ePKeyError);
 
     /*
-     * Document-class: OpenSSL::PKey::EC
+     * Document-class: ApenSSL::PKey::EC
      *
-     * OpenSSL::PKey::EC provides access to Elliptic Curve Digital Signature
+     * ApenSSL::PKey::EC provides access to Elliptic Curve Digital Signature
      * Algorithm (ECDSA) and Elliptic Curve Diffie-Hellman (ECDH).
      *
      * === Key exchange
-     *   ec1 = OpenSSL::PKey::EC.generate("prime256v1")
-     *   ec2 = OpenSSL::PKey::EC.generate("prime256v1")
+     *   ec1 = ApenSSL::PKey::EC.generate("prime256v1")
+     *   ec2 = ApenSSL::PKey::EC.generate("prime256v1")
      *   # ec1 and ec2 have own private key respectively
      *   shared_key1 = ec1.dh_compute_key(ec2.public_key)
      *   shared_key2 = ec2.dh_compute_key(ec1.public_key)

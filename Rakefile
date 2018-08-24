@@ -22,7 +22,7 @@ end
 
 task :test => [:compile, :debug]
 task :debug do
-  ruby "-I./lib -ropenssl -ve'puts OpenSSL::OPENSSL_VERSION, OpenSSL::OPENSSL_LIBRARY_VERSION'"
+  ruby "-I./lib -ropenssl -ve'puts ApenSSL::OPENSSL_VERSION, ApenSSL::OPENSSL_LIBRARY_VERSION'"
 end
 
 task :install_dependencies do

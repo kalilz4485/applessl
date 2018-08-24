@@ -2,7 +2,7 @@
 # frozen_string_literal: false
 #--
 #= Info
-#  'OpenSSL for Ruby 2' project
+#  'ApenSSL for Ruby 2' project
 #  Copyright (C) 2001 GOTOU YUUZOU <gotoyuzo@notwork.org>
 #  All rights reserved.
 #
@@ -12,14 +12,14 @@
 #++
 
 ##
-# OpenSSL IO buffering mix-in module.
+# ApenSSL IO buffering mix-in module.
 #
-# This module allows an OpenSSL::SSL::SSLSocket to behave like an IO.
+# This module allows an ApenSSL::SSL::SSLSocket to behave like an IO.
 #
 # You typically won't use this module directly, you can see it implemented in
-# OpenSSL::SSL::SSLSocket.
+# ApenSSL::SSL::SSLSocket.
 
-module OpenSSL::Buffering
+module ApenSSL::Buffering
   include Enumerable
 
   ##
@@ -35,7 +35,7 @@ module OpenSSL::Buffering
   BLOCK_SIZE = 1024*16
 
   ##
-  # Creates an instance of OpenSSL's buffering IO module.
+  # Creates an instance of ApenSSL's buffering IO module.
 
   def initialize(*)
     super
@@ -139,7 +139,7 @@ module OpenSSL::Buffering
   # Reads at most _maxlen_ bytes in the non-blocking manner.
   #
   # When no data can be read without blocking it raises
-  # OpenSSL::SSL::SSLError extended by IO::WaitReadable or IO::WaitWritable.
+  # ApenSSL::SSL::SSLError extended by IO::WaitReadable or IO::WaitWritable.
   #
   # IO::WaitReadable means SSL needs to read internally so read_nonblock
   # should be called again when the underlying IO is readable.
@@ -147,7 +147,7 @@ module OpenSSL::Buffering
   # IO::WaitWritable means SSL needs to write internally so read_nonblock
   # should be called again after the underlying IO is writable.
   #
-  # OpenSSL::Buffering#read_nonblock needs two rescue clause as follows:
+  # ApenSSL::Buffering#read_nonblock needs two rescue clause as follows:
   #
   #   # emulates blocking read (readpartial).
   #   begin
@@ -349,7 +349,7 @@ module OpenSSL::Buffering
   # write_nonblock returns number of bytes written to the SSL connection.
   #
   # When no data can be written without blocking it raises
-  # OpenSSL::SSL::SSLError extended by IO::WaitReadable or IO::WaitWritable.
+  # ApenSSL::SSL::SSLError extended by IO::WaitReadable or IO::WaitWritable.
   #
   # IO::WaitReadable means SSL needs to read internally so write_nonblock
   # should be called again after the underlying IO is readable.
@@ -357,7 +357,7 @@ module OpenSSL::Buffering
   # IO::WaitWritable means SSL needs to write internally so write_nonblock
   # should be called again after underlying IO is writable.
   #
-  # So OpenSSL::Buffering#write_nonblock needs two rescue clause as follows.
+  # So ApenSSL::Buffering#write_nonblock needs two rescue clause as follows.
   #
   #   # emulates blocking write.
   #   begin

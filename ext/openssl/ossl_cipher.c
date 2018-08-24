@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -38,7 +38,7 @@ static VALUE ossl_cipher_alloc(VALUE klass);
 static void ossl_cipher_free(void *ptr);
 
 static const rb_data_type_t ossl_cipher_type = {
-    "OpenSSL/Cipher",
+    "ApenSSL/Cipher",
     {
 	0, ossl_cipher_free,
     },
@@ -106,7 +106,7 @@ ossl_cipher_alloc(VALUE klass)
  *
  *  The string must be a valid cipher name like "AES-128-CBC" or "3DES".
  *
- *  A list of cipher names is available by calling OpenSSL::Cipher.ciphers.
+ *  A list of cipher names is available by calling ApenSSL::Cipher.ciphers.
  */
 static VALUE
 ossl_cipher_initialize(VALUE self, VALUE str)
@@ -158,7 +158,7 @@ add_cipher_name_to_ary(const OBJ_NAME *name, VALUE ary)
 
 /*
  *  call-seq:
- *     OpenSSL::Cipher.ciphers -> array[string...]
+ *     ApenSSL::Cipher.ciphers -> array[string...]
  *
  *  Returns the names of all available ciphers in an array.
  */
@@ -216,7 +216,7 @@ ossl_cipher_init(int argc, VALUE *argv, VALUE self, int mode)
                 cname, cname, cname);
 	StringValue(pass);
 	GetCipher(self, ctx);
-	if (NIL_P(init_v)) memcpy(iv, "OpenSSL for Ruby rulez!", sizeof(iv));
+	if (NIL_P(init_v)) memcpy(iv, "ApenSSL for Ruby rulez!", sizeof(iv));
 	else{
 	    StringValue(init_v);
 	    if (EVP_MAX_IV_LENGTH > RSTRING_LEN(init_v)) {
@@ -287,9 +287,9 @@ ossl_cipher_decrypt(int argc, VALUE *argv, VALUE self)
  *
  *  *WARNING*: This method is only PKCS5 v1.5 compliant when using RC2, RC4-40,
  *  or DES with MD5 or SHA1. Using anything else (like AES) will generate the
- *  key/iv using an OpenSSL specific method. This method is deprecated and
+ *  key/iv using an ApenSSL specific method. This method is deprecated and
  *  should no longer be used. Use a PKCS5 v2 key generation method from
- *  OpenSSL::PKCS5 instead.
+ *  ApenSSL::PKCS5 instead.
  *
  *  === Parameters
  *  * _salt_ must be an 8 byte string if provided.
@@ -463,7 +463,7 @@ ossl_cipher_name(VALUE self)
  *
  *  Sets the cipher key. To generate a key, you should either use a secure
  *  random byte string or, if the key is to be derived from a password, you
- *  should rely on PBKDF2 functionality provided by OpenSSL::PKCS5. To
+ *  should rely on PBKDF2 functionality provided by ApenSSL::PKCS5. To
  *  generate a secure random-based key, Cipher#random_key may be used.
  *
  *  Only call this method after calling Cipher#encrypt or Cipher#decrypt.
@@ -821,21 +821,21 @@ void
 Init_ossl_cipher(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
-    /* Document-class: OpenSSL::Cipher
+    /* Document-class: ApenSSL::Cipher
      *
      * Provides symmetric algorithms for encryption and decryption. The
      * algorithms that are available depend on the particular version
-     * of OpenSSL that is installed.
+     * of ApenSSL that is installed.
      *
      * === Listing all supported algorithms
      *
      * A list of supported algorithms can be obtained by
      *
-     *   puts OpenSSL::Cipher.ciphers
+     *   puts ApenSSL::Cipher.ciphers
      *
      * === Instantiating a Cipher
      *
@@ -844,29 +844,29 @@ Init_ossl_cipher(void)
      * and the cipher mode to be used. The most generic way to create a
      * Cipher is the following
      *
-     *   cipher = OpenSSL::Cipher.new('<name>-<key length>-<mode>')
+     *   cipher = ApenSSL::Cipher.new('<name>-<key length>-<mode>')
      *
      * That is, a string consisting of the hyphenated concatenation of the
      * individual components name, key length and mode. Either all uppercase
      * or all lowercase strings may be used, for example:
      *
-     *  cipher = OpenSSL::Cipher.new('AES-128-CBC')
+     *  cipher = ApenSSL::Cipher.new('AES-128-CBC')
      *
      * For each algorithm supported, there is a class defined under the
      * Cipher class that goes by the name of the cipher, e.g. to obtain an
      * instance of AES, you could also use
      *
      *   # these are equivalent
-     *   cipher = OpenSSL::Cipher::AES.new(128, :CBC)
-     *   cipher = OpenSSL::Cipher::AES.new(128, 'CBC')
-     *   cipher = OpenSSL::Cipher::AES.new('128-CBC')
+     *   cipher = ApenSSL::Cipher::AES.new(128, :CBC)
+     *   cipher = ApenSSL::Cipher::AES.new(128, 'CBC')
+     *   cipher = ApenSSL::Cipher::AES.new('128-CBC')
      *
      * Finally, due to its wide-spread use, there are also extra classes
      * defined for the different key sizes of AES
      *
-     *   cipher = OpenSSL::Cipher::AES128.new(:CBC)
-     *   cipher = OpenSSL::Cipher::AES192.new(:CBC)
-     *   cipher = OpenSSL::Cipher::AES256.new(:CBC)
+     *   cipher = ApenSSL::Cipher::AES128.new(:CBC)
+     *   cipher = ApenSSL::Cipher::AES192.new(:CBC)
+     *   cipher = ApenSSL::Cipher::AES256.new(:CBC)
      *
      * === Choosing either encryption or decryption mode
      *
@@ -896,14 +896,14 @@ Init_ossl_cipher(void)
      * without processing the password further. A simple and secure way to
      * create a key for a particular Cipher is
      *
-     *  cipher = OpenSSL::AES256.new(:CFB)
+     *  cipher = ApenSSL::AES256.new(:CFB)
      *  cipher.encrypt
      *  key = cipher.random_key # also sets the generated key on the Cipher
      *
      * If you absolutely need to use passwords as encryption keys, you
      * should use Password-Based Key Derivation Function 2 (PBKDF2) by
      * generating the key with the help of the functionality provided by
-     * OpenSSL::PKCS5.pbkdf2_hmac_sha1 or OpenSSL::PKCS5.pbkdf2_hmac.
+     * ApenSSL::PKCS5.pbkdf2_hmac_sha1 or ApenSSL::PKCS5.pbkdf2_hmac.
      *
      * Although there is Cipher#pkcs5_keyivgen, its use is deprecated and
      * it should only be used in legacy applications because it does not use
@@ -951,7 +951,7 @@ Init_ossl_cipher(void)
      * operate on fixed-size blocks of data, and therefore they require a
      * "finalization" step to produce or correctly decrypt the last block of
      * data by appropriately handling some form of padding. Therefore it is
-     * essential to add the output of OpenSSL::Cipher#final to your
+     * essential to add the output of ApenSSL::Cipher#final to your
      * encryption/decryption buffer or you will end up with decryption errors
      * or truncated data.
      *
@@ -964,14 +964,14 @@ Init_ossl_cipher(void)
      *
      *   data = "Very, very confidential data"
      *
-     *   cipher = OpenSSL::Cipher::AES.new(128, :CBC)
+     *   cipher = ApenSSL::Cipher::AES.new(128, :CBC)
      *   cipher.encrypt
      *   key = cipher.random_key
      *   iv = cipher.random_iv
      *
      *   encrypted = cipher.update(data) + cipher.final
      *   ...
-     *   decipher = OpenSSL::Cipher::AES.new(128, :CBC)
+     *   decipher = ApenSSL::Cipher::AES.new(128, :CBC)
      *   decipher.decrypt
      *   decipher.key = key
      *   decipher.iv = iv
@@ -982,9 +982,9 @@ Init_ossl_cipher(void)
      *
      * === Authenticated Encryption and Associated Data (AEAD)
      *
-     * If the OpenSSL version used supports it, an Authenticated Encryption
+     * If the ApenSSL version used supports it, an Authenticated Encryption
      * mode (such as GCM or CCM) should always be preferred over any
-     * unauthenticated mode. Currently, OpenSSL supports AE only in combination
+     * unauthenticated mode. Currently, ApenSSL supports AE only in combination
      * with Associated Data (AEAD) where additional associated data is included
      * in the encryption process to compute a tag at the end of the encryption.
      * This tag will also be used in the decryption process and by verifying
@@ -999,7 +999,7 @@ Init_ossl_cipher(void)
      * An associated data is used where there is additional information, such as
      * headers or some metadata, that must be also authenticated but not
      * necessarily need to be encrypted. If no associated data is needed for
-     * encryption and later decryption, the OpenSSL library still requires a
+     * encryption and later decryption, the ApenSSL library still requires a
      * value to be set - "" may be used in case none is available.
      *
      * An example using the GCM (Galois/Counter Mode). You have 16 bytes _key_,
@@ -1007,7 +1007,7 @@ Init_ossl_cipher(void)
      * not to reuse the _key_ and _nonce_ pair. Reusing an nonce ruins the
      * security guarantees of GCM mode.
      *
-     *   cipher = OpenSSL::Cipher::AES.new(128, :GCM).encrypt
+     *   cipher = ApenSSL::Cipher::AES.new(128, :GCM).encrypt
      *   cipher.key = key
      *   cipher.iv = nonce
      *   cipher.auth_data = auth_data
@@ -1023,7 +1023,7 @@ Init_ossl_cipher(void)
      * ciphertext with a probability of 1/256.
      *
      *   raise "tag is truncated!" unless tag.bytesize == 16
-     *   decipher = OpenSSL::Cipher::AES.new(128, :GCM).decrypt
+     *   decipher = ApenSSL::Cipher::AES.new(128, :GCM).decrypt
      *   decipher.key = key
      *   decipher.iv = nonce
      *   decipher.auth_tag = tag

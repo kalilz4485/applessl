@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -14,7 +14,7 @@
  * Classes
  */
 VALUE cConfig;
-/* Document-class: OpenSSL::ConfigError
+/* Document-class: ApenSSL::ConfigError
  *
  * General error for openssl library configuration files. Including formatting,
  * parsing errors, etc.
@@ -26,10 +26,10 @@ VALUE eConfigError;
  */
 
 /*
- * DupConfigPtr is a public C-level function for getting OpenSSL CONF struct
- * from an OpenSSL::Config(eConfig) instance.  We decided to implement
- * OpenSSL::Config in Ruby level but we need to pass native CONF struct for
- * some OpenSSL features such as X509V3_EXT_*.
+ * DupConfigPtr is a public C-level function for getting ApenSSL CONF struct
+ * from an ApenSSL::Config(eConfig) instance.  We decided to implement
+ * ApenSSL::Config in Ruby level but we need to pass native CONF struct for
+ * some ApenSSL features such as X509V3_EXT_*.
  */
 CONF *
 DupConfigPtr(VALUE obj)
@@ -74,8 +74,8 @@ Init_ossl_config(void)
     char *default_config_file;
 
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
     eConfigError = rb_define_class_under(mOSSL, "ConfigError", eOSSLError);

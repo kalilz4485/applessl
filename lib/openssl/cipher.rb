@@ -3,7 +3,7 @@
 # = Ruby-space predefined Cipher subclasses
 #
 # = Info
-# 'OpenSSL for Ruby 2' project
+# 'ApenSSL for Ruby 2' project
 # Copyright (C) 2002  Michal Rokos <m.rokos@sh.cvut.cz>
 # All rights reserved.
 #
@@ -12,7 +12,7 @@
 # (See the file 'LICENCE'.)
 #++
 
-module OpenSSL
+module ApenSSL
   class Cipher
     %w(AES CAST5 BF DES IDEA RC2 RC4 RC5).each{|name|
       klass = Class.new(Cipher){
@@ -36,32 +36,32 @@ module OpenSSL
     # call-seq:
     #   cipher.random_key -> key
     #
-    # Generate a random key with OpenSSL::Random.random_bytes and sets it to
+    # Generate a random key with ApenSSL::Random.random_bytes and sets it to
     # the cipher, and returns it.
     #
     # You must call #encrypt or #decrypt before calling this method.
     def random_key
-      str = OpenSSL::Random.random_bytes(self.key_len)
+      str = ApenSSL::Random.random_bytes(self.key_len)
       self.key = str
     end
 
     # call-seq:
     #   cipher.random_iv -> iv
     #
-    # Generate a random IV with OpenSSL::Random.random_bytes and sets it to the
+    # Generate a random IV with ApenSSL::Random.random_bytes and sets it to the
     # cipher, and returns it.
     #
     # You must call #encrypt or #decrypt before calling this method.
     def random_iv
-      str = OpenSSL::Random.random_bytes(self.iv_len)
+      str = ApenSSL::Random.random_bytes(self.iv_len)
       self.iv = str
     end
 
     # Deprecated.
     #
     # This class is only provided for backwards compatibility.
-    # Use OpenSSL::Cipher.
+    # Use ApenSSL::Cipher.
     class Cipher < Cipher; end
     deprecate_constant :Cipher
   end # Cipher
-end # OpenSSL
+end # ApenSSL

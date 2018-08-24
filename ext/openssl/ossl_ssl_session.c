@@ -14,7 +14,7 @@ ossl_ssl_session_free(void *ptr)
 }
 
 const rb_data_type_t ossl_ssl_session_type = {
-    "OpenSSL/SSL/Session",
+    "ApenSSL/SSL/Session",
     {
 	0, ossl_ssl_session_free,
     },
@@ -308,9 +308,9 @@ static VALUE ossl_ssl_session_to_text(VALUE self)
 void Init_ossl_ssl_session(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
+    mOSSL = rb_define_module("ApenSSL");
     mSSL = rb_define_module_under(mOSSL, "SSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 	cSSLSession = rb_define_class_under(mSSL, "Session", rb_cObject);
 	eSSLSession = rb_define_class_under(cSSLSession, "SessionError", eOSSLError);

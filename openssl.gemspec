@@ -3,8 +3,8 @@ Gem::Specification.new do |spec|
   spec.version       = "2.1.1"
   spec.authors       = ["Martin Bosslet", "SHIBATA Hiroshi", "Zachary Scott", "Kazuki Yamaguchi"]
   spec.email         = ["ruby-core@ruby-lang.org"]
-  spec.summary       = %q{OpenSSL provides SSL, TLS and general purpose cryptography.}
-  spec.description   = %q{It wraps the OpenSSL library.}
+  spec.summary       = %q{ApenSSL provides SSL, TLS and general purpose cryptography.}
+  spec.description   = %q{It wraps the ApenSSL library.}
   spec.homepage      = "https://github.com/ruby/openssl"
   spec.license       = "Ruby"
 

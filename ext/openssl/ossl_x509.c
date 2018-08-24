@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -30,7 +30,7 @@ void
 Init_ossl_x509(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
+    mOSSL = rb_define_module("ApenSSL");
 #endif
 
     mX509 = rb_define_module_under(mOSSL, "X509");
@@ -119,12 +119,12 @@ Init_ossl_x509(void)
 #if defined(X509_V_FLAG_TRUSTED_FIRST)
     /* Set by Store#flags= and StoreContext#flags=. When constructing a
      * certificate chain, search the Store first for the issuer certificate.
-     * Enabled by default in OpenSSL >= 1.1.0. */
+     * Enabled by default in ApenSSL >= 1.1.0. */
     DefX509Const(V_FLAG_TRUSTED_FIRST);
 #endif
 #if defined(X509_V_FLAG_NO_ALT_CHAINS)
     /* Set by Store#flags= and StoreContext#flags=. Suppresses searching for
-     * a alternative chain. No effect in OpenSSL >= 1.1.0. */
+     * a alternative chain. No effect in ApenSSL >= 1.1.0. */
     DefX509Const(V_FLAG_NO_ALT_CHAINS);
 #endif
 #if defined(X509_V_FLAG_NO_CHECK_TIME)

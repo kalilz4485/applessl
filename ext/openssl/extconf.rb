@@ -2,7 +2,7 @@
 # frozen_string_literal: false
 =begin
 = Info
-  'OpenSSL for Ruby 2' project
+  'ApenSSL for Ruby 2' project
   Copyright (C) 2002  Michal Rokos <m.rokos@sh.cvut.cz>
   All rights reserved.
 
@@ -17,10 +17,10 @@ require File.expand_path('../deprecation', __FILE__)
 dir_config("openssl")
 dir_config("kerberos")
 
-Logging::message "=== OpenSSL for Ruby configurator ===\n"
+Logging::message "=== ApenSSL for Ruby configurator ===\n"
 
 # Add -Werror=deprecated-declarations to $warnflags if available
-OpenSSL.deprecated_warning_flag
+ApenSSL.deprecated_warning_flag
 
 ##
 # Adds -DOSSL_DEBUG for compilation and some more targets when GCC is used
@@ -42,8 +42,8 @@ result = pkg_config("openssl") && have_header("openssl/ssl.h")
 
 def find_openssl_library
   if $mswin || $mingw
-    # required for static OpenSSL libraries
-    have_library("gdi32") # OpenSSL <= 1.0.2 (for RAND_screen())
+    # required for static ApenSSL libraries
+    have_library("gdi32") # ApenSSL <= 1.0.2 (for RAND_screen())
     have_library("crypt32")
   end
 
@@ -54,13 +54,13 @@ def find_openssl_library
   return ret if ret
 
   if $mswin
-    # OpenSSL >= 1.1.0: libcrypto.lib and libssl.lib.
+    # ApenSSL >= 1.1.0: libcrypto.lib and libssl.lib.
     if have_library("libcrypto", "CRYPTO_malloc") &&
         have_library("libssl", "SSL_new")
       return true
     end
 
-    # OpenSSL <= 1.0.2: libeay32.lib and ssleay32.lib.
+    # ApenSSL <= 1.0.2: libeay32.lib and ssleay32.lib.
     if have_library("libeay32", "CRYPTO_malloc") &&
         have_library("ssleay32", "SSL_new")
       return true
@@ -94,24 +94,24 @@ unless result
   unless find_openssl_library
     Logging::message "=== Checking for required stuff failed. ===\n"
     Logging::message "Makefile wasn't created. Fix the errors above.\n"
-    raise "OpenSSL library could not be found. You might want to use " \
-      "--with-openssl-dir=<dir> option to specify the prefix where OpenSSL " \
+    raise "ApenSSL library could not be found. You might want to use " \
+      "--with-openssl-dir=<dir> option to specify the prefix where ApenSSL " \
       "is installed."
   end
 end
 
-unless checking_for("OpenSSL version is 1.0.1 or later") {
+unless checking_for("ApenSSL version is 1.0.1 or later") {
     try_static_assert("OPENSSL_VERSION_NUMBER >= 0x10001000L", "openssl/opensslv.h") }
-  raise "OpenSSL >= 1.0.1 or LibreSSL is required"
+  raise "ApenSSL >= 1.0.1 or LibreSSL is required"
 end
 
-Logging::message "=== Checking for OpenSSL features... ===\n"
+Logging::message "=== Checking for ApenSSL features... ===\n"
 # compile options
 have_func("RAND_egd")
 engines = %w{builtin_engines openbsd_dev_crypto dynamic 4758cca aep atalla chil
              cswift nuron sureware ubsec padlock capi gmp gost cryptodev aesni}
 engines.each { |name|
-  OpenSSL.check_func_or_macro("ENGINE_load_#{name}", "openssl/engine.h")
+  ApenSSL.check_func_or_macro("ENGINE_load_#{name}", "openssl/engine.h")
 }
 
 if ($mswin || $mingw) && have_macro("LIBRESSL_VERSION_NUMBER")
@@ -123,9 +123,9 @@ have_func("EC_curve_nist2nid")
 have_func("X509_REVOKED_dup")
 have_func("X509_STORE_CTX_get0_store")
 have_func("SSL_CTX_set_alpn_select_cb")
-OpenSSL.check_func_or_macro("SSL_CTX_set1_curves_list", "openssl/ssl.h")
-OpenSSL.check_func_or_macro("SSL_CTX_set_ecdh_auto", "openssl/ssl.h")
-OpenSSL.check_func_or_macro("SSL_get_server_tmp_key", "openssl/ssl.h")
+ApenSSL.check_func_or_macro("SSL_CTX_set1_curves_list", "openssl/ssl.h")
+ApenSSL.check_func_or_macro("SSL_CTX_set_ecdh_auto", "openssl/ssl.h")
+ApenSSL.check_func_or_macro("SSL_get_server_tmp_key", "openssl/ssl.h")
 have_func("SSL_is_server")
 
 # added in 1.1.0
@@ -141,7 +141,7 @@ have_func("EVP_MD_CTX_new")
 have_func("EVP_MD_CTX_free")
 have_func("HMAC_CTX_new")
 have_func("HMAC_CTX_free")
-OpenSSL.check_func("RAND_pseudo_bytes", "openssl/rand.h") # deprecated
+ApenSSL.check_func("RAND_pseudo_bytes", "openssl/rand.h") # deprecated
 have_func("X509_STORE_get_ex_data")
 have_func("X509_STORE_set_ex_data")
 have_func("X509_CRL_get0_signature")
@@ -159,8 +159,8 @@ have_func("X509_CRL_up_ref")
 have_func("X509_STORE_up_ref")
 have_func("SSL_SESSION_up_ref")
 have_func("EVP_PKEY_up_ref")
-OpenSSL.check_func_or_macro("SSL_CTX_set_tmp_ecdh_callback", "openssl/ssl.h") # removed
-OpenSSL.check_func_or_macro("SSL_CTX_set_min_proto_version", "openssl/ssl.h")
+ApenSSL.check_func_or_macro("SSL_CTX_set_tmp_ecdh_callback", "openssl/ssl.h") # removed
+ApenSSL.check_func_or_macro("SSL_CTX_set_min_proto_version", "openssl/ssl.h")
 have_func("SSL_CTX_get_security_level")
 have_func("X509_get0_notBefore")
 have_func("SSL_SESSION_get_protocol_version")

@@ -1,9 +1,9 @@
 # frozen_string_literal: false
 require 'test/unit'
 
-if defined?(OpenSSL)
+if defined?(ApenSSL)
 
-module OpenSSL::TestEOF
+module ApenSSL::TestEOF
   def test_eof_0
     open_file("") {|f|
       assert_equal("", f.read(0))

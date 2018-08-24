@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -127,7 +127,7 @@ dh_generate(int size, int gen)
     if (!gen_arg.result) {
 	DH_free(dh);
 	if (cb_arg.state) {
-	    /* Clear OpenSSL error queue before re-raising. */
+	    /* Clear ApenSSL error queue before re-raising. */
 	    ossl_clear_error();
 	    rb_jump_tag(cb_arg.state);
 	}
@@ -448,7 +448,7 @@ ossl_dh_to_text(VALUE self)
  * per-session information.
  *
  * === Example
- *  dh = OpenSSL::PKey::DH.new(2048) # has public and private key set
+ *  dh = ApenSSL::PKey::DH.new(2048) # has public and private key set
  *  public_key = dh.public_key # contains only prime and generator
  *  parameters = public_key.to_der # it's safe to publish this
  */
@@ -502,7 +502,7 @@ ossl_dh_check_params(VALUE self)
  * the actual key exchange.
  *
  * === Example
- *   dh = OpenSSL::PKey::DH.new(2048)
+ *   dh = ApenSSL::PKey::DH.new(2048)
  *   public_key = dh.public_key #contains no private/public key yet
  *   public_key.generate_key!
  *   puts public_key.private? # => true
@@ -526,7 +526,7 @@ ossl_dh_generate_key(VALUE self)
  * See DH_compute_key() for further information.
  *
  * === Parameters
- * * _pub_bn_ is a OpenSSL::BN, *not* the DH instance returned by
+ * * _pub_bn_ is a ApenSSL::BN, *not* the DH instance returned by
  *   DH#public_key as that contains the DH parameters only.
  */
 static VALUE
@@ -553,7 +553,7 @@ ossl_dh_compute_key(VALUE self, VALUE pub)
 }
 
 /*
- * Document-method: OpenSSL::PKey::DH#set_pqg
+ * Document-method: ApenSSL::PKey::DH#set_pqg
  * call-seq:
  *   dh.set_pqg(p, q, g) -> self
  *
@@ -561,7 +561,7 @@ ossl_dh_compute_key(VALUE self, VALUE pub)
  */
 OSSL_PKEY_BN_DEF3(dh, DH, pqg, p, q, g)
 /*
- * Document-method: OpenSSL::PKey::DH#set_key
+ * Document-method: ApenSSL::PKey::DH#set_key
  * call-seq:
  *   dh.set_key(pub_key, priv_key) -> self
  *
@@ -581,14 +581,14 @@ Init_ossl_dh(void)
     ePKeyError = rb_define_class_under(mPKey, "PKeyError", eOSSLError);
 #endif
 
-    /* Document-class: OpenSSL::PKey::DHError
+    /* Document-class: ApenSSL::PKey::DHError
      *
      * Generic exception that is raised if an operation on a DH PKey
      * fails unexpectedly or in case an instantiation of an instance of DH
      * fails due to non-conformant input data.
      */
     eDHError = rb_define_class_under(mPKey, "DHError", ePKeyError);
-    /* Document-class: OpenSSL::PKey::DH
+    /* Document-class: ApenSSL::PKey::DH
      *
      * An implementation of the Diffie-Hellman key exchange protocol based on
      * discrete logarithms in finite fields, the same basis that DSA is built
@@ -596,19 +596,19 @@ Init_ossl_dh(void)
      *
      * === Accessor methods for the Diffie-Hellman parameters
      * DH#p::
-     *   The prime (an OpenSSL::BN) of the Diffie-Hellman parameters.
+     *   The prime (an ApenSSL::BN) of the Diffie-Hellman parameters.
      * DH#g::
-     *   The generator (an OpenSSL::BN) g of the Diffie-Hellman parameters.
+     *   The generator (an ApenSSL::BN) g of the Diffie-Hellman parameters.
      * DH#pub_key::
-     *   The per-session public key (an OpenSSL::BN) matching the private key.
+     *   The per-session public key (an ApenSSL::BN) matching the private key.
      *   This needs to be passed to DH#compute_key.
      * DH#priv_key::
-     *   The per-session private key, an OpenSSL::BN.
+     *   The per-session private key, an ApenSSL::BN.
      *
      * === Example of a key exchange
-     *  dh1 = OpenSSL::PKey::DH.new(2048)
+     *  dh1 = ApenSSL::PKey::DH.new(2048)
      *  der = dh1.public_key.to_der #you may send this publicly to the participating party
-     *  dh2 = OpenSSL::PKey::DH.new(der)
+     *  dh2 = ApenSSL::PKey::DH.new(der)
      *  dh2.generate_key! #generate the per-session key pair
      *  symm_key1 = dh1.compute_key(dh2.pub_key)
      *  symm_key2 = dh2.compute_key(dh1.pub_key)

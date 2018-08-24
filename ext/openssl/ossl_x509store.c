@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -112,7 +112,7 @@ ossl_x509store_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_x509store_type = {
-    "OpenSSL/X509/STORE",
+    "ApenSSL/X509/STORE",
     {
 	0, ossl_x509store_free,
     },
@@ -166,7 +166,7 @@ ossl_x509store_alloc(VALUE klass)
 }
 
 /*
- * General callback for OpenSSL verify
+ * General callback for ApenSSL verify
  */
 static VALUE
 ossl_x509store_set_vfy_cb(VALUE self, VALUE cb)
@@ -318,7 +318,7 @@ ossl_x509store_add_file(VALUE self, VALUE file)
      * X509_load_cert_crl_file() which is called from X509_LOOKUP_load_file()
      * did not check the return value of X509_STORE_add_{cert,crl}(), leaking
      * "cert already in hash table" errors on the error queue, if duplicate
-     * certificates are found. This will be fixed by OpenSSL 1.1.1.
+     * certificates are found. This will be fixed by ApenSSL 1.1.1.
      */
     ossl_clear_error();
 #endif
@@ -361,8 +361,8 @@ ossl_x509store_add_path(VALUE self, VALUE dir)
  * certificate store as needed basis. The location of the store can usually be
  * determined by:
  *
- * * OpenSSL::X509::DEFAULT_CERT_FILE
- * * OpenSSL::X509::DEFAULT_CERT_DIR
+ * * ApenSSL::X509::DEFAULT_CERT_FILE
+ * * ApenSSL::X509::DEFAULT_CERT_DIR
  */
 static VALUE
 ossl_x509store_set_default_paths(VALUE self)
@@ -381,7 +381,7 @@ ossl_x509store_set_default_paths(VALUE self)
  * call-seq:
  *   store.add_cert(cert)
  *
- * Adds the OpenSSL::X509::Certificate _cert_ to the certificate store.
+ * Adds the ApenSSL::X509::Certificate _cert_ to the certificate store.
  */
 static VALUE
 ossl_x509store_add_cert(VALUE self, VALUE arg)
@@ -402,7 +402,7 @@ ossl_x509store_add_cert(VALUE self, VALUE arg)
  * call-seq:
  *   store.add_crl(crl) -> self
  *
- * Adds the OpenSSL::X509::CRL _crl_ to the store.
+ * Adds the ApenSSL::X509::CRL _crl_ to the store.
  */
 static VALUE
 ossl_x509store_add_crl(VALUE self, VALUE arg)
@@ -427,9 +427,9 @@ static VALUE ossl_x509stctx_get_chain(VALUE);
  * call-seq:
  *   store.verify(cert, chain = nil) -> true | false
  *
- * Performs a certificate verification on the OpenSSL::X509::Certificate _cert_.
+ * Performs a certificate verification on the ApenSSL::X509::Certificate _cert_.
  *
- * _chain_ can be an array of OpenSSL::X509::Certificate that is used to
+ * _chain_ can be an array of ApenSSL::X509::Certificate that is used to
  * construct the certificate chain.
  *
  * If a block is given, it overrides the callback set by #verify_callback=.
@@ -465,7 +465,7 @@ static void ossl_x509stctx_free(void*);
 
 
 static const rb_data_type_t ossl_x509stctx_type = {
-    "OpenSSL/X509/STORE_CTX",
+    "ApenSSL/X509/STORE_CTX",
     {
 	0, ossl_x509stctx_free,
     },
@@ -773,8 +773,8 @@ Init_ossl_x509store(void)
 {
 #undef rb_intern
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
     mX509 = rb_define_module_under(mOSSL, "X509");
 #endif
 
@@ -788,14 +788,14 @@ Init_ossl_x509store(void)
 
     eX509StoreError = rb_define_class_under(mX509, "StoreError", eOSSLError);
 
-    /* Document-class: OpenSSL::X509::Store
+    /* Document-class: ApenSSL::X509::Store
      *
      * The X509 certificate store holds trusted CA certificates used to verify
      * peer certificates.
      *
      * The easiest way to create a useful certificate store is:
      *
-     *   cert_store = OpenSSL::X509::Store.new
+     *   cert_store = ApenSSL::X509::Store.new
      *   cert_store.set_default_paths
      *
      * This will use your system's built-in certificates.
@@ -809,18 +809,18 @@ Init_ossl_x509store(void)
      * After downloading or generating a cacert.pem from the above link you
      * can create a certificate store from the pem file like this:
      *
-     *   cert_store = OpenSSL::X509::Store.new
+     *   cert_store = ApenSSL::X509::Store.new
      *   cert_store.add_file 'cacert.pem'
      *
      * The certificate store can be used with an SSLSocket like this:
      *
-     *   ssl_context = OpenSSL::SSL::SSLContext.new
-     *   ssl_context.verify_mode = OpenSSL::SSL::VERIFY_PEER
+     *   ssl_context = ApenSSL::SSL::SSLContext.new
+     *   ssl_context.verify_mode = ApenSSL::SSL::VERIFY_PEER
      *   ssl_context.cert_store = cert_store
      *
      *   tcp_socket = TCPSocket.open 'example.com', 443
      *
-     *   ssl_socket = OpenSSL::SSL::SSLSocket.new tcp_socket, ssl_context
+     *   ssl_socket = ApenSSL::SSL::SSLSocket.new tcp_socket, ssl_context
      */
 
     cX509Store = rb_define_class_under(mX509, "Store", rb_cObject);
@@ -829,7 +829,7 @@ Init_ossl_x509store(void)
      * each untrusted certificate in the chain.
      *
      * The callback is invoked with two values, a boolean that indicates if the
-     * pre-verification by OpenSSL has succeeded or not, and the StoreContext in
+     * pre-verification by ApenSSL has succeeded or not, and the StoreContext in
      * use. The callback must return either true or false.
      */
     rb_attr(cX509Store, rb_intern("verify_callback"), 1, 0, Qfalse);
@@ -861,7 +861,7 @@ Init_ossl_x509store(void)
     rb_define_method(cX509Store, "verify",       ossl_x509store_verify, -1);
 
     /*
-     * Document-class: OpenSSL::X509::StoreContext
+     * Document-class: ApenSSL::X509::StoreContext
      *
      * A StoreContext is used while validating a single certificate and holds
      * the status involved.

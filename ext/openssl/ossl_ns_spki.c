@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -46,7 +46,7 @@ ossl_netscape_spki_free(void *spki)
 }
 
 static const rb_data_type_t ossl_netscape_spki_type = {
-    "OpenSSL/NETSCAPE_SPKI",
+    "ApenSSL/NETSCAPE_SPKI",
     {
 	0, ossl_netscape_spki_free,
     },
@@ -177,7 +177,7 @@ ossl_spki_print(VALUE self)
  *    spki.public_key => pkey
  *
  * Returns the public key associated with the SPKI, an instance of
- * OpenSSL::PKey.
+ * ApenSSL::PKey.
  */
 static VALUE
 ossl_spki_get_public_key(VALUE self)
@@ -201,7 +201,7 @@ ossl_spki_get_public_key(VALUE self)
  * * _pub_ - the public key to be set for this instance
  *
  * Sets the public key to be associated with the SPKI, an instance of
- * OpenSSL::PKey. This should be the public key corresponding to the
+ * ApenSSL::PKey. This should be the public key corresponding to the
  * private key used for signing the SPKI.
  */
 static VALUE
@@ -274,8 +274,8 @@ ossl_spki_set_challenge(VALUE self, VALUE str)
  *
  * To sign an SPKI, the private key corresponding to the public key set
  * for this instance should be used, in addition to a digest algorithm in
- * the form of an OpenSSL::Digest. The private key should be an instance of
- * OpenSSL::PKey.
+ * the form of an ApenSSL::Digest. The private key should be an instance of
+ * ApenSSL::PKey.
  */
 static VALUE
 ossl_spki_sign(VALUE self, VALUE key, VALUE digest)
@@ -324,7 +324,7 @@ ossl_spki_verify(VALUE self, VALUE key)
     }
 }
 
-/* Document-class: OpenSSL::Netscape::SPKI
+/* Document-class: ApenSSL::Netscape::SPKI
  *
  * A Simple Public Key Infrastructure implementation (pronounced "spooky").
  * The structure is defined as
@@ -346,41 +346,41 @@ ossl_spki_verify(VALUE self, VALUE key)
  * == Examples
  *
  * === Creating an SPKI
- *   key = OpenSSL::PKey::RSA.new 2048
- *   spki = OpenSSL::Netscape::SPKI.new
+ *   key = ApenSSL::PKey::RSA.new 2048
+ *   spki = ApenSSL::Netscape::SPKI.new
  *   spki.challenge = "RandomChallenge"
  *   spki.public_key = key.public_key
- *   spki.sign(key, OpenSSL::Digest::SHA256.new)
+ *   spki.sign(key, ApenSSL::Digest::SHA256.new)
  *   #send a request containing this to a server generating a certificate
  * === Verifying an SPKI request
  *   request = #...
- *   spki = OpenSSL::Netscape::SPKI.new request
+ *   spki = ApenSSL::Netscape::SPKI.new request
  *   unless spki.verify(spki.public_key)
  *     # signature is invalid
  *   end
  *   #proceed
  */
 
-/* Document-module: OpenSSL::Netscape
+/* Document-module: ApenSSL::Netscape
  *
- * OpenSSL::Netscape is a namespace for SPKI (Simple Public Key
+ * ApenSSL::Netscape is a namespace for SPKI (Simple Public Key
  * Infrastructure) which implements Signed Public Key and Challenge.
  * See {RFC 2692}[http://tools.ietf.org/html/rfc2692] and {RFC
  * 2693}[http://tools.ietf.org/html/rfc2692] for details.
  */
 
-/* Document-class: OpenSSL::Netscape::SPKIError
+/* Document-class: ApenSSL::Netscape::SPKIError
  *
  * Generic Exception class that is raised if an error occurs during an
- * operation on an instance of OpenSSL::Netscape::SPKI.
+ * operation on an instance of ApenSSL::Netscape::SPKI.
  */
 
 void
 Init_ossl_ns_spki(void)
 {
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
     mNetscape = rb_define_module_under(mOSSL, "Netscape");

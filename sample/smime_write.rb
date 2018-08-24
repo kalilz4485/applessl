@@ -1,6 +1,6 @@
 require 'openssl'
 require 'optparse'
-include OpenSSL
+include ApenSSL
 
 options = ARGV.getopts("c:k:r:")
 

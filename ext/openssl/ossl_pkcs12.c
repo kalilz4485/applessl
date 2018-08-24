@@ -40,7 +40,7 @@ ossl_pkcs12_free(void *ptr)
 }
 
 static const rb_data_type_t ossl_pkcs12_type = {
-    "OpenSSL/PKCS12",
+    "ApenSSL/PKCS12",
     {
 	0, ossl_pkcs12_free,
     },
@@ -97,9 +97,9 @@ ossl_pkcs12_initialize_copy(VALUE self, VALUE other)
  * * _mac_iter_ - integer
  * * _keytype_ - An integer representing an MSIE specific extension.
  *
- * Any optional arguments may be supplied as +nil+ to preserve the OpenSSL defaults.
+ * Any optional arguments may be supplied as +nil+ to preserve the ApenSSL defaults.
  *
- * See the OpenSSL documentation for PKCS12_create().
+ * See the ApenSSL documentation for PKCS12_create().
  */
 static VALUE
 ossl_pkcs12_s_create(int argc, VALUE *argv, VALUE self)
@@ -179,8 +179,8 @@ ossl_pkcs12_initialize(int argc, VALUE *argv, VALUE self)
     BIO_free(in);
 
     pkey = cert = ca = Qnil;
-    /* OpenSSL's bug; PKCS12_parse() puts errors even if it succeeds.
-     * Fixed in OpenSSL 1.0.0t, 1.0.1p, 1.0.2d */
+    /* ApenSSL's bug; PKCS12_parse() puts errors even if it succeeds.
+     * Fixed in ApenSSL 1.0.0t, 1.0.1p, 1.0.2d */
     ERR_set_mark();
     if(!PKCS12_parse(pkcs, passphrase, &key, &x509, &x509s))
 	ossl_raise(ePKCS12Error, "PKCS12_parse");
@@ -234,8 +234,8 @@ Init_ossl_pkcs12(void)
 {
 #undef rb_intern
 #if 0
-    mOSSL = rb_define_module("OpenSSL");
-    eOSSLError = rb_define_class_under(mOSSL, "OpenSSLError", rb_eStandardError);
+    mOSSL = rb_define_module("ApenSSL");
+    eOSSLError = rb_define_class_under(mOSSL, "ApenSSLError", rb_eStandardError);
 #endif
 
     /*

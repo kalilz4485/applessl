@@ -3,7 +3,7 @@
 # = Ruby-space definitions that completes C-space funcs for X509 and subclasses
 #
 # = Info
-# 'OpenSSL for Ruby 2' project
+# 'ApenSSL for Ruby 2' project
 # Copyright (C) 2002  Michal Rokos <m.rokos@sh.cvut.cz>
 # All rights reserved.
 #
@@ -12,7 +12,7 @@
 # (See the file 'LICENCE'.)
 #++
 
-module OpenSSL
+module ApenSSL
   module X509
     class ExtensionFactory
       def create_extension(*arg)
@@ -88,7 +88,7 @@ module OpenSSL
             case pair.size
             when 2 then pair[1,1]
             when 3 then Integer("0x#{pair[1,2]}").chr
-            else raise OpenSSL::X509::NameError, "invalid pair: #{str}"
+            else raise ApenSSL::X509::NameError, "invalid pair: #{str}"
             end
           }
         end
@@ -96,7 +96,7 @@ module OpenSSL
         def expand_hexstring(str)
           return nil unless str
           der = str.gsub(HexPair){$&.to_i(16).chr }
-          a1 = OpenSSL::ASN1.decode(der)
+          a1 = ApenSSL::ASN1.decode(der)
           return a1.value, a1.tag
         end
 
@@ -123,7 +123,7 @@ module OpenSSL
                   str = remain[1..-1]
                   next
                 elsif remain.length > 2 && remain[0] == ?+
-                  raise OpenSSL::X509::NameError,
+                  raise ApenSSL::X509::NameError,
                     "multi-valued RDN is not supported: #{dn}"
                 elsif remain.empty?
                   break
@@ -131,7 +131,7 @@ module OpenSSL
               end
             end
             msg_dn = dn[0, dn.length - str.length] + " =>" + str
-            raise OpenSSL::X509::NameError, "malformed RDN: #{msg_dn}"
+            raise ApenSSL::X509::NameError, "malformed RDN: #{msg_dn}"
           end
           return ary
         end
@@ -139,7 +139,7 @@ module OpenSSL
 
       class << self
         def parse_rfc2253(str, template=OBJECT_TYPE_TEMPLATE)
-          ary = OpenSSL::X509::Name::RFC2253DN.scan(str)
+          ary = ApenSSL::X509::Name::RFC2253DN.scan(str)
           self.new(ary, template)
         end
 
@@ -160,7 +160,7 @@ module OpenSSL
       def pretty_print(q)
         q.object_group(self) {
           q.text ' '
-          q.text to_s(OpenSSL::X509::Name::RFC2253)
+          q.text to_s(ApenSSL::X509::Name::RFC2253)
         }
       end
     end
@@ -174,7 +174,7 @@ module OpenSSL
 
     class StoreContext
       def cleanup
-        warn "(#{caller.first}) OpenSSL::X509::StoreContext#cleanup is deprecated with no replacement" if $VERBOSE
+        warn "(#{caller.first}) ApenSSL::X509::StoreContext#cleanup is deprecated with no replacement" if $VERBOSE
       end
     end
 

@@ -1,5 +1,5 @@
 /*
- * 'OpenSSL for Ruby' project
+ * 'ApenSSL for Ruby' project
  * Copyright (C) 2001-2002  Michal Rokos <m.rokos@sh.cvut.cz>
  * All rights reserved.
  */
@@ -110,7 +110,7 @@ int ossl_pem_passwd_cb(char *, int, int, void *);
 
 /*
  * Clear BIO* with this in PEM/DER fallback scenarios to avoid decoding
- * errors piling up in OpenSSL::Errors
+ * errors piling up in ApenSSL::Errors
  */
 #define OSSL_BIO_reset(bio) do { \
     (void)BIO_reset((bio)); \
@@ -121,7 +121,7 @@ int ossl_pem_passwd_cb(char *, int, int, void *);
  * ERRor messages
  */
 NORETURN(void ossl_raise(VALUE, const char *, ...));
-/* Clear OpenSSL error queue. If dOSSL is set, rb_warn() them. */
+/* Clear ApenSSL error queue. If dOSSL is set, rb_warn() them. */
 void ossl_clear_error(void);
 
 /*

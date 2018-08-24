@@ -1,9 +1,9 @@
 # frozen_string_literal: false
 require_relative 'utils'
 
-if defined?(OpenSSL)
+if defined?(ApenSSL)
 
-class OpenSSL::TestConfig < OpenSSL::TestCase
+class ApenSSL::TestConfig < ApenSSL::TestCase
   def setup
     super
     file = Tempfile.open("openssl.cnf")
@@ -17,7 +17,7 @@ certs                =                  ./certs
 __EOD__
     file.close
     @tmpfile = file
-    @it = OpenSSL::Config.new(file.path)
+    @it = ApenSSL::Config.new(file.path)
   end
 
   def teardown
@@ -26,23 +26,23 @@ __EOD__
   end
 
   def test_constants
-    assert(defined?(OpenSSL::Config::DEFAULT_CONFIG_FILE))
-    config_file = OpenSSL::Config::DEFAULT_CONFIG_FILE
+    assert(defined?(ApenSSL::Config::DEFAULT_CONFIG_FILE))
+    config_file = ApenSSL::Config::DEFAULT_CONFIG_FILE
     pend "DEFAULT_CONFIG_FILE may return a wrong path on your platforms. [Bug #6830]" unless File.readable?(config_file)
     assert_nothing_raised do
-      OpenSSL::Config.load(config_file)
+      ApenSSL::Config.load(config_file)
     end
   end
 
   def test_s_parse
-    c = OpenSSL::Config.parse('')
+    c = ApenSSL::Config.parse('')
     assert_equal("[ default ]\n\n", c.to_s)
-    c = OpenSSL::Config.parse(@it.to_s)
+    c = ApenSSL::Config.parse(@it.to_s)
     assert_equal(['CA_default', 'ca', 'default'], c.sections.sort)
   end
 
   def test_s_parse_format
-    c = OpenSSL::Config.parse(<<__EOC__)
+    c = ApenSSL::Config.parse(<<__EOC__)
  baz =qx\t                # "baz = qx"
 
 foo::bar = baz            # shortcut section::key format
@@ -91,23 +91,23 @@ __EOC__
     assert_equal('123baz456bar798', c['doller']['qux'])
     assert_equal('123baz456bar798.123baz456bar798', c['doller']['quxx'])
 
-    excn = assert_raise(OpenSSL::ConfigError) do
-      OpenSSL::Config.parse("foo = $bar")
+    excn = assert_raise(ApenSSL::ConfigError) do
+      ApenSSL::Config.parse("foo = $bar")
     end
     assert_equal("error in line 1: variable has no value", excn.message)
 
-    excn = assert_raise(OpenSSL::ConfigError) do
-      OpenSSL::Config.parse("foo = $(bar")
+    excn = assert_raise(ApenSSL::ConfigError) do
+      ApenSSL::Config.parse("foo = $(bar")
     end
     assert_equal("error in line 1: no close brace", excn.message)
 
-    excn = assert_raise(OpenSSL::ConfigError) do
-      OpenSSL::Config.parse("f o =b  ar      # no space in key")
+    excn = assert_raise(ApenSSL::ConfigError) do
+      ApenSSL::Config.parse("f o =b  ar      # no space in key")
     end
     assert_equal("error in line 1: missing equal sign", excn.message)
 
-    excn = assert_raise(OpenSSL::ConfigError) do
-      OpenSSL::Config.parse(<<__EOC__)
+    excn = assert_raise(ApenSSL::ConfigError) do
+      ApenSSL::Config.parse(<<__EOC__)
 # comment 1               # comments
 
 #
@@ -122,20 +122,20 @@ __EOC__
 
   def test_s_load
     # alias of new
-    c = OpenSSL::Config.load
+    c = ApenSSL::Config.load
     assert_equal("", c.to_s)
     assert_equal([], c.sections)
     #
     Tempfile.create("openssl.cnf") {|file|
       file.close
-      c = OpenSSL::Config.load(file.path)
+      c = ApenSSL::Config.load(file.path)
       assert_equal("[ default ]\n\n", c.to_s)
       assert_equal(['default'], c.sections)
     }
   end
 
   def test_initialize
-    c = OpenSSL::Config.new
+    c = ApenSSL::Config.new
     assert_equal("", c.to_s)
     assert_equal([], c.sections)
   end
@@ -143,7 +143,7 @@ __EOC__
   def test_initialize_with_empty_file
     Tempfile.create("openssl.cnf") {|file|
       file.close
-      c = OpenSSL::Config.new(file.path)
+      c = ApenSSL::Config.new(file.path)
       assert_equal("[ default ]\n\n", c.to_s)
       assert_equal(['default'], c.sections)
     }
@@ -218,7 +218,7 @@ __EOC__
   end
 
   def test_add_value
-    c = OpenSSL::Config.new
+    c = ApenSSL::Config.new
     assert_equal("", c.to_s)
     # add key
     c.add_value('default', 'foo', 'bar')
@@ -244,7 +244,7 @@ __EOC__
     @it['foo'] = {'bar' => 'qux', 'baz' => 'quxx'}
     assert_equal({'bar' => 'qux', 'baz' => 'quxx'}, @it['foo'])
 
-    # OpenSSL::Config is add only for now.
+    # ApenSSL::Config is add only for now.
     @it['foo'] = {'foo' => 'foo'}
     assert_equal({'foo' => 'foo', 'bar' => 'qux', 'baz' => 'quxx'}, @it['foo'])
     # you cannot override or remove any section and key.
@@ -263,16 +263,16 @@ __EOC__
   end
 
   def test_to_s
-    c = OpenSSL::Config.parse("[empty]\n")
+    c = ApenSSL::Config.parse("[empty]\n")
     assert_equal("[ default ]\n\n[ empty ]\n\n", c.to_s)
   end
 
   def test_inspect
-    assert_match(/#<OpenSSL::Config sections=\[.*\]>/, @it.inspect)
+    assert_match(/#<ApenSSL::Config sections=\[.*\]>/, @it.inspect)
   end
 
   def test_freeze
-    c = OpenSSL::Config.new
+    c = ApenSSL::Config.new
     c['foo'] = [['key', 'value']]
     c.freeze
 
